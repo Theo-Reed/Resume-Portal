@@ -8,7 +8,10 @@
     <block wx:else>
       <view class="avatar-placeholder" bindtap="handleLogin"></view>
     </block>
-    <text class="nickname">{{isLoggedIn ? userInfo.nickName : 'Click to Login'}}</text>
+    <text
+      class="nickname {{isLoggedIn ? '' : 'nickname-login'}}"
+      bindtap="onNicknameTap"
+    >{{isLoggedIn ? userInfo.nickName : '请登录'}}</text>
   </view>
   <view class="drawer-list">
     <view class="drawer-item" bindtap="onOpenFavorites">

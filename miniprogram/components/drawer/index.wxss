@@ -49,6 +49,24 @@
   color: #333;
 }
 
+.nickname-login {
+  color: #1d4ed8;
+}
+
+.nickname-login-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  margin-left: 16rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #1d4ed8;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
 .drawer-list {
   padding: 24rpx 0;
 }

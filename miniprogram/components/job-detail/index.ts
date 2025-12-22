@@ -170,14 +170,21 @@ Component({
 
     async addCollectRecord(job: JobDetailItem) {
       const db = wx.cloud.database()
-      const { _id: jobId, ...jobData } = job
+      const jobId = job._id
+      const recordData = {
+        summary: job.summary || '',
+        description: job.description || '',
+        salary: job.salary || '',
+        source_name: job.source_name || '',
+        source_url: job.source_url || '',
+        type: job.type || '',
+        team: job.team || '',
+        title: job.title || '',
+        collectedAt: job.createdAt || '',
+      }
+
       await db.collection(COLLECT_COLLECTION).doc(jobId).set({
-        data: {
-          ...jobData,
-          jobId,
-          sourceCollection: this.data.collection,
-          collectedAt: db.serverDate(),
-        },
+        data: recordData,
       })
     },
 

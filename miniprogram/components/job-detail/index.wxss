@@ -68,12 +68,19 @@
 }
 
 .collect-icon {
-  font-size: 48rpx;
+  font-size: 45rpx;
+  font-weight: 1000;
   color: #9ca3af;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  letter-spacing: -3rpx;
 }
 
 .collect-icon-active {
   color: #fbbf24;
+  text-shadow: 0 0 6rpx rgba(251, 191, 36, 0.5);
 }
 
 .detail-content {
