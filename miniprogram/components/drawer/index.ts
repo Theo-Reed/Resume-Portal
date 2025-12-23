@@ -5,8 +5,8 @@ Component({
       type: Boolean,
       value: false,
       observer(show: boolean) {
-        if (show && !this.data.isLoggedIn) {
-          this.setData({ loginDisabled: false })
+        if (show) {
+          this.syncUserFromApp()
         }
       },
     },
@@ -15,64 +15,113 @@ Component({
   data: {
     userInfo: null as WechatMiniprogram.UserInfo | null,
     isLoggedIn: false,
-    loginDisabled: false,
+    phoneAuthBusy: false,
   },
 
   lifetimes: {
     attached() {
-      const cachedUserInfo = wx.getStorageSync('userInfo') as WechatMiniprogram.UserInfo | undefined
-      if (cachedUserInfo && cachedUserInfo.avatarUrl && cachedUserInfo.nickName) {
-        this.setData({
-          userInfo: cachedUserInfo,
-          isLoggedIn: true,
-        })
-      }
+      this.syncUserFromApp()
     },
   },
 
   methods: {
+    syncUserFromApp() {
+      const app = getApp<IAppOption>() as any
+      const user = app?.globalData?.user
+      const isLoggedIn = !!(user && (user.isAuthed || user.phone))
+
+      const hasCloudProfile = user && typeof user.avatar === 'string' && typeof user.nickname === 'string' && user.avatar && user.nickname
+      const userInfo = hasCloudProfile
+        ? ({ avatarUrl: user.avatar, nickName: user.nickname } as WechatMiniprogram.UserInfo)
+        : null
+
+      this.setData({ isLoggedIn, userInfo })
+    },
+
     onClose() {
       this.triggerEvent('close')
     },
 
-    handleLogin() {
-      if (this.data.isLoggedIn || this.data.loginDisabled) return
+    async onGetRealtimePhoneNumber(e: any) {
+      if (this.data.phoneAuthBusy) return
 
-      this.setData({ loginDisabled: true })
-      wx.getUserProfile({
-        desc: '用于完善用户资料',
-        success: (res) => {
-          const { avatarUrl, nickName } = res.userInfo
-          const userInfo = {
-            avatarUrl,
-            nickName,
-          } as WechatMiniprogram.UserInfo
+      const encryptedData = e?.detail?.encryptedData
+      const iv = e?.detail?.iv
+      if (!encryptedData || !iv) {
+        wx.showToast({ title: '未获取到手机号授权', icon: 'none' })
+        return
+      }
 
-          wx.setStorageSync('userInfo', userInfo)
-          this.setData({
-            userInfo,
-            isLoggedIn: true,
-          })
-        },
-        fail: (err) => {
-          console.error('[drawer] getUserProfile failed', err)
-          wx.showToast({ title: '授权失败', icon: 'none' })
-        },
-        complete: () => {
-          this.setData({ loginDisabled: false })
-        },
-      })
+      this.setData({ phoneAuthBusy: true })
+      try {
+        const res: any = await wx.cloud.callFunction({
+          name: 'getPhoneNumber',
+          data: { encryptedData, iv, mode: 'realtime' },
+        })
+
+        const phone = res?.result?.phone
+        if (!phone) throw new Error('no phone in getPhoneNumber result')
+
+        const updateRes: any = await wx.cloud.callFunction({
+          name: 'updateUserProfile',
+          data: { phone, isAuthed: true },
+        })
+
+        const updatedUser = updateRes?.result?.user
+        const app = getApp<IAppOption>() as any
+        if (app?.globalData) app.globalData.user = updatedUser
+
+        this.syncUserFromApp()
+        wx.showToast({ title: '登录成功', icon: 'success' })
+      } catch (err) {
+        console.error('[drawer] realtime phone auth failed', err)
+        wx.showToast({ title: '手机号授权失败', icon: 'none' })
+      } finally {
+        this.setData({ phoneAuthBusy: false })
+      }
     },
 
-    onNicknameTap() {
-      if (!this.data.isLoggedIn) {
-        this.handleLogin()
+    async onGetPhoneNumber(e: any) {
+      if (this.data.phoneAuthBusy) return
+
+      const code = e?.detail?.code
+      if (!code) {
+        wx.showToast({ title: '未获取到手机号授权', icon: 'none' })
+        return
+      }
+
+      this.setData({ phoneAuthBusy: true })
+      try {
+        const res: any = await wx.cloud.callFunction({
+          name: 'getPhoneNumber',
+          data: { code },
+        })
+
+        const phone = res?.result?.phone
+        if (!phone) throw new Error('no phone in getPhoneNumber result')
+
+        const updateRes: any = await wx.cloud.callFunction({
+          name: 'updateUserProfile',
+          data: { phone, isAuthed: true },
+        })
+
+        const updatedUser = updateRes?.result?.user
+        const app = getApp<IAppOption>() as any
+        if (app?.globalData) app.globalData.user = updatedUser
+
+        this.syncUserFromApp()
+        wx.showToast({ title: '登录成功', icon: 'success' })
+      } catch (err) {
+        console.error('[drawer] phone auth failed', err)
+        wx.showToast({ title: '手机号授权失败', icon: 'none' })
+      } finally {
+        this.setData({ phoneAuthBusy: false })
       }
     },
 
     onOpenFavorites() {
       if (!this.data.isLoggedIn) {
-        this.handleLogin()
+        wx.showToast({ title: '请先授权手机号', icon: 'none' })
         return
       }
       wx.reLaunch({ url: '/pages/favorites/index' })

@@ -86,6 +86,15 @@ Component({
       const job = this.data.job
       if (!job || this.data.collectBusy) return
 
+      // Product-level login check: phone authorized
+      const app = getApp<IAppOption>() as any
+      const user = app?.globalData?.user
+      const isLoggedIn = !!(user && (user.isAuthed || user.phone))
+      if (!isLoggedIn) {
+        wx.showToast({ title: '请先登录/绑定手机号', icon: 'none' })
+        return
+      }
+
       this.setData({ collectBusy: true })
       const targetCollected = !this.data.collected
 
@@ -186,7 +195,7 @@ Component({
       }
 
       const result = await db.collection(COLLECT_COLLECTION).add({ data: recordData })
-      this.setData({ collectDocId: result._id || '' })
+      this.setData({ collectDocId: String((result as any)._id || '') })
     },
 
     async removeCollectRecord(jobId: string) {
@@ -194,7 +203,7 @@ Component({
       let docId = this.data.collectDocId
       if (!docId) {
         const lookup = await db.collection(COLLECT_COLLECTION).where({ jobId }).limit(1).get()
-        docId = lookup.data?.[0]?._id || ''
+        docId = String((lookup.data?.[0] as any)?._id || '')
       }
       if (!docId) return
       await db.collection(COLLECT_COLLECTION).doc(docId).remove()
@@ -206,10 +215,10 @@ Component({
       const db = wx.cloud.database()
       try {
         const res = await db.collection(COLLECT_COLLECTION).where({ jobId }).limit(1).get()
-        const doc = res.data?.[0]
+        const doc = res.data?.[0] as any
         const exists = !!doc
         const updates: Partial<typeof this.data> = {
-          collectDocId: doc?._id || '',
+          collectDocId: String(doc?._id || ''),
         }
         if (!silent) updates.collected = exists
         this.setData(updates)

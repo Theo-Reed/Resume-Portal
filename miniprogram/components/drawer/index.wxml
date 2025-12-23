@@ -2,17 +2,32 @@
 <view wx:if="{{show}}" class="drawer-mask" bindtap="onClose"></view>
 <view class="drawer-menu {{show ? 'drawer-open' : ''}}">
   <view class="drawer-header">
-    <block wx:if="{{isLoggedIn}}">
-      <image class="avatar" src="{{userInfo.avatarUrl}}" />
-    </block>
-    <block wx:else>
-      <view class="avatar-placeholder" bindtap="handleLogin"></view>
-    </block>
-    <text
-      class="nickname {{isLoggedIn ? '' : 'nickname-login'}}"
-      bindtap="onNicknameTap"
-    >{{isLoggedIn ? userInfo.nickName : '请登录'}}</text>
+    <view class="user-row">
+      <block wx:if="{{userInfo}}">
+        <image class="avatar" src="{{userInfo.avatarUrl}}" />
+      </block>
+      <block wx:else>
+        <view class="avatar-placeholder"></view>
+      </block>
+
+      <view class="user-text">
+        <block wx:if="{{!isLoggedIn}}">
+          <button
+            class="phone-auth-name-btn"
+            open-type="getPhoneNumber"
+            bindgetrealtimephonenumber="onGetRealtimePhoneNumber"
+            bindgetphonenumber="onGetPhoneNumber"
+          >
+            <text class="nickname nickname-login">用户未登录</text>
+          </button>
+        </block>
+        <block wx:else>
+          <text class="nickname">{{userInfo ? userInfo.nickName : '已登录'}}</text>
+        </block>
+      </view>
+    </view>
   </view>
+
   <view class="drawer-list">
     <view class="drawer-item" bindtap="onOpenFavorites">
       <text class="drawer-item-text">我收藏的岗位</text>

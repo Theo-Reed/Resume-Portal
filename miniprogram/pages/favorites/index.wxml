@@ -1,7 +1,7 @@
 <!--miniprogram/pages/favorites/index.wxml-->
 <view class="favorites-page">
   <view class="favorites-header">
-    <view class="back-button" bindtap="goBack">←</view>
+    <view class="back-button" bindtap="goBack"></view>
     <text class="favorites-title">我收藏的岗位</text>
   </view>
 
@@ -25,4 +25,3 @@
     </block>
   </scroll-view>
 </view>
-

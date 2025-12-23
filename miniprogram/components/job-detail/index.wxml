@@ -4,9 +4,6 @@
   <block wx:if="{{job}}">
     <view class="detail-header">
       <view class="back-button" bindtap="onClose"></view>
-      <view class="collect-button" bindtap="toggleCollect">
-        <text class="collect-icon {{collected ? 'collect-icon-active' : ''}}">{{collected ? '★' : '☆'}}</text>
-      </view>
     </view>
   </block>
   <scroll-view class="detail-content" scroll-y="{{true}}">
@@ -15,7 +12,12 @@
     </block>
     <block wx:elif="{{job}}">
       <view class="detail-body">
-        <text class="detail-title">{{job.title}}</text>
+        <view class="detail-title-row">
+          <text class="detail-title">{{job.title}}</text>
+          <view class="collect-button" bindtap="toggleCollect">
+            <text class="collect-icon {{collected ? 'collect-icon-active' : ''}}">{{collected ? '★' : '☆'}}</text>
+          </view>
+        </view>
         <view class="detail-meta" wx:if="{{job.team || job.salary}}">
           <text wx:if="{{job.team && job.team !== '未知公司'}}" class="detail-meta-item">{{job.team}}</text>
           <text wx:if="{{(job.team && job.team !== '未知公司') && job.salary}}" class="detail-meta-dot">·</text>

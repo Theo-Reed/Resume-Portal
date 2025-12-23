@@ -1,7 +1,7 @@
 // miniprogram/pages/detail/index.ts
 Page({
   data: {
-    job: null,
+    job: null as any,
   },
 
   onLoad(options) {
@@ -20,4 +20,3 @@ Page({
     }
   },
 })
-

@@ -26,27 +26,36 @@
 }
 
 .drawer-header {
-  display: flex;
-  align-items: center;
   padding: 40rpx;
   border-bottom: 1rpx solid #eee;
 }
 
-.avatar, .avatar-placeholder {
-  width: 100rpx;
+.user-row {
+  display: flex;
+  align-items: center;
   height: 100rpx;
-  border-radius: 50%;
-  margin-right: 24rpx;
 }
 
-.avatar-placeholder {
-  background-color: #e0e0e0; /* Gray placeholder color */
+.user-text {
+  flex: 1;
+  height: 100rpx;
+  display: flex;
+  align-items: center;
+}
+
+.nickname-box {
+  height: 100rpx;
+  display: flex;
+  align-items: center;
 }
 
 .nickname {
   font-size: 32rpx;
   font-weight: bold;
   color: #333;
+  line-height: 1.2;
+  margin: 0;
+  padding: 0;
 }
 
 .nickname-login {
@@ -67,6 +76,21 @@
   line-height: 1;
 }
 
+.phone-auth-name-btn {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100rpx;
+}
+
+.phone-auth-name-btn::after {
+  border: none;
+}
+
 .drawer-list {
   padding: 24rpx 0;
 }
@@ -79,4 +103,29 @@
 .drawer-item-text {
   font-size: 30rpx;
   color: #333;
+}
+
+.phone-auth-btn {
+  display: none;
+}
+
+.auth-overlay {
+  display: none;
+}
+
+/* cleanup old overlay styles */
+.user-row-wrapper { display: none; }
+.user-row-overlay-btn { display: none; }
+
+.avatar,
+.avatar-placeholder {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  margin-right: 18rpx;
+  overflow: hidden;
+}
+
+.avatar-placeholder {
+  background-color: #e0e0e0;
 }
