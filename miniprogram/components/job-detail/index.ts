@@ -180,16 +180,14 @@ Component({
     },
 
     async addCollectRecord(job: JobDetailItem) {
+      const app = getApp<IAppOption>() as any
+      const openid = app?.globalData?.user?.openid
+      if (!openid) throw new Error('missing openid')
+
       const db = wx.cloud.database()
       const recordData = {
+        openid,
         jobId: job._id,
-        title: job.title,
-        team: job.team,
-        salary: job.salary,
-        summary: job.summary,
-        description: job.description,
-        source_name: job.source_name,
-        source_url: job.source_url,
         type: job.type,
         createdAt: job.createdAt,
       }
@@ -199,10 +197,14 @@ Component({
     },
 
     async removeCollectRecord(jobId: string) {
+      const app = getApp<IAppOption>() as any
+      const openid = app?.globalData?.user?.openid
+      if (!openid) return
+
       const db = wx.cloud.database()
       let docId = this.data.collectDocId
       if (!docId) {
-        const lookup = await db.collection(COLLECT_COLLECTION).where({ jobId }).limit(1).get()
+        const lookup = await db.collection(COLLECT_COLLECTION).where({ openid, jobId }).limit(1).get()
         docId = String((lookup.data?.[0] as any)?._id || '')
       }
       if (!docId) return
@@ -212,9 +214,17 @@ Component({
 
     async checkCollectState(jobId: string, silent = false) {
       if (!jobId) return false
+
+      const app = getApp<IAppOption>() as any
+      const openid = app?.globalData?.user?.openid
+      if (!openid) {
+        if (!silent) this.setData({ collected: false, collectDocId: '' })
+        return false
+      }
+
       const db = wx.cloud.database()
       try {
-        const res = await db.collection(COLLECT_COLLECTION).where({ jobId }).limit(1).get()
+        const res = await db.collection(COLLECT_COLLECTION).where({ openid, jobId }).limit(1).get()
         const doc = res.data?.[0] as any
         const exists = !!doc
         const updates: Partial<typeof this.data> = {

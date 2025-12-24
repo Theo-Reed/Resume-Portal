@@ -81,10 +81,12 @@
   padding: 0;
   margin: 0;
   border: none;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: flex-start;
-  height: 100rpx;
+  height: auto;
+  width: auto;
+  line-height: 1.2;
 }
 
 .phone-auth-name-btn::after {

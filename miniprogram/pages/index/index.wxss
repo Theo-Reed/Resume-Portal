@@ -72,6 +72,12 @@ page::-webkit-scrollbar {
   bottom: 0;
   z-index: 999; /* 低于弹窗，但高于其他内容 */
   background-color: transparent; /* 透明背景，不阻挡视线，但可以接收点击事件 */
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.filter-mask-open {
+  opacity: 1;
 }
 
 .filter-dropdown {
@@ -313,6 +319,12 @@ page::-webkit-scrollbar {
   bottom: 0;
   background: rgba(0, 0, 0, 0.35);
   z-index: 2499;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.favorites-sheet-mask-open {
+  opacity: 1;
 }
 
 .favorites-sheet {

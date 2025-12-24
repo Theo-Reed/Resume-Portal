@@ -30,13 +30,14 @@
 
   <!-- Collected jobs bottom sheet -->
   <block wx:if="{{showFavoritesSheet}}">
-    <view class="favorites-sheet-mask" bindtap="closeFavoritesSheet"></view>
-    <view class="favorites-sheet favorites-sheet-open">
+    <view class="favorites-sheet-mask {{favoritesSheetOpen ? 'favorites-sheet-mask-open' : ''}}" bindtap="closeFavoritesSheet"></view>
+    <view class="favorites-sheet {{favoritesSheetOpen ? 'favorites-sheet-open' : ''}}">
       <view class="favorites-sheet-handle"></view>
       <scroll-view
         class="favorites-sheet-list"
         scroll-y="true"
-        show-scrollbar="false"
+        enhanced="true"
+        show-scrollbar="{{false}}"
       >
         <view class="job-list-content">
           <block wx:if="{{favoritesLoading}}">
@@ -58,7 +59,9 @@
                     <text wx:if="{{(item.team && item.team !== '未知公司') && item.salary}}" class="job-meta-dot">·</text>
                     <text wx:if="{{item.salary}}" class="job-meta-item">{{item.salary}}</text>
                   </view>
-                  <scroll-view class="job-tags" scroll-x="true" show-scrollbar="false">
+                  <scroll-view 
+                  enhanced="true"
+                  class="job-tags" scroll-x="true"     show-scrollbar="{{false}}">
                     <view class="job-tag" wx:for="{{item.displayTags || item.tags}}" wx:key="*this">
                       <text class="job-tag-text">{{item}}</text>
                     </view>
@@ -101,6 +104,7 @@
     bindscroll="onScroll"
     bindtouchstart="onTouchStart"
     bindtouchend="onTouchEnd"
+    enhanced="true"
     show-scrollbar="{{false}}"
     enable-back-to-top="{{false}}"
     enable-passive="{{true}}"
@@ -118,7 +122,11 @@
               <text wx:if="{{(item.team && item.team !== '未知公司') && item.salary}}" class="job-meta-dot">·</text>
               <text wx:if="{{item.salary}}" class="job-meta-item">{{item.salary}}</text>
             </view>
-            <scroll-view class="job-tags" scroll-x="{{true}}" show-scrollbar="{{false}}">
+            <scroll-view     
+            enhanced="true" 
+            class="job-tags" 
+            scroll-x="{{true}}" 
+            show-scrollbar="{{false}}">
               <view class="job-tag" wx:for="{{item.displayTags || item.tags}}" wx:key="*this">
                 <text class="job-tag-text">{{item}}</text>
               </view>

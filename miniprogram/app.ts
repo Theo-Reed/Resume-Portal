@@ -25,8 +25,11 @@ App<IAppOption>({
       data: {},
     })
 
-    const user = res?.result?.user || null
-    ;(this as any).globalData.user = user
-    return user
+    const openid = res?.result?.openid
+    const user = (res?.result?.user || null) as any
+
+    const merged = user ? { ...user, openid } : (openid ? { openid } : null)
+    ;(this as any).globalData.user = merged
+    return merged
   },
 })

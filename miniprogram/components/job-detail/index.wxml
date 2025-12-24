@@ -3,10 +3,17 @@
 <view class="detail-drawer {{show ? 'detail-drawer-open' : ''}}">
   <block wx:if="{{job}}">
     <view class="detail-header">
-      <view class="back-button" bindtap="onClose"></view>
+      <view class="back-hit" bindtap="onClose">
+        <view class="back-button"></view>
+      </view>
     </view>
   </block>
-  <scroll-view class="detail-content" scroll-y="{{true}}">
+  <scroll-view     
+  class="detail-content" 
+  scroll-y="{{true}}"
+  enhanced="true" 
+  show-scrollbar="{{false}}"
+  >
     <block wx:if="{{loading}}">
       <view class="loading">加载中...</view>
     </block>

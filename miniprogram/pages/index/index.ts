@@ -15,28 +15,16 @@ type JobItem = {
   displayTags?: string[]
 }
 
-type CollectedJobItem = {
-  _id: string
+type ResolvedFavoriteJob = JobItem & {
   jobId: string
-  createdAt: string
-  sourceCollection?: string
-  source_name?: string
-  source_url?: string
-  salary?: string
-  summary?: string
-  description?: string
-  type?: string
-  team?: string
-  title?: string
-  tags?: string[]
-  displayTags?: string[]
+  sourceCollection: string
 }
 
-// Map filter names to collection names
-const collectionMap: { [key: string]: string } = {
-  '国内': 'domestic_remote_jobs',
-  '国外': 'abroad_remote_jobs',
-  'web3': 'web3_remote_jobs',
+// Single mapping used for both: currentFilter -> collection, and collected_jobs.type -> collection
+const typeCollectionMap: Record<string, string> = {
+  国内: 'domestic_remote_jobs',
+  国外: 'abroad_remote_jobs',
+  web3: 'web3_remote_jobs',
 }
 
 Component({
@@ -66,8 +54,9 @@ Component({
     isSearching: false, // Flag to differentiate between paginated loading and search
 
     showFavoritesSheet: false,
+    favoritesSheetOpen: false,
     favoritesLoading: false,
-    favoritesJobs: [] as CollectedJobItem[],
+    favoritesJobs: [] as ResolvedFavoriteJob[],
   },
   lifetimes: {
     attached() {
@@ -124,7 +113,7 @@ Component({
       try {
         const db = wx.cloud.database()
         const _ = db.command
-        const collectionName = collectionMap[this.data.currentFilter] || 'domestic_remote_jobs'
+        const collectionName = typeCollectionMap[this.data.currentFilter] || 'domestic_remote_jobs'
 
         // Create a regex for case-insensitive search
         const searchRegex = db.RegExp({ regexp: keyword, options: 'i' })
@@ -211,7 +200,7 @@ Component({
       try {
         const db = wx.cloud.database()
         const { pageSize, currentFilter } = this.data
-        const collectionName = collectionMap[currentFilter] || 'domestic_remote_jobs'
+        const collectionName = typeCollectionMap[currentFilter] || 'domestic_remote_jobs'
         const skip = reset ? 0 : this.data.jobs.length
 
         const res = await db
@@ -326,20 +315,31 @@ Component({
     },
 
     async openFavoritesSheet() {
-      this.setData({ showFavoritesSheet: true })
+      // Mount first, then open on next tick to trigger CSS transition.
+      this.setData({ showFavoritesSheet: true, favoritesSheetOpen: false })
+
+      setTimeout(() => {
+        this.setData({ favoritesSheetOpen: true })
+      }, 30)
+
       await this.loadFavoritesJobs()
     },
 
     closeFavoritesSheet() {
-      this.setData({ showFavoritesSheet: false })
+      // Start closing animation.
+      this.setData({ favoritesSheetOpen: false })
+
+      setTimeout(() => {
+        this.setData({ showFavoritesSheet: false })
+      }, 260) // should match CSS transition duration
     },
 
     async loadFavoritesJobs() {
-      // product login check (in-memory user)
       const app = getApp<IAppOption>() as any
       const user = app?.globalData?.user
+      const openid = user?.openid
       const isLoggedIn = !!(user && (user.isAuthed || user.phone))
-      if (!isLoggedIn) {
+      if (!isLoggedIn || !openid) {
         this.setData({ favoritesJobs: [] })
         wx.showToast({ title: '请先授权手机号', icon: 'none' })
         return
@@ -348,10 +348,79 @@ Component({
       this.setData({ favoritesLoading: true })
       try {
         const db = wx.cloud.database()
-        const res = await db.collection('collected_jobs').orderBy('createdAt', 'desc').limit(100).get()
 
-        const mapped = this.mapJobs(res.data || []) as any as CollectedJobItem[]
-        this.setData({ favoritesJobs: mapped })
+        // 1) read collected rows for the user
+        const collectedRes = await db
+          .collection('collected_jobs')
+          .where({ openid })
+          .orderBy('createdAt', 'desc')
+          .limit(100)
+          .get()
+
+        const collected = (collectedRes.data || []) as any[]
+        if (collected.length === 0) {
+          this.setData({ favoritesJobs: [] })
+          return
+        }
+
+        // 2) group ids by type
+        const groups = new Map<string, string[]>()
+        for (const row of collected) {
+          const t = row?.type
+          const id = row?.jobId
+          if (!t || !id) continue
+          const list = groups.get(t) || []
+          list.push(id)
+          groups.set(t, list)
+        }
+
+        // 3) fetch jobs in parallel per collection
+        const jobByKey = new Map<string, any>()
+        const fetchGroup = async (type: string, ids: string[]) => {
+          const collectionName = typeCollectionMap[type]
+          if (!collectionName) return
+
+          const results = await Promise.all(
+            ids.map(async (id) => {
+              try {
+                const res = await db.collection(collectionName).doc(id).get()
+                return { id, collectionName, data: res.data }
+              } catch {
+                return null
+              }
+            })
+          )
+
+          for (const r of results) {
+            if (!r?.data) continue
+            jobByKey.set(`${type}:${r.id}`, { ...r.data, _id: r.id, sourceCollection: r.collectionName })
+          }
+        }
+
+        await Promise.all(
+          Array.from(groups.entries()).map(([type, ids]) => fetchGroup(type, ids))
+        )
+
+        // 4) merge back (keep collected order)
+        const merged: ResolvedFavoriteJob[] = []
+        for (const row of collected) {
+          const type = row?.type
+          const jobId = row?.jobId
+          if (!type || !jobId) continue
+
+          const key = `${type}:${jobId}`
+          const job = jobByKey.get(key)
+          if (!job) continue
+
+          const normalized = this.mapJobs([job as any])[0] as any
+          merged.push({
+            ...normalized,
+            jobId,
+            sourceCollection: job.sourceCollection,
+          })
+        }
+
+        this.setData({ favoritesJobs: merged })
       } catch (err) {
         console.error('[index] loadFavoritesJobs failed', err)
         wx.showToast({ title: '加载收藏失败', icon: 'none' })
@@ -361,18 +430,35 @@ Component({
     },
 
     onFavoriteJobTap(e: WechatMiniprogram.TouchEvent) {
-      const id = e.currentTarget.dataset._id as string
+      const jobId = e.currentTarget.dataset._id as string
       const collection = (e.currentTarget.dataset.collection as string) || ''
-      if (!id || !collection) {
+      if (!jobId || !collection) {
         wx.showToast({ title: '无法打开详情', icon: 'none' })
         return
       }
 
       this.setData({
-        selectedJobId: id,
+        selectedJobId: jobId,
         selectedCollection: collection,
         showJobDetail: true,
       })
+    },
+
+    onJobTap(e: WechatMiniprogram.TouchEvent) {
+      const _id = e.currentTarget.dataset._id as string
+      const collectionName = typeCollectionMap[this.data.currentFilter] || 'domestic_remote_jobs'
+
+      if (!_id) return
+
+      this.setData({
+        selectedJobId: _id,
+        selectedCollection: collectionName,
+        showJobDetail: true,
+      })
+    },
+
+    closeJobDetail() {
+      this.setData({ showJobDetail: false })
     },
   },
 })
