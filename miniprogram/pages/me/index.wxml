@@ -1,7 +1,34 @@
 <view class="page">
-  <view class="content">
-    <text class="title">我</text>
-    <text class="desc">个人中心（敬请期待）</text>
+  <view class="me-card">
+    <view class="user-row">
+      <block wx:if="{{userInfo}}">
+        <image class="avatar" src="{{userInfo.avatarUrl}}" />
+      </block>
+      <block wx:else>
+        <view class="avatar-placeholder"></view>
+      </block>
+
+      <view class="user-text">
+        <block wx:if="{{!isLoggedIn}}">
+          <button
+            class="phone-auth-name-btn"
+            open-type="getPhoneNumber"
+            bindgetrealtimephonenumber="onGetRealtimePhoneNumber"
+            bindgetphonenumber="onGetPhoneNumber"
+          >
+            <text class="nickname nickname-login">用户未登录</text>
+          </button>
+        </block>
+        <block wx:else>
+          <text class="nickname">{{userInfo ? userInfo.nickName : '已登录'}}</text>
+        </block>
+      </view>
+    </view>
+  </view>
+
+  <view class="me-list">
+    <view class="me-item" bindtap="onOpenFavorites">
+      <text class="me-item-text">我收藏的岗位</text>
+    </view>
   </view>
 </view>
-

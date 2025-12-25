@@ -21,3 +21,86 @@
   color: #6b7280;
 }
 
+.me-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  box-shadow: 0 8rpx 20rpx rgba(15, 23, 42, 0.04);
+}
+
+.user-row {
+  display: flex;
+  align-items: center;
+}
+
+.avatar,
+.avatar-placeholder {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  margin-right: 18rpx;
+  overflow: hidden;
+}
+
+.avatar-placeholder {
+  background-color: #e0e0e0;
+}
+
+.user-text {
+  flex: 1;
+  height: 100rpx;
+  display: flex;
+  align-items: center;
+}
+
+.nickname {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  line-height: 1.2;
+  margin: 0;
+  padding: 0;
+}
+
+.nickname-login {
+  color: #1d4ed8;
+}
+
+.phone-auth-name-btn {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: auto;
+  width: auto;
+  line-height: 1.2;
+}
+
+.phone-auth-name-btn::after {
+  border: none;
+}
+
+.me-list {
+  margin-top: 24rpx;
+  background: #ffffff;
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 20rpx rgba(15, 23, 42, 0.04);
+}
+
+.me-item {
+  padding: 28rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.me-item:last-child {
+  border-bottom: none;
+}
+
+.me-item-text {
+  font-size: 30rpx;
+  color: #333;
+}

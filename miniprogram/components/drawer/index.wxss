@@ -12,17 +12,18 @@
 .drawer-menu {
   position: fixed;
   top: 0;
-  left: -80%; /* Start off-screen */
+  right: -80%; /* Start off-screen on the right */
+  left: auto;
   width: 80%;
   height: 100%;
   background-color: #ffffff;
   z-index: 2000;
-  transition: left 0.3s ease;
-  box-shadow: 2rpx 0 10rpx rgba(0, 0, 0, 0.1);
+  transition: right 0.3s ease;
+  box-shadow: -2rpx 0 10rpx rgba(0, 0, 0, 0.1);
 }
 
 .drawer-open {
-  left: 0; /* Slide in */
+  right: 0; /* Slide in */
 }
 
 .drawer-header {
