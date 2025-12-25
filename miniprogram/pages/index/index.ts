@@ -63,11 +63,6 @@ Component({
 
     isSearching: false, // Flag to differentiate between paginated loading and search
 
-    showFavoritesSheet: false,
-    favoritesSheetOpen: false,
-    favoritesLoading: false,
-    favoritesJobs: [] as ResolvedFavoriteJob[],
-
     drawerFilter: DEFAULT_DRAWER_FILTER as DrawerFilterValue,
   },
   lifetimes: {
@@ -326,148 +321,6 @@ Component({
       this.setData({ showDrawer: !this.data.showDrawer })
     },
 
-    async openFavoritesSheet() {
-      // Mount first, then open on next tick to trigger CSS transition.
-      this.setData({ showFavoritesSheet: true, favoritesSheetOpen: false })
-
-      setTimeout(() => {
-        this.setData({ favoritesSheetOpen: true })
-      }, 30)
-
-      await this.loadFavoritesJobs()
-    },
-
-    closeFavoritesSheet() {
-      // Start closing animation.
-      this.setData({ favoritesSheetOpen: false })
-
-      setTimeout(() => {
-        this.setData({ showFavoritesSheet: false })
-      }, 260) // should match CSS transition duration
-    },
-
-    async loadFavoritesJobs() {
-      const app = getApp<IAppOption>() as any
-      const user = app?.globalData?.user
-      const openid = user?.openid
-      const isLoggedIn = !!(user && (user.isAuthed || user.phone))
-      if (!isLoggedIn || !openid) {
-        this.setData({ favoritesJobs: [] })
-        wx.showToast({ title: '请先授权手机号', icon: 'none' })
-        return
-      }
-
-      this.setData({ favoritesLoading: true })
-      try {
-        const db = wx.cloud.database()
-
-        // 1) read collected rows for the user
-        const collectedRes = await db
-          .collection('collected_jobs')
-          .where({ openid })
-          .orderBy('createdAt', 'desc')
-          .limit(100)
-          .get()
-
-        const collected = (collectedRes.data || []) as any[]
-        if (collected.length === 0) {
-          this.setData({ favoritesJobs: [] })
-          return
-        }
-
-        // 2) group ids by type
-        const groups = new Map<string, string[]>()
-        for (const row of collected) {
-          const t = row?.type
-          const id = row?.jobId
-          if (!t || !id) continue
-          const list = groups.get(t) || []
-          list.push(id)
-          groups.set(t, list)
-        }
-
-        // 3) fetch jobs in parallel per collection
-        const jobByKey = new Map<string, any>()
-        const fetchGroup = async (type: string, ids: string[]) => {
-          const collectionName = typeCollectionMap[type]
-          if (!collectionName) return
-
-          const results = await Promise.all(
-            ids.map(async (id) => {
-              try {
-                const res = await db.collection(collectionName).doc(id).get()
-                return { id, collectionName, data: res.data }
-              } catch {
-                return null
-              }
-            })
-          )
-
-          for (const r of results) {
-            if (!r?.data) continue
-            jobByKey.set(`${type}:${r.id}`, { ...r.data, _id: r.id, sourceCollection: r.collectionName })
-          }
-        }
-
-        await Promise.all(
-          Array.from(groups.entries()).map(([type, ids]) => fetchGroup(type, ids))
-        )
-
-        // 4) merge back (keep collected order)
-        const merged: ResolvedFavoriteJob[] = []
-        for (const row of collected) {
-          const type = row?.type
-          const jobId = row?.jobId
-          if (!type || !jobId) continue
-
-          const key = `${type}:${jobId}`
-          const job = jobByKey.get(key)
-          if (!job) continue
-
-          const normalized = this.mapJobs([job as any])[0] as any
-          merged.push({
-            ...normalized,
-            jobId,
-            sourceCollection: job.sourceCollection,
-          })
-        }
-
-        this.setData({ favoritesJobs: merged })
-      } catch (err) {
-        console.error('[index] loadFavoritesJobs failed', err)
-        wx.showToast({ title: '加载收藏失败', icon: 'none' })
-      } finally {
-        this.setData({ favoritesLoading: false })
-      }
-    },
-
-    onFavoriteJobTap(e: WechatMiniprogram.TouchEvent) {
-      const jobId = e.currentTarget.dataset._id as string
-      const collection = (e.currentTarget.dataset.collection as string) || ''
-      if (!jobId || !collection) {
-        wx.showToast({ title: '无法打开详情', icon: 'none' })
-        return
-      }
-
-      this.setData({
-        selectedJobId: jobId,
-        selectedCollection: collection,
-        showJobDetail: true,
-      })
-    },
-
-    onJobTap(e: WechatMiniprogram.TouchEvent) {
-      const _id = e.currentTarget.dataset._id as string
-      const collectionName = typeCollectionMap[this.data.currentFilter] || 'domestic_remote_jobs'
-
-      if (!_id) return
-
-      this.setData({
-        selectedJobId: _id,
-        selectedCollection: collectionName,
-        showJobDetail: true,
-      })
-    },
 
     closeJobDetail() {
       this.setData({ showJobDetail: false })
@@ -520,6 +373,19 @@ Component({
 
       this.setData({ filteredJobs: list, scrollTop: 0 }, () => {
         this.checkScrollability()
+      })
+    },
+
+    onJobTap(e: WechatMiniprogram.TouchEvent) {
+      const _id = e.currentTarget.dataset._id as string
+      const collectionName = typeCollectionMap[this.data.currentFilter] || 'domestic_remote_jobs'
+
+      if (!_id) return
+
+      this.setData({
+        selectedJobId: _id,
+        selectedCollection: collectionName,
+        showJobDetail: true,
       })
     },
   },
