@@ -29,6 +29,11 @@ const dict = {
   },
   community: {
     title: { Chinese: '社区', English: 'Community' },
+    activitiesTitle: { Chinese: '社区活动', English: 'Community Activities' },
+    successStoriesTitle: { Chinese: '成功森林', English: 'Success Stories' },
+    jobHuntingTitle: { Chinese: '求职利剑', English: 'Hunting Tools' },
+    statusActive: { Chinese: '报名中', English: 'Open' },
+    statusEnded: { Chinese: '已结束', English: 'Ended' },
     desc: { Chinese: '敬请期待', English: 'Coming soon' },
   },
   jobs: {
@@ -68,6 +73,11 @@ export type I18nKey =
   | 'me.loadFavoritesFailed'
   | 'me.emptyFavorites'
   | 'community.title'
+  | 'community.activitiesTitle'
+  | 'community.successStoriesTitle'
+  | 'community.jobHuntingTitle'
+  | 'community.statusActive'
+  | 'community.statusEnded'
   | 'community.desc'
   | 'jobs.searchPlaceholder'
   | 'jobs.filterLabel'
