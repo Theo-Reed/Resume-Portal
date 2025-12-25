@@ -115,10 +115,12 @@ page::-webkit-scrollbar {
   background-color: transparent;
   opacity: 0;
   transition: opacity 0.25s ease;
+  pointer-events: none;
 }
 
 .filter-mask-open {
   opacity: 1;
+  pointer-events: auto;
 }
 
 /* dropdown list */
@@ -278,6 +280,18 @@ page::-webkit-scrollbar {
   flex: 1;
   height: 0;
   padding: 0 32rpx 24rpx;
+  box-sizing: border-box;
+}
+
+.job-list-wrapper {
+  flex: 1;
+  min-height: 0;
+  /* prevent wrapper itself from being scrollable */
+  overflow: hidden;
+}
+
+/* Also add bottom padding so the tabbar doesn't cover the last items */
+.job-list-wrapper {
   box-sizing: border-box;
 }
 

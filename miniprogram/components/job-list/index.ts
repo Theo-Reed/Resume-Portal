@@ -36,14 +36,6 @@ Component({
       type: Boolean,
       value: true,
     },
-    enhanced: {
-      type: Boolean,
-      value: true,
-    },
-    showScrollbar: {
-      type: Boolean,
-      value: false,
-    },
     enableBackToTop: {
       type: Boolean,
       value: false,
@@ -71,6 +63,11 @@ Component({
     detailCollectionFallback: {
       type: String,
       value: '',
+    },
+
+    bottomSpace: {
+      type: Number,
+      value: 0,
     },
   },
 

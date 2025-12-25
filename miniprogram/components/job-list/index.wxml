@@ -9,8 +9,8 @@
   bindscroll="onScroll"
   bindtouchstart="onTouchStart"
   bindtouchend="onTouchEnd"
-  enhanced="{{enhanced}}"
-  show-scrollbar="{{showScrollbar}}"
+  enhanced="true"
+  show-scrollbar="{{false}}"
   enable-back-to-top="{{enableBackToTop}}"
   enable-passive="{{enablePassive}}"
 >
@@ -35,6 +35,8 @@
         </view>
       </view>
     </block>
+
+    <view wx:if="{{bottomSpace && bottomSpace > 0}}" style="height: {{bottomSpace}}rpx;"></view>
 
     <view wx:if="{{loading}}" class="list-loading">加载中...</view>
 

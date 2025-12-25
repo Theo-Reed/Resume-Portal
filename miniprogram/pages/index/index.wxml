@@ -62,30 +62,32 @@
     </block>
   </view>
 
-  <job-list
-    jobs="{{filteredJobs}}"
-    loading="{{loading}}"
-    show-no-more="{{!hasMore && filteredJobs.length > 0}}"
-    no-more-visible="{{showNoMore}}"
+  <view class="job-list-wrapper">
+    <job-list
+      jobs="{{filteredJobs}}"
+      loading="{{loading}}"
+      show-no-more="{{!hasMore && filteredJobs.length > 0}}"
+      no-more-visible="{{showNoMore}}"
 
-    scroll-y="{{isScrollable}}"
-    scroll-top="{{scrollTop}}"
-    lower-threshold="{{lowerThreshold}}"
-    scroll-with-animation="{{true}}"
-    enhanced="{{true}}"
-    show-scrollbar="{{false}}"
-    enable-back-to-top="{{false}}"
-    enable-passive="{{true}}"
+      scroll-y="{{true}}"
+      scroll-top="{{scrollTop}}"
+      lower-threshold="{{lowerThreshold}}"
+      scroll-with-animation="{{true}}"
+      enhanced="{{true}}"
+      show-scrollbar="{{false}}"
+      enable-back-to-top="{{false}}"
+      enable-passive="{{true}}"
 
-    enable-detail="{{true}}"
-    detail-selector="#jobDetail"
-    detail-collection-fallback="{{selectedCollection}}"
+      enable-detail="{{true}}"
+      detail-selector="#jobDetail"
+      detail-collection-fallback="{{selectedCollection}}"
 
-    bind:itemtap="onJobTap"
-    bind:scrolltolower="onScrollLower"
-    bind:scroll="onScroll"
-    bind:touchstart="onTouchStart"
-    bind:touchend="onTouchEnd"
-  />
+      bind:itemtap="onJobTap"
+      bind:scrolltolower="onScrollLower"
+      bind:scroll="onScroll"
+      bind:touchstart="onTouchStart"
+      bind:touchend="onTouchEnd"
+    />
+  </view>
 
 </view>

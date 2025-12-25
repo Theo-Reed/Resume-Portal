@@ -25,13 +25,12 @@ Component({
     loading: false,
     hasMore: true,
     lowerThreshold: 100,
-    scrollTop: null as number | null,
+    scrollTop: 0,
     maxScrollTop: 0,
     showNoMore: false,
     isDragging: false,
     scrollViewHeight: 0, // scroll-view 的可视高度（px）
     lastLoadTime: 0, // 上次分页加载的时间戳，用于防抖
-    isScrollable: true, // Controls if the scroll-view can scroll
     showDrawer: false, // Controls the visibility of the drawer
     showJobDetail: false, // Controls the visibility of the job detail drawer
     selectedJobId: '', // The ID of the selected job
@@ -116,7 +115,7 @@ Component({
           hasMore: false, // No pagination for search results
           scrollTop: 0,
         }, () => {
-          this.checkScrollability()
+          // this.checkScrollability()
         })
       } catch (err) {
         console.error('[jobs] Collection search error', err)
@@ -172,7 +171,7 @@ Component({
       })
 
       this.setData({ filteredJobs: filtered }, () => {
-        this.checkScrollability()
+        // this.checkScrollability()
       })
     },
 
@@ -201,7 +200,7 @@ Component({
           filteredJobs: allJobs,
           hasMore: newJobs.length === pageSize,
         }, () => {
-          this.checkScrollability()
+          // this.checkScrollability()
         })
       } catch (e) {
         console.error('[jobs] loadJobs error', e)
@@ -222,10 +221,6 @@ Component({
       this.loadJobs(false)
     },
 
-    onScrollLower() {
-      this.maybeLoadMore()
-    },
-
     onScroll(e: any) {
       const { scrollTop, scrollHeight } = e.detail
       const clientHeight = this.data.scrollViewHeight || e.detail.clientHeight || 0
@@ -236,7 +231,7 @@ Component({
         this.setData({ maxScrollTop: maxScroll })
       }
 
-      if (this.data.isScrollable && !this.data.hasMore && this.data.filteredJobs.length > 0 && maxScroll > 0) {
+      if (!this.data.hasMore && this.data.filteredJobs.length > 0 && maxScroll > 0) {
         const overScroll = scrollTop - maxScroll
         this.setData({ showNoMore: overScroll > 0 })
       }
@@ -248,24 +243,6 @@ Component({
 
     onTouchEnd() {
       this.setData({ isDragging: false })
-    },
-
-    checkScrollability() {
-      setTimeout(() => {
-        const query = wx.createSelectorQuery().in(this)
-        query.select('.job-list').boundingClientRect()
-        query.select('.job-list-content').boundingClientRect()
-        query.exec((res) => {
-          if (res && res[0] && res[1]) {
-            const containerHeight = res[0].height
-            const contentHeight = res[1].height
-            const isScrollable = contentHeight > containerHeight
-            if (isScrollable !== this.data.isScrollable) {
-              this.setData({ isScrollable })
-            }
-          }
-        })
-      }, 100)
     },
 
     toggleDrawer() {
@@ -323,7 +300,7 @@ Component({
       }
 
       this.setData({ filteredJobs: list, scrollTop: 0 }, () => {
-        this.checkScrollability()
+        // this.checkScrollability()
       })
     },
 
