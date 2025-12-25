@@ -26,9 +26,6 @@ Component({
     hasMore: true,
     lowerThreshold: 100,
     scrollTop: 0,
-    maxScrollTop: 0,
-    showNoMore: false,
-    isDragging: false,
     scrollViewHeight: 0, // scroll-view 的可视高度（px）
     lastLoadTime: 0, // 上次分页加载的时间戳，用于防抖
     showDrawer: false, // Controls the visibility of the drawer
@@ -222,19 +219,7 @@ Component({
     },
 
     onScroll(e: any) {
-      const { scrollTop, scrollHeight } = e.detail
-      const clientHeight = this.data.scrollViewHeight || e.detail.clientHeight || 0
-      if (clientHeight === 0) this.getScrollViewHeight()
-
-      const maxScroll = clientHeight > 0 ? Math.max(0, scrollHeight - clientHeight) : 0
-      if (maxScroll > 0 && Math.abs(maxScroll - this.data.maxScrollTop) > 1) {
-        this.setData({ maxScrollTop: maxScroll })
-      }
-
-      if (!this.data.hasMore && this.data.filteredJobs.length > 0 && maxScroll > 0) {
-        const overScroll = scrollTop - maxScroll
-        this.setData({ showNoMore: overScroll > 0 })
-      }
+      // no-op (no-more hint removed)
     },
 
     onTouchStart() {

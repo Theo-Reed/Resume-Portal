@@ -66,9 +66,6 @@
     <job-list
       jobs="{{filteredJobs}}"
       loading="{{loading}}"
-      show-no-more="{{!hasMore && filteredJobs.length > 0}}"
-      no-more-visible="{{showNoMore}}"
-
       scroll-y="{{true}}"
       scroll-top="{{scrollTop}}"
       lower-threshold="{{lowerThreshold}}"

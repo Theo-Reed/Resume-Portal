@@ -39,9 +39,5 @@
     <view wx:if="{{bottomSpace && bottomSpace > 0}}" style="height: {{bottomSpace}}rpx;"></view>
 
     <view wx:if="{{loading}}" class="list-loading">加载中...</view>
-
-    <view wx:if="{{showNoMore}}" class="no-more-container">
-      <view class="no-more-text {{noMoreVisible ? 'no-more-visible' : ''}}">没有更多了</view>
-    </view>
   </view>
 </scroll-view>

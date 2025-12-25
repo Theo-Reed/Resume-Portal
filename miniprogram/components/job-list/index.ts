@@ -67,7 +67,7 @@ Component({
 
     bottomSpace: {
       type: Number,
-      value: 0,
+      value: 2.5,
     },
   },
 

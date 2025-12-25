@@ -46,10 +46,7 @@
           class-name="favorites-job-list"
           jobs="{{favoritesJobs}}"
           loading="{{favoritesLoading}}"
-          show-no-more="{{false}}"
-          no-more-visible="{{false}}"
           scroll-y="{{true}}"
-          bottom-space="32"
           bind:itemtap="onFavoriteJobTap"
         />
       </view>
