@@ -3,6 +3,7 @@
 import type { JobItem } from '../../utils/job'
 import { mapJobs, typeCollectionMap } from '../../utils/job'
 import { normalizeLanguage, t } from '../../utils/i18n'
+import { attachLanguageAware } from '../../utils/languageAware'
 
 type FilterType = '国内' | '国外' | 'web3'
 
@@ -52,25 +53,21 @@ Component({
     attached() {
       this.setData({ searchKeyword: '' })
 
-      // live language updates
-      const app = getApp<IAppOption>() as any
-      const listener = () => {
-        this.syncLanguageFromApp()
-      }
-      ;(this as any)._langListener = listener
-      if (app?.onLanguageChange) app.onLanguageChange(listener)
-
-      this.syncLanguageFromApp()
+      // attach language-aware behavior (nav title + UI strings)
+      ;(this as any)._langDetach = attachLanguageAware(this, {
+        onLanguageRevive: () => {
+          this.syncLanguageFromApp()
+        },
+      })
 
       this.getSystemAndUIInfo()
       this.loadJobs(true)
     },
 
     detached() {
-      const app = getApp<IAppOption>() as any
-      const listener = (this as any)._langListener
-      if (listener && app?.offLanguageChange) app.offLanguageChange(listener)
-      ;(this as any)._langListener = null
+      const fn = (this as any)._langDetach
+      if (typeof fn === 'function') fn()
+      ;(this as any)._langDetach = null
     },
   },
   methods: {

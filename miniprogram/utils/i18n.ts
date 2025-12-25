@@ -44,6 +44,9 @@ const dict = {
     clear: { Chinese: '清除', English: 'Clear' },
     confirm: { Chinese: '确定', English: 'Apply' },
   },
+  app: {
+    navTitle: { Chinese: '🌍 远程工作机会', English: '🌍 Remote Jobs', AIChinese: '🌍 远程工作机会' },
+  },
 } as const
 
 export type I18nKey =
@@ -76,6 +79,7 @@ export type I18nKey =
   | 'drawer.clear'
   | 'drawer.confirm'
   | 'tab.jobs'
+  | 'app.navTitle'
 
 function getByPath(obj: any, path: string) {
   return path.split('.').reduce((acc, k) => (acc ? acc[k] : undefined), obj)

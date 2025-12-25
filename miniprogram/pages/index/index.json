@@ -1,4 +1,5 @@
 {
+  "navigationBarTitleText": "🌍 远程工作机会",
   "usingComponents": {
     "drawer": "../../components/drawer/index",
     "job-detail": "../../components/job-detail/index",

@@ -1,5 +1,6 @@
 // miniprogram/pages/community/index.ts
 
+import { attachLanguageAware } from '../../utils/languageAware'
 import { normalizeLanguage, t } from '../../utils/i18n'
 
 Page({
@@ -10,21 +11,39 @@ Page({
     },
   },
 
-  onShow() {
-    const app = getApp<IAppOption>() as any
-    const lang = normalizeLanguage(app?.globalData?.language)
+  onLoad: function () {
+    // subscribe once for this page instance
+    const self: any = this
+    self._langDetach = attachLanguageAware(this, {
+      onLanguageRevive: (lang) => {
+        this.setData({
+          ui: {
+            title: t('community.title', lang),
+            desc: t('community.desc', lang),
+          },
+        })
+      },
+    })
+  },
 
-    const ui = {
-      title: t('community.title', lang),
-      desc: t('community.desc', lang),
-    }
+  onUnload: function () {
+    const self: any = this
+    const fn = self._langDetach
+    if (typeof fn === 'function') fn()
+    self._langDetach = null
+  },
 
-    this.setData({ ui })
+  onShow: function () {
+    const app: any = getApp()
+    const lang = normalizeLanguage(app && app.globalData ? app.globalData.language : null)
 
-    try {
-      wx.setNavigationBarTitle({ title: t('community.title', lang) })
-    } catch {
-      // ignore
-    }
+    wx.setNavigationBarTitle({ title: t('app.navTitle', lang) })
+
+    this.setData({
+      ui: {
+        title: t('community.title', lang),
+        desc: t('community.desc', lang),
+      },
+    })
   },
 })

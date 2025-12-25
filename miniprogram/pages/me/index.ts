@@ -4,6 +4,7 @@ import { isAiChineseUnlocked } from '../../utils/subscription'
 import type { ResolvedSavedJob } from '../../utils/job'
 import { mapJobs, typeCollectionMap } from '../../utils/job'
 import { normalizeLanguage, t, type AppLanguage } from '../../utils/i18n'
+import { attachLanguageAware } from '../../utils/languageAware'
 
 Page({
   data: {
@@ -27,7 +28,23 @@ Page({
     ui: {} as Record<string, string>,
   },
 
+  onLoad() {
+    // subscribe once for this page instance
+    ;(this as any)._langDetach = attachLanguageAware(this, {
+      onLanguageRevive: () => {
+        this.syncLanguageFromApp()
+      },
+    })
+  },
+
+  onUnload() {
+    const fn = (this as any)._langDetach
+    if (typeof fn === 'function') fn()
+    ;(this as any)._langDetach = null
+  },
+
   onShow() {
+
     this.syncUserFromApp()
     this.syncLanguageFromApp()
   },
@@ -69,11 +86,7 @@ Page({
       ui,
     })
 
-    try {
-      wx.setNavigationBarTitle({ title: t('me.title', lang) })
-    } catch {
-      // ignore
-    }
+    // intentionally do not set navigationBarTitleText
   },
 
   async onGetRealtimePhoneNumber(e: any) {

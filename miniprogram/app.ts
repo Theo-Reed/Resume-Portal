@@ -43,13 +43,8 @@ App<IAppOption>({
       // ignore
     }
 
-    // Current page nav title (best-effort)
-    const pages = getCurrentPages()
-    const current = pages?.[pages.length - 1] as any
-    const route = current?.route || ''
     try {
-      if (route === 'pages/me/index') wx.setNavigationBarTitle({ title: t('me.title', lang) })
-      if (route === 'pages/community/index') wx.setNavigationBarTitle({ title: t('community.title', lang) })
+      wx.setNavigationBarTitle({ title: t('app.navTitle', lang) })
     } catch {
       // ignore
     }
