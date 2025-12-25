@@ -33,9 +33,9 @@ const dict = {
   jobs: {
     searchPlaceholder: { Chinese: '搜索职位名称或来源..', English: 'Search title or source..' },
     filterLabel: { Chinese: '筛选', English: 'Filter' },
-    regionDomestic: { Chinese: '国内', English: 'China' },
-    regionAbroad: { Chinese: '国外', English: 'Intl' },
-    regionWeb3: { Chinese: 'web3', English: 'Web3' },
+    regionDomestic: { Chinese: '国内 ', English: 'China' },
+    regionAbroad: { Chinese: '国外 ', English: 'Intl' },
+    regionWeb3: { Chinese: 'Web3', English: 'Web3' },
   },
   drawer: {
     salary: { Chinese: '薪资', English: 'Salary' },
