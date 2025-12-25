@@ -67,6 +67,9 @@
         <view class="language-item {{currentLanguage === 'English' ? 'language-item-active' : ''}}" data-value="English" bindtap="onLanguageSelect">
           <text class="language-item-text">{{ui.langEnglish}}</text>
         </view>
+        <view class="language-item {{currentLanguage === 'AIChinese' ? 'language-item-active' : ''}}" data-value="AIChinese" bindtap="onLanguageSelect">
+          <text class="language-item-text">{{ui.langAIChinese}}<text wx:if="{{!isAiChineseUnlocked}}"> 🔒</text></text>
+        </view>
       </view>
     </view>
   </block>

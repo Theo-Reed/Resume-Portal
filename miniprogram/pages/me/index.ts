@@ -1,5 +1,6 @@
 // miniprogram/pages/me/index.ts
 
+import { isAiChineseUnlocked } from '../../utils/subscription'
 import type { ResolvedSavedJob } from '../../utils/job'
 import { mapJobs, typeCollectionMap } from '../../utils/job'
 import { normalizeLanguage, t, type AppLanguage } from '../../utils/i18n'
@@ -22,6 +23,7 @@ Page({
     showLanguageSheet: false,
     languageSheetOpen: false,
     currentLanguage: '中文',
+    isAiChineseUnlocked: false,
     ui: {} as Record<string, string>,
   },
 
@@ -33,6 +35,7 @@ Page({
   syncUserFromApp() {
     const app = getApp<IAppOption>() as any
     const user = app?.globalData?.user
+
     const isLoggedIn = !!(user && (user.isAuthed || user.phone))
 
     const hasCloudProfile = user && typeof user.avatar === 'string' && typeof user.nickname === 'string' && user.avatar && user.nickname
@@ -40,7 +43,9 @@ Page({
       ? ({ avatarUrl: user.avatar, nickName: user.nickname } as WechatMiniprogram.UserInfo)
       : null
 
-    this.setData({ isLoggedIn, userInfo })
+    const isAiUnlocked = isAiChineseUnlocked(user)
+
+    this.setData({ isLoggedIn, userInfo, isAiChineseUnlocked: isAiUnlocked })
   },
 
   syncLanguageFromApp() {
@@ -56,10 +61,11 @@ Page({
       comingSoon: t('me.comingSoon', lang),
       langChinese: t('me.langChinese', lang),
       langEnglish: t('me.langEnglish', lang),
+      langAIChinese: t('me.langAIChinese', lang),
     }
 
     this.setData({
-      currentLanguage: lang === 'English' ? 'English' : '中文',
+      currentLanguage: lang === 'English' ? 'English' : lang === 'AIChinese' ? 'AIChinese' : '中文',
       ui,
     })
 
@@ -312,7 +318,29 @@ Page({
     const value = (e.currentTarget.dataset.value || '') as string
     if (!value) return
 
-    const lang: AppLanguage = value === 'English' ? 'English' : 'Chinese'
+    const lang: AppLanguage = value === 'English' ? 'English' : value === 'AIChinese' ? 'AIChinese' : 'Chinese'
+
+    const app = getApp<IAppOption>() as any
+    const user = app?.globalData?.user
+
+    // Gate AI Chinese behind subscription
+    if (lang === 'AIChinese' && !isAiChineseUnlocked(user)) {
+      this.closeLanguageSheetImmediate()
+
+      wx.showModal({
+        title: 'AI全中文 🔒',
+        content: '该功能需要付费解锁。',
+        confirmText: '去付费',
+        cancelText: '取消',
+        success: (res) => {
+          if (res.confirm) {
+            // TODO: replace with real payment flow.
+            wx.showToast({ title: '暂未接入付费流程', icon: 'none' })
+          }
+        },
+      })
+      return
+    }
 
     // 1) Close sheet immediately (no waiting)
     this.closeLanguageSheetImmediate()
@@ -323,9 +351,9 @@ Page({
     const minDuration = new Promise<void>((resolve) => setTimeout(resolve, 1500))
 
     // 3) Kick off language switch + persistence
-    const app = getApp<IAppOption>() as any
     const action = (async () => {
       await app.setLanguage(lang)
+      this.syncUserFromApp()
       this.syncLanguageFromApp()
     })()
 
@@ -333,7 +361,6 @@ Page({
       await Promise.all([minDuration, action])
       wx.hideLoading()
     } catch (err) {
-      // If something goes wrong, keep waiting for the action to settle (mask stays)
       console.warn('[me] setLanguage failed, keep loading until settled', err)
       try {
         await action

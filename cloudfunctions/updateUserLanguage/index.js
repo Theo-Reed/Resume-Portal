@@ -10,7 +10,7 @@ exports.main = async (event, context) => {
   const { OPENID } = cloud.getWXContext()
 
   const language = event?.language
-  if (language !== 'Chinese' && language !== 'English') {
+  if (language !== 'Chinese' && language !== 'English' && language !== 'AIChinese') {
     return { ok: false, error: 'invalid_language' }
   }
 
@@ -43,4 +43,3 @@ exports.main = async (event, context) => {
   const updated = await userRef.get()
   return { ok: true, user: updated.data }
 }
-

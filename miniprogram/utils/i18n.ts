@@ -1,7 +1,7 @@
-export type AppLanguage = 'Chinese' | 'English'
+export type AppLanguage = 'Chinese' | 'English' | 'AIChinese'
 
 // One source of truth for supported languages
-export const SUPPORTED_LANGUAGES: AppLanguage[] = ['Chinese', 'English']
+export const SUPPORTED_LANGUAGES: AppLanguage[] = ['Chinese', 'English', 'AIChinese']
 
 // Simple key-based dictionary for UI text.
 // NOTE: Job content is excluded by design.
@@ -18,6 +18,7 @@ const dict = {
     languageEntry: { Chinese: '语言', English: 'Language' },
     langChinese: { Chinese: '中文', English: 'Chinese' },
     langEnglish: { Chinese: 'English', English: 'English' },
+    langAIChinese: { Chinese: 'AI全中文', English: 'AI Chinese', AIChinese: 'AI全中文' },
     comingSoon: { Chinese: '敬请期待', English: 'Coming soon' },
     loginSuccess: { Chinese: '登录成功', English: 'Logged in' },
     phoneAuthFailed: { Chinese: '手机号授权失败', English: 'Phone authorization failed' },
@@ -55,6 +56,7 @@ export type I18nKey =
   | 'me.languageEntry'
   | 'me.langChinese'
   | 'me.langEnglish'
+  | 'me.langAIChinese'
   | 'me.comingSoon'
   | 'me.loginSuccess'
   | 'me.phoneAuthFailed'
@@ -89,6 +91,7 @@ export function normalizeLanguage(input: any): AppLanguage {
   const v = typeof input === 'string' ? input.trim() : input
   if (typeof v === 'string') {
     const lower = v.toLowerCase()
+    if (v === 'AIChinese' || v === 'AI全中文' || lower === 'aichinese') return 'AIChinese'
     if (v === 'English' || v === '英文' || v === 'en' || v === 'EN' || lower === 'english' || lower === 'en') return 'English'
     if (lower === 'chinese' || lower === 'zh' || lower === 'zh-cn' || lower === 'zh-hans') return 'Chinese'
   }
