@@ -91,7 +91,7 @@
 }
 
 .detail-body {
-  padding: 32rpx 43rpx;
+  padding: 24rpx 43rpx;
 }
 
 .detail-title-row {

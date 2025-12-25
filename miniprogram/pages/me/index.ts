@@ -257,9 +257,11 @@ Page({
     this.setData({ showJobDetail: false })
   },
 
-  onFavoriteJobTap(e: WechatMiniprogram.TouchEvent) {
-    const jobId = e.currentTarget.dataset._id as string
-    const collection = (e.currentTarget.dataset.collection as string) || ''
+  onFavoriteJobTap(e: any) {
+    const job = e?.detail?.job
+    const jobId = (job?.jobId || job?._id || e?.currentTarget?.dataset?._id) as string
+    const collection = (job?.sourceCollection || e?.currentTarget?.dataset?.collection || '') as string
+
     if (!jobId || !collection) {
       wx.showToast({ title: '无法打开详情', icon: 'none' })
       return

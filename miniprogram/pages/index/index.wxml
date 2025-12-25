@@ -44,6 +44,7 @@
 
   <!-- Job Detail Drawer Component -->
   <job-detail
+    id="jobDetail"
     show="{{showJobDetail}}"
     job-id="{{selectedJobId}}"
     collection="{{selectedCollection}}"
@@ -61,51 +62,30 @@
     </block>
   </view>
 
-  <scroll-view
-    class="job-list"
+  <job-list
+    jobs="{{filteredJobs}}"
+    loading="{{loading}}"
+    show-no-more="{{!hasMore && filteredJobs.length > 0}}"
+    no-more-visible="{{showNoMore}}"
+
     scroll-y="{{isScrollable}}"
     scroll-top="{{scrollTop}}"
-    scroll-with-animation="{{true}}"
     lower-threshold="{{lowerThreshold}}"
-    bindscrolltolower="onScrollLower"
-    bindscroll="onScroll"
-    bindtouchstart="onTouchStart"
-    bindtouchend="onTouchEnd"
-    enhanced="true"
+    scroll-with-animation="{{true}}"
+    enhanced="{{true}}"
     show-scrollbar="{{false}}"
     enable-back-to-top="{{false}}"
     enable-passive="{{true}}"
-  >
-    <view class="job-list-content">
-      <block wx:for="{{filteredJobs}}" wx:key="_id">
-        <view class="job-card" data-_id="{{item._id}}" bindtap="onJobTap">
-          <view class="job-main">
-            <view class="job-title-row">
-              <text class="job-title">{{item.title}}</text>
-              <text class="job-time">{{item.createdAt}}</text>
-            </view>
-            <view class="job-meta" wx:if="{{(item.team && item.team !== '未知公司') || item.salary}}">
-              <text wx:if="{{item.team && item.team !== '未知公司'}}" class="job-meta-item">{{item.team}}</text>
-              <text wx:if="{{(item.team && item.team !== '未知公司') && item.salary}}" class="job-meta-dot">·</text>
-              <text wx:if="{{item.salary}}" class="job-meta-item">{{item.salary}}</text>
-            </view>
-            <scroll-view
-            enhanced="true"
-            class="job-tags"
-            scroll-x="{{true}}"
-            show-scrollbar="{{false}}">
-              <view class="job-tag" wx:for="{{item.displayTags || item.tags}}" wx:key="*this">
-                <text class="job-tag-text">{{item}}</text>
-              </view>
-            </scroll-view>
-          </view>
-        </view>
-      </block>
-      <view wx:if="{{loading}}" class="list-loading">加载中...</view>
-      <view wx:if="{{!hasMore && filteredJobs.length > 0}}" class="no-more-container">
-        <view class="no-more-text {{showNoMore ? 'no-more-visible' : ''}}">没有更多了</view>
-      </view>
-    </view>
-  </scroll-view>
+
+    enable-detail="{{true}}"
+    detail-selector="#jobDetail"
+    detail-collection-fallback="{{selectedCollection}}"
+
+    bind:itemtap="onJobTap"
+    bind:scrolltolower="onScrollLower"
+    bind:scroll="onScroll"
+    bind:touchstart="onTouchStart"
+    bind:touchend="onTouchEnd"
+  />
 
 </view>

@@ -195,140 +195,13 @@ page::-webkit-scrollbar {
   flex: 0 0 auto;
 }
 
-.job-list {
-  flex: 1;
-  height: 0; /* use flex: 1 with height: 0 to properly calculate available space */
-  min-height: 0; /* allow flex item to shrink below content size */
-  /* hide scrollbars inside main list */
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
+/* Remove page-level .job-list rules; handled by components/job-list */
+.job-list,
 .job-list-content {
-  /* padding-bottom is set dynamically via inline style based on device */
-  min-height: 100%; /* ensure content fills scroll-view */
+  /* intentionally left blank */
 }
 
-.no-more-container {
-  position: relative;
-  height: 0; /* 不占用正常布局空间 */
-  min-height: 0;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 0;
-  overflow: visible; /* 允许内容溢出显示 */
-}
-
-.no-more-text {
-  font-size: 24rpx;
-  color: #9ca3af;
-  opacity: 0;
-  transform: translateY(20rpx); /* 初始位置在容器下方 */
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  white-space: nowrap;
-}
-
-.no-more-text.no-more-visible {
-  opacity: 1;
-  transform: translateY(0); /* 显示时回到正常位置 */
-}
-
-.job-list::-webkit-scrollbar {
-  display: none;
-}
-
-.job-card {
-  background-color: #ffffff;
-  border-radius: 24rpx;
-  padding: 28rpx 28rpx 20rpx;
-  box-shadow: 0 8rpx 20rpx rgba(15, 23, 42, 0.04);
-  margin-bottom: 24rpx;
-}
-
-.job-main {
-  margin-bottom: 20rpx;
-}
-
-.job-title-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12rpx;
-}
-
-.job-title {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: #111827;
-  flex: 1;
-  margin-right: 16rpx;
-}
-
-.job-time {
-  font-size: 24rpx;
-  color: #9ca3af;
-}
-
-.job-company {
-  font-size: 26rpx;
-  color: #4b5563;
-  margin-bottom: 16rpx;
-}
-
-.job-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  font-size: 24rpx;
-  color: #6b7280;
-  margin-bottom: 4rpx;
-}
-
-.job-meta-item {
-  margin-right: 6rpx;
-}
-
-.job-meta-dot {
-  margin: 0 6rpx;
-}
-
-.job-tags {
-  margin: 10rpx 0;
-  white-space: nowrap;
-  /* hide horizontal tag scroll bar */
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.job-tags::-webkit-scrollbar {
-  display: none;
-}
-
-.job-tag {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 16rpx;
-  height: 40rpx;
-  margin-right: 12rpx;
-  border-radius: 999rpx;
-  background-color: #e5f0ff;
-}
-
-.job-tag-text {
-  font-size: 22rpx;
-  color: #1d4ed8;
-}
-
-.list-loading {
-  text-align: center;
-  color: #9ca3af;
-  font-size: 24rpx;
-  padding: 20rpx 0 10rpx;
-}
-
-/** Favorites Full-Screen Drawer (replaces bottom sheet) **/
+/* Favorites Full-Screen Drawer (replaces bottom sheet) **/
 
 .favorites-drawer-mask {
   position: fixed;
@@ -405,4 +278,8 @@ page::-webkit-scrollbar {
   height: 0;
   padding: 0 32rpx 24rpx;
   box-sizing: border-box;
+}
+
+job-list {
+  /* no custom properties */
 }

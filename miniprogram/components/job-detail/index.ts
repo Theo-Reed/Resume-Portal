@@ -78,6 +78,16 @@ Component({
   },
 
   methods: {
+    open(jobId: string, collection: string) {
+      if (!jobId || !collection) return
+      // Keep API consistent with existing observer setup.
+      this.setData({
+        jobId,
+        collection,
+        show: true,
+      })
+    },
+
     onClose() {
       this.triggerEvent('close')
     },

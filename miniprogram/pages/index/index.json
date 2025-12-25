@@ -1,6 +1,7 @@
 {
   "usingComponents": {
     "drawer": "../../components/drawer/index",
-    "job-detail": "../../components/job-detail/index"
+    "job-detail": "../../components/job-detail/index",
+    "job-list": "../../components/job-list/index"
   }
 }

@@ -376,8 +376,8 @@ Component({
       })
     },
 
-    onJobTap(e: WechatMiniprogram.TouchEvent) {
-      const _id = e.currentTarget.dataset._id as string
+    onJobTap(e: any) {
+      const _id = (e?.detail?._id || e?.currentTarget?.dataset?._id) as string
       const collectionName = typeCollectionMap[this.data.currentFilter] || 'domestic_remote_jobs'
 
       if (!_id) return

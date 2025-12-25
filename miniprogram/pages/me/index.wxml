@@ -37,38 +37,20 @@
     <view class="favorites-sheet-mask {{favoritesSheetOpen ? 'favorites-sheet-mask-open' : ''}}" bindtap="closeFavoritesSheet"></view>
     <view class="favorites-sheet {{favoritesSheetOpen ? 'favorites-sheet-open' : ''}}">
       <view class="favorites-sheet-handle"></view>
-      <scroll-view class="favorites-sheet-list" scroll-y="true" enhanced="true" show-scrollbar="{{false}}">
-        <view class="job-list-content">
-          <block wx:if="{{favoritesLoading}}">
-            <view class="list-loading">加载中...</view>
-          </block>
-          <block wx:elif="{{favoritesJobs.length === 0}}">
-            <view class="empty-favorites">暂无收藏岗位</view>
-          </block>
-          <block wx:else>
-            <block wx:for="{{favoritesJobs}}" wx:key="jobId">
-              <view class="job-card" data-_id="{{item.jobId}}" data-collection="{{item.sourceCollection}}" bindtap="onFavoriteJobTap">
-                <view class="job-main">
-                  <view class="job-title-row">
-                    <text class="job-title">{{item.title}}</text>
-                    <text class="job-time">{{item.createdAt}}</text>
-                  </view>
-                  <view class="job-meta" wx:if="{{(item.team && item.team !== '未知公司') || item.salary}}">
-                    <text wx:if="{{item.team && item.team !== '未知公司'}}" class="job-meta-item">{{item.team}}</text>
-                    <text wx:if="{{(item.team && item.team !== '未知公司') && item.salary}}" class="job-meta-dot">·</text>
-                    <text wx:if="{{item.salary}}" class="job-meta-item">{{item.salary}}</text>
-                  </view>
-                  <scroll-view enhanced="true" class="job-tags" scroll-x="true" show-scrollbar="{{false}}">
-                    <view class="job-tag" wx:for="{{item.displayTags || item.tags}}" wx:key="*this">
-                      <text class="job-tag-text">{{item}}</text>
-                    </view>
-                  </scroll-view>
-                </view>
-              </view>
-            </block>
-          </block>
-        </view>
-      </scroll-view>
+
+      <view class="favorites-list-padding">
+        <job-list
+          class-name="favorites-job-list"
+          jobs="{{favoritesJobs}}"
+          loading="{{favoritesLoading}}"
+          show-no-more="{{false}}"
+          no-more-visible="{{false}}"
+          scroll-y="{{true}}"
+          bind:itemtap="onFavoriteJobTap"
+        />
+      </view>
+
+      <view wx:if="{{!favoritesLoading && favoritesJobs.length === 0}}" class="empty-favorites">暂无收藏岗位</view>
     </view>
   </block>
 

@@ -1,0 +1,45 @@
+<!-- miniprogram/components/job-list/index.wxml -->
+<scroll-view
+  class="job-list {{className}}"
+  scroll-y="{{scrollY}}"
+  scroll-top="{{scrollTop}}"
+  scroll-with-animation="{{scrollWithAnimation}}"
+  lower-threshold="{{lowerThreshold}}"
+  bindscrolltolower="onScrollLower"
+  bindscroll="onScroll"
+  bindtouchstart="onTouchStart"
+  bindtouchend="onTouchEnd"
+  enhanced="{{enhanced}}"
+  show-scrollbar="{{showScrollbar}}"
+  enable-back-to-top="{{enableBackToTop}}"
+  enable-passive="{{enablePassive}}"
+>
+  <view class="job-list-content" style="padding: 0;">
+    <block wx:for="{{jobs}}" wx:key="_id">
+      <view class="job-card" data-_id="{{item._id}}" data-job="{{item}}" bindtap="onItemTap">
+        <view class="job-main">
+          <view class="job-title-row">
+            <text class="job-title">{{item.title}}</text>
+            <text class="job-time">{{item.createdAt}}</text>
+          </view>
+          <view class="job-meta" wx:if="{{(item.team && item.team !== '未知公司') || item.salary}}">
+            <text wx:if="{{item.team && item.team !== '未知公司'}}" class="job-meta-item">{{item.team}}</text>
+            <text wx:if="{{(item.team && item.team !== '未知公司') && item.salary}}" class="job-meta-dot">·</text>
+            <text wx:if="{{item.salary}}" class="job-meta-item">{{item.salary}}</text>
+          </view>
+          <scroll-view enhanced="true" class="job-tags" scroll-x="true" show-scrollbar="{{false}}">
+            <view class="job-tag" wx:for="{{item.displayTags || item.tags}}" wx:key="*this">
+              <text class="job-tag-text">{{item}}</text>
+            </view>
+          </scroll-view>
+        </view>
+      </view>
+    </block>
+
+    <view wx:if="{{loading}}" class="list-loading">加载中...</view>
+
+    <view wx:if="{{showNoMore}}" class="no-more-container">
+      <view class="no-more-text {{noMoreVisible ? 'no-more-visible' : ''}}">没有更多了</view>
+    </view>
+  </view>
+</scroll-view>
