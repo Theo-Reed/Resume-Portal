@@ -5,6 +5,11 @@
     "pages/me/index",
     "pages/logs/logs"
   ],
+  "page": {
+    "pages/community/index": {
+      "disableScroll": true
+    }
+  },
   "window": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "🌍 远程工作机会",

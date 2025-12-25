@@ -2,11 +2,14 @@
   min-height: 100vh;
   background: #f5f7fb;
   box-sizing: border-box;
-  padding: 40rpx 32rpx;
+  padding: 0rpx 32rpx; /* Reduced top padding from 40rpx to 20rpx */
+  /* Disable bounce effect */
+  overflow: hidden;
+  -webkit-overflow-scrolling: auto;
 }
 
 .content {
-  margin-top: 40rpx;
+  margin-top: 30rpx; /* Reduced by 15rpx from 40rpx */
 }
 
 .title {
@@ -16,14 +19,14 @@
 }
 
 .desc {
-  margin-top: 16rpx;
+  margin-top: 24rpx;
   font-size: 28rpx;
   color: #6b7280;
 }
 
 /* Community Activities */
 .activities-section {
-  margin-top: 48rpx;
+  margin-top: 0rpx;
 }
 
 .activities-title {
@@ -37,6 +40,10 @@
   display: flex;
   flex-direction: column;
   gap: 24rpx;
+}
+
+.activities-list .activity-card:last-child {
+  margin-bottom: 0rpx;
 }
 
 .activity-card {
@@ -115,7 +122,7 @@
 
 /* Success Stories */
 .success-stories-section {
-  margin-top: 48rpx;
+  margin-top: 28rpx; /* Reduced by 10rpx */
 }
 
 .success-stories-title {
@@ -129,6 +136,10 @@
   display: flex;
   flex-direction: column;
   gap: 24rpx;
+}
+
+.success-stories-list .success-story-card:last-child {
+  margin-bottom: 0rpx;
 }
 
 .success-story-card {
@@ -181,7 +192,7 @@
 
 /* Hunting Tools */
 .job-hunting-section {
-  margin-top: 48rpx;
+  margin-top: 28rpx; /* Reduced by 10rpx */
 }
 
 .job-hunting-title {
@@ -195,6 +206,10 @@
   display: flex;
   flex-direction: column;
   gap: 24rpx;
+}
+
+.job-hunting-list .job-hunting-card:last-child {
+  margin-bottom: 24rpx;
 }
 
 .job-hunting-card {
