@@ -1,57 +1,25 @@
 <view class="page">
   <view class="content">
-    <!-- Community Activities -->
-    <view class="activities-section">
-      <view class="activities-title">{{ui.activitiesTitle}}</view>
-      <view class="activities-list">
+    <!-- Articles -->
+    <view
+      wx:for="{{articles}}"
+      wx:key="id"
+      class="article"
+    >
+      <view class="article-title">{{item.title}}</view>
+      <view class="article-list">
         <view
-          wx:for="{{activities}}"
+          wx:for="{{item.items}}"
           wx:key="id"
-          class="activity-card"
+          class="article-card"
         >
-          <view class="activity-badge {{'activity-badge-' + item.statusType}}">
-            <text class="activity-badge-text">{{item.status}}</text>
+          <view wx:if="{{item.status}}" class="article-badge {{'article-badge-' + item.statusType}}">
+            <text class="article-badge-text">{{item.status}}</text>
           </view>
-          <image class="activity-image" src="{{item.image}}" mode="aspectFill" />
-          <view class="activity-content">
-            <text class="activity-title">{{item.title}}</text>
-            <text class="activity-description">{{item.description}}</text>
-          </view>
-        </view>
-      </view>
-    </view>
-
-    <!-- Success Stories -->
-    <view class="success-stories-section">
-      <view class="success-stories-title">{{ui.successStoriesTitle}}</view>
-      <view class="success-stories-list">
-        <view
-          wx:for="{{successStories}}"
-          wx:key="id"
-          class="success-story-card"
-        >
-          <image class="success-story-image" src="{{item.image}}" mode="aspectFill" />
-          <view class="success-story-content">
-            <text class="success-story-title">{{item.title}}</text>
-            <text class="success-story-description">{{item.description}}</text>
-          </view>
-        </view>
-      </view>
-    </view>
-
-    <!-- Hunting Tools -->
-    <view class="job-hunting-section">
-      <view class="job-hunting-title">{{ui.jobHuntingTitle}}</view>
-      <view class="job-hunting-list">
-        <view
-          wx:for="{{jobHunting}}"
-          wx:key="id"
-          class="job-hunting-card"
-        >
-          <image class="job-hunting-image" src="{{item.image}}" mode="aspectFill" />
-          <view class="job-hunting-content">
-            <text class="job-hunting-title-text">{{item.title}}</text>
-            <text class="job-hunting-description">{{item.description}}</text>
+          <image class="article-image" src="{{item.image}}" mode="aspectFill" />
+          <view class="article-content">
+            <text class="article-title-text">{{item.title}}</text>
+            <text class="article-description">{{item.description}}</text>
           </view>
         </view>
       </view>

@@ -29,18 +29,39 @@ exports.main = async (event, context) => {
 
     return { openid: OPENID, user }
   } catch (err) {
+    // Generate invite code for new user
+    let inviteCode = null
+    try {
+      const generateResult = await cloud.callFunction({
+        name: 'generateInviteCode'
+      })
+      if (generateResult.result?.success) {
+        inviteCode = generateResult.result.inviteCode
+      }
+    } catch (inviteErr) {
+      console.error('Failed to generate invite code:', inviteErr)
+      // Continue without invite code if generation fails
+    }
+
     const now = db.serverDate()
+    const userData = {
+      openid: OPENID,
+      isAuthed: false,
+      phone: null,
+      nickname: null,
+      avatar: null,
+      language: 'Chinese',
+      createdAt: now,
+      updatedAt: now,
+    }
+
+    // Add invite code if generated successfully
+    if (inviteCode) {
+      userData.inviteCode = inviteCode
+    }
+
     await userRef.set({
-      data: {
-        openid: OPENID,
-        isAuthed: false,
-        phone: null,
-        nickname: null,
-        avatar: null,
-        language: 'Chinese',
-        createdAt: now,
-        updatedAt: now,
-      },
+      data: userData,
     })
 
     const created = await userRef.get()

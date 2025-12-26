@@ -3,9 +3,15 @@
   background: #f5f7fb;
   box-sizing: border-box;
   padding: 0rpx 32rpx; /* Reduced top padding from 40rpx to 20rpx */
-  /* Disable bounce effect */
+  /* Disable bounce effect and scrollbars */
   overflow: hidden;
   -webkit-overflow-scrolling: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.page::-webkit-scrollbar {
+  display: none;
 }
 
 .content {
@@ -24,29 +30,29 @@
   color: #6b7280;
 }
 
-/* Community Activities */
-.activities-section {
-  margin-top: 0rpx;
+/* Articles */
+.article {
+  margin-top: 12rpx; /* Reduced from 48rpx */
 }
 
-.activities-title {
+.article:first-child {
+  margin-top: 0;
+}
+
+.article-title {
   font-size: 32rpx;
   font-weight: 600;
   color: #1f2933;
   margin-bottom: 24rpx;
 }
 
-.activities-list {
+.article-list {
   display: flex;
   flex-direction: column;
-  gap: 24rpx;
+  gap: 24rpx; /* Match job-card margin-bottom */
 }
 
-.activities-list .activity-card:last-child {
-  margin-bottom: 0rpx;
-}
-
-.activity-card {
+.article-card {
   background: #ffffff;
   border-radius: 16rpx;
   padding: 24rpx;
@@ -55,16 +61,21 @@
   align-items: flex-start;
   gap: 16rpx;
   position: relative; /* For absolute positioning of badge */
+  margin-bottom: 8rpx; /* Add margin-bottom */
 }
 
-.activity-image {
+.article-card:last-child {
+  margin-bottom: 24rpx; /* Match job-card margin-bottom */
+}
+
+.article-image {
   width: 120rpx;
   height: 120rpx;
   border-radius: 12rpx;
   flex-shrink: 0;
 }
 
-.activity-badge {
+.article-badge {
   position: absolute;
   top: 12rpx;
   left: 12rpx;
@@ -76,20 +87,27 @@
   z-index: 10;
 }
 
-.activity-badge-text {
+.article-badge-text {
   color: #ffffff;
-  font-size: 20rpx;
 }
 
-.activity-badge-active {
-  background-color:rgb(39, 66, 215); /* Green for active */
+.article-badge-active {
+  background-color: rgb(39, 66, 215); /* Blue for active */
 }
 
-.activity-badge-ended {
+.article-badge-ended {
   background-color: #6b7280; /* Gray for ended */
 }
 
-.activity-content {
+.article-badge-upcoming {
+  background-color: #f59e0b; /* Orange for upcoming */
+}
+
+.article-badge-ongoing {
+  background-color: #10b981; /* Green for ongoing */
+}
+
+.article-content {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -98,7 +116,7 @@
   overflow: hidden;
 }
 
-.activity-title {
+.article-title-text {
   font-size: 30rpx;
   font-weight: 600;
   color: #1f2933;
@@ -110,147 +128,7 @@
   overflow: hidden;
 }
 
-.activity-description {
-  font-size: 26rpx;
-  color: #6b7280;
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* Success Stories */
-.success-stories-section {
-  margin-top: 28rpx; /* Reduced by 10rpx */
-}
-
-.success-stories-title {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: #1f2933;
-  margin-bottom: 24rpx;
-}
-
-.success-stories-list {
-  display: flex;
-  flex-direction: column;
-  gap: 24rpx;
-}
-
-.success-stories-list .success-story-card:last-child {
-  margin-bottom: 0rpx;
-}
-
-.success-story-card {
-  background: #ffffff;
-  border-radius: 16rpx;
-  padding: 24rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: flex-start;
-  gap: 16rpx;
-}
-
-.success-story-image {
-  width: 120rpx;
-  height: 120rpx;
-  border-radius: 12rpx;
-  flex-shrink: 0;
-}
-
-.success-story-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  height: 120rpx; /* Same as image height */
-  overflow: hidden;
-}
-
-.success-story-title {
-  font-size: 30rpx;
-  font-weight: 600;
-  color: #1f2933;
-  line-height: 1.4;
-  margin-bottom: 8rpx;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.success-story-description {
-  font-size: 26rpx;
-  color: #6b7280;
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* Hunting Tools */
-.job-hunting-section {
-  margin-top: 28rpx; /* Reduced by 10rpx */
-}
-
-.job-hunting-title {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: #1f2933;
-  margin-bottom: 24rpx;
-}
-
-.job-hunting-list {
-  display: flex;
-  flex-direction: column;
-  gap: 24rpx;
-}
-
-.job-hunting-list .job-hunting-card:last-child {
-  margin-bottom: 24rpx;
-}
-
-.job-hunting-card {
-  background: #ffffff;
-  border-radius: 16rpx;
-  padding: 24rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: flex-start;
-  gap: 16rpx;
-}
-
-.job-hunting-image {
-  width: 120rpx;
-  height: 120rpx;
-  border-radius: 12rpx;
-  flex-shrink: 0;
-}
-
-.job-hunting-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  height: 120rpx; /* Same as image height */
-  overflow: hidden;
-}
-
-.job-hunting-title-text {
-  font-size: 30rpx;
-  font-weight: 600;
-  color: #1f2933;
-  line-height: 1.4;
-  margin-bottom: 8rpx;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.job-hunting-description {
+.article-description {
   font-size: 26rpx;
   color: #6b7280;
   line-height: 1.4;

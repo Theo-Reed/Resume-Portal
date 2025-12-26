@@ -1,4 +1,6 @@
 {
+  "enablePullDownRefresh": true,
+  "onReachBottomDistance": 50,
   "navigationBarTitleText": "🌍 远程工作机会",
   "usingComponents": {
     "drawer": "../../components/drawer/index",

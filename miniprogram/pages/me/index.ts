@@ -23,8 +23,16 @@ Page({
 
     showLanguageSheet: false,
     languageSheetOpen: false,
-    currentLanguage: '中文',
+    currentLanguage: 'Chinese',
     isAiChineseUnlocked: false,
+
+    showInviteSheet: false,
+    inviteSheetOpen: false,
+    myInviteCode: '',
+    inputInviteCode: '',
+
+    isVerified: false, // User verification status
+
     ui: {} as Record<string, string>,
   },
 
@@ -58,6 +66,7 @@ Page({
     const user = app?.globalData?.user
 
     const isLoggedIn = !!(user && (user.isAuthed || user.phone))
+    const isVerified = !!(user && (user.isAuthed || user.phone)) // 认证状态：有手机号或已认证
 
     const hasCloudProfile = user && typeof user.avatar === 'string' && typeof user.nickname === 'string' && user.avatar && user.nickname
     const userInfo = hasCloudProfile
@@ -66,7 +75,10 @@ Page({
 
     const isAiUnlocked = isAiChineseUnlocked(user)
 
-    this.setData({ isLoggedIn, userInfo, isAiChineseUnlocked: isAiUnlocked })
+    // Sync invite code if available
+    const myInviteCode = user?.inviteCode || ''
+
+    this.setData({ isLoggedIn, isVerified, userInfo, isAiChineseUnlocked: isAiUnlocked, myInviteCode })
   },
 
   syncLanguageFromApp() {
@@ -77,16 +89,25 @@ Page({
       meTitle: t('me.title', lang),
       userNotLoggedIn: t('me.userNotLoggedIn', lang),
       favoritesEntry: t('me.favoritesEntry', lang),
-      languageEntry: t('me.languageEntry', lang),
+      generateResumeEntry: t('me.generateResumeEntry', lang),
+      publishSkillEntry: t('me.publishSkillEntry', lang),
+      aiTranslateEntry: t('me.aiTranslateEntry', lang),
+      inviteCodeEntry: t('me.inviteCodeEntry', lang),
+      myInviteCode: t('me.myInviteCode', lang),
+      inputInviteCode: t('me.inputInviteCode', lang),
+      inviteCodeCopied: t('me.inviteCodeCopied', lang),
+      inviteCodeInvalid: t('me.inviteCodeInvalid', lang),
+      inviteCodeApplied: t('me.inviteCodeApplied', lang),
       emptyFavorites: t('me.emptyFavorites', lang),
       comingSoon: t('me.comingSoon', lang),
-      langChinese: t('me.langChinese', lang),
-      langEnglish: t('me.langEnglish', lang),
+      langDefault: t('me.langDefault', lang),
       langAIChinese: t('me.langAIChinese', lang),
+      langAIEnglish: t('me.langAIEnglish', lang),
     }
 
     this.setData({
-      currentLanguage: lang === 'English' ? 'English' : lang === 'AIChinese' ? 'AIChinese' : '中文',
+      currentLanguage: lang === 'AIChinese' ? 'AIChinese' :
+                      lang === 'AIEnglish' ? 'AIEnglish' : 'Chinese',
       ui,
     })
 
@@ -335,17 +356,15 @@ Page({
     const value = (e.currentTarget.dataset.value || '') as string
     if (!value) return
 
-    const lang: AppLanguage = value === 'English' ? 'English' : value === 'AIChinese' ? 'AIChinese' : 'Chinese'
-
+    const lang: AppLanguage = value === 'AIChinese' ? 'AIChinese' :
+                             value === 'AIEnglish' ? 'AIEnglish' : 'Chinese'
     const app = getApp<IAppOption>() as any
-    const user = app?.globalData?.user
 
-    // Gate AI Chinese behind subscription
-    if (lang === 'AIChinese' && !isAiChineseUnlocked(user)) {
+    // Check if AI features are unlocked
+    if ((lang === 'AIChinese' || lang === 'AIEnglish') && !this.data.isAiChineseUnlocked) {
       this.closeLanguageSheetImmediate()
-
       wx.showModal({
-        title: 'AI全中文 🔒',
+        title: 'AI翻译功能 🔒',
         content: '该功能需要付费解锁。',
         confirmText: '去付费',
         cancelText: '取消',
@@ -389,5 +408,101 @@ Page({
 
   onLanguageTap() {
     this.openLanguageSheet()
+  },
+
+  onInviteTap() {
+    this.openInviteSheet()
+  },
+
+  openInviteSheet() {
+    // Mount first, then open on next tick to trigger CSS transition.
+    this.setData({ showInviteSheet: true, inviteSheetOpen: false })
+
+    // Load user's invite code
+    this.loadInviteCode()
+
+    setTimeout(() => {
+      this.setData({ inviteSheetOpen: true })
+    }, 30)
+  },
+
+  closeInviteSheet() {
+    this.setData({ inviteSheetOpen: false })
+    setTimeout(() => {
+      this.setData({ showInviteSheet: false })
+    }, 260)
+  },
+
+  async loadInviteCode() {
+    try {
+      const app = getApp<IAppOption>() as any
+      const user = app?.globalData?.user
+
+      if (user?.inviteCode) {
+        this.setData({ myInviteCode: user.inviteCode })
+      } else {
+        // Generate invite code if not exists
+        const result = await wx.cloud.callFunction({
+          name: 'generateInviteCode',
+          data: {}
+        })
+
+        if (result.result?.inviteCode) {
+          this.setData({ myInviteCode: result.result.inviteCode })
+          // Update global user data
+          if (app?.globalData?.user) {
+            app.globalData.user.inviteCode = result.result.inviteCode
+          }
+        }
+      }
+    } catch (err) {
+      console.error('[me] loadInviteCode failed:', err)
+      wx.showToast({ title: '加载邀请码失败', icon: 'none' })
+    }
+  },
+
+  onCopyInviteCode() {
+    const { myInviteCode, ui } = this.data
+    if (!myInviteCode) return
+
+    wx.setClipboardData({
+      data: myInviteCode,
+      success: () => {
+        wx.showToast({ title: ui.inviteCodeCopied, icon: 'success' })
+      },
+      fail: () => {
+        wx.showToast({ title: '复制失败', icon: 'none' })
+      }
+    })
+  },
+
+  onInviteCodeInput(e: any) {
+    this.setData({ inputInviteCode: e.detail.value })
+  },
+
+  async onApplyInviteCode() {
+    const { inputInviteCode, ui } = this.data
+    if (!inputInviteCode || inputInviteCode.length !== 8) {
+      wx.showToast({ title: ui.inviteCodeInvalid, icon: 'none' })
+      return
+    }
+
+    try {
+      const result = await wx.cloud.callFunction({
+        name: 'applyInviteCode',
+        data: { inviteCode: inputInviteCode }
+      })
+
+      if (result.result?.success) {
+        wx.showToast({ title: ui.inviteCodeApplied, icon: 'success' })
+        this.setData({ inputInviteCode: '' })
+        this.closeInviteSheet()
+      } else {
+        wx.showToast({ title: result.result?.message || '应用失败', icon: 'none' })
+      }
+    } catch (err) {
+      console.error('[me] applyInviteCode failed:', err)
+      wx.showToast({ title: '应用失败', icon: 'none' })
+    }
   },
 })

@@ -20,7 +20,12 @@
           </button>
         </block>
         <block wx:else>
-          <text class="nickname">{{userInfo ? userInfo.nickName : '已登录'}}</text>
+          <view class="nickname-container">
+            <text class="nickname">{{userInfo ? userInfo.nickName : '已登录'}}</text>
+            <view class="verification-badge {{isVerified ? 'verified' : 'unverified'}}">
+              <text class="verification-text">{{isVerified ? '已认证' : '未认证'}}</text>
+            </view>
+          </view>
         </block>
       </view>
     </view>
@@ -32,7 +37,19 @@
     </view>
 
     <view class="me-item" bindtap="onLanguageTap">
-      <text class="me-item-text">{{ui.languageEntry}}</text>
+      <text class="me-item-text">{{ui.aiTranslateEntry}}</text>
+    </view>
+
+    <view class="me-item">
+      <text class="me-item-text">{{ui.generateResumeEntry}}</text>
+    </view>
+
+    <view class="me-item">
+      <text class="me-item-text">{{ui.publishSkillEntry}}</text>
+    </view>
+
+    <view class="me-item" bindtap="onInviteTap">
+      <text class="me-item-text">{{ui.inviteCodeEntry}}</text>
     </view>
   </view>
 
@@ -61,14 +78,43 @@
     <view class="language-sheet {{languageSheetOpen ? 'language-sheet-open' : ''}}">
 
       <view class="language-sheet-content">
-        <view class="language-item {{currentLanguage === '中文' ? 'language-item-active' : ''}}" data-value="Chinese" bindtap="onLanguageSelect">
-          <text class="language-item-text">{{ui.langChinese}}</text>
-        </view>
-        <view class="language-item {{currentLanguage === 'English' ? 'language-item-active' : ''}}" data-value="English" bindtap="onLanguageSelect">
-          <text class="language-item-text">{{ui.langEnglish}}</text>
+        <view class="language-item {{currentLanguage === 'Chinese' ? 'language-item-active' : ''}}" data-value="Chinese" bindtap="onLanguageSelect">
+          <text class="language-item-text">{{ui.langDefault}}</text>
         </view>
         <view class="language-item {{currentLanguage === 'AIChinese' ? 'language-item-active' : ''}}" data-value="AIChinese" bindtap="onLanguageSelect">
           <text class="language-item-text">{{ui.langAIChinese}}<text wx:if="{{!isAiChineseUnlocked}}"> 🔒</text></text>
+        </view>
+        <view class="language-item {{currentLanguage === 'AIEnglish' ? 'language-item-active' : ''}}" data-value="AIEnglish" bindtap="onLanguageSelect">
+          <text class="language-item-text">{{ui.langAIEnglish}}<text wx:if="{{!isAiChineseUnlocked}}"> 🔒</text></text>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <!-- Invite code bottom sheet -->
+  <block wx:if="{{showInviteSheet}}">
+    <view class="invite-sheet-mask {{inviteSheetOpen ? 'invite-sheet-mask-open' : ''}}" bindtap="closeInviteSheet"></view>
+    <view class="invite-sheet {{inviteSheetOpen ? 'invite-sheet-open' : ''}}">
+
+      <view class="invite-sheet-content">
+        <view class="invite-section">
+          <text class="invite-section-title">{{ui.myInviteCode}}</text>
+          <view class="invite-code-display" bindtap="onCopyInviteCode">
+            <text class="invite-code-text">{{myInviteCode}}</text>
+            <text class="invite-code-copy">复制</text>
+          </view>
+        </view>
+
+        <view class="invite-section">
+          <text class="invite-section-title">{{ui.inputInviteCode}}</text>
+          <input
+            class="invite-code-input"
+            type="text"
+            placeholder="请输入邀请码"
+            value="{{inputInviteCode}}"
+            bindinput="onInviteCodeInput"
+          />
+          <button class="invite-apply-btn" bindtap="onApplyInviteCode">应用</button>
         </view>
       </view>
     </view>

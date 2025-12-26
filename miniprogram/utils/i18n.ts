@@ -1,7 +1,7 @@
-export type AppLanguage = 'Chinese' | 'English' | 'AIChinese'
+export type AppLanguage = 'Chinese' | 'English' | 'AIChinese' | 'AIEnglish'
 
 // One source of truth for supported languages
-export const SUPPORTED_LANGUAGES: AppLanguage[] = ['Chinese', 'English', 'AIChinese']
+export const SUPPORTED_LANGUAGES: AppLanguage[] = ['Chinese', 'English', 'AIChinese', 'AIEnglish']
 
 // Simple key-based dictionary for UI text.
 // NOTE: Job content is excluded by design.
@@ -18,7 +18,6 @@ const dict = {
     languageEntry: { Chinese: '语言', English: 'Language' },
     langChinese: { Chinese: '中文', English: 'Chinese' },
     langEnglish: { Chinese: 'English', English: 'English' },
-    langAIChinese: { Chinese: 'AI全中文', English: 'AI Chinese', AIChinese: 'AI全中文' },
     comingSoon: { Chinese: '敬请期待', English: 'Coming soon' },
     loginSuccess: { Chinese: '登录成功', English: 'Logged in' },
     phoneAuthFailed: { Chinese: '手机号授权失败', English: 'Phone authorization failed' },
@@ -26,14 +25,33 @@ const dict = {
     openDetailFailed: { Chinese: '无法打开详情', English: 'Unable to open details' },
     loadFavoritesFailed: { Chinese: '加载收藏失败', English: 'Failed to load saved jobs' },
     emptyFavorites: { Chinese: '暂无收藏岗位', English: 'No saved jobs' },
+    generateResumeEntry: { Chinese: '生成简历', English: 'Generate Resume' },
+    publishSkillEntry: { Chinese: '发布技能', English: 'Publish Skill' },
+    aiTranslateEntry: { Chinese: 'AI 岗位翻译', English: 'AI Translate' },
+    inviteCodeEntry: { Chinese: '邀请码', English: 'Invite Code' },
+    myInviteCode: { Chinese: '我的邀请码', English: 'My Invite Code' },
+    inputInviteCode: { Chinese: '输入邀请码', English: 'Enter Invite Code' },
+    inviteCodeCopied: { Chinese: '邀请码已复制到剪贴板', English: 'Invite code copied to clipboard' },
+    inviteCodeInvalid: { Chinese: '邀请码格式不正确', English: 'Invalid invite code format' },
+    inviteCodeApplied: { Chinese: '邀请码已应用', English: 'Invite code applied successfully' },
+    // Language selector labels (also used in AI Translate popup)
+    langDefault: { Chinese: '默认', English: 'Default' },
+    langAIChinese: { Chinese: 'AI 全中文', English: 'AI Chinese' },
+    langAIEnglish: { Chinese: 'AI 全英文', English: 'AI English' },
   },
   community: {
     title: { Chinese: '社区', English: 'Community' },
-    activitiesTitle: { Chinese: '社区活动', English: 'Community Activities' },
+    onlineActivitiesTitle: { Chinese: '线上活动', English: 'Online Activities' },
+    offlineActivitiesTitle: { Chinese: '线下活动', English: 'Offline Activities' },
+    skillExchangeTitle: { Chinese: '技能交换', English: 'Skill Exchange' },
     successStoriesTitle: { Chinese: '成功森林', English: 'Success Stories' },
-    jobHuntingTitle: { Chinese: '求职利剑', English: 'Hunting Tools' },
     statusActive: { Chinese: '报名中', English: 'Open' },
     statusEnded: { Chinese: '已结束', English: 'Ended' },
+    statusUpcoming: { Chinese: '即将开始', English: 'Coming Soon' },
+    statusOngoing: { Chinese: '进行中', English: 'Ongoing' },
+    langDefault: { Chinese: '默认', English: 'Default' },
+    langAIChinese: { Chinese: 'AI 全中文', English: 'AI Chinese' },
+    langAIEnglish: { Chinese: 'AI 全英文', English: 'AI English' },
     desc: { Chinese: '敬请期待', English: 'Coming soon' },
   },
   jobs: {
@@ -64,7 +82,6 @@ export type I18nKey =
   | 'me.languageEntry'
   | 'me.langChinese'
   | 'me.langEnglish'
-  | 'me.langAIChinese'
   | 'me.comingSoon'
   | 'me.loginSuccess'
   | 'me.phoneAuthFailed'
@@ -72,12 +89,27 @@ export type I18nKey =
   | 'me.openDetailFailed'
   | 'me.loadFavoritesFailed'
   | 'me.emptyFavorites'
+  | 'me.generateResumeEntry'
+  | 'me.publishSkillEntry'
+  | 'me.aiTranslateEntry'
+  | 'me.inviteCodeEntry'
+  | 'me.myInviteCode'
+  | 'me.inputInviteCode'
+  | 'me.inviteCodeCopied'
+  | 'me.inviteCodeInvalid'
+  | 'me.inviteCodeApplied'
   | 'community.title'
-  | 'community.activitiesTitle'
+  | 'community.onlineActivitiesTitle'
+  | 'community.offlineActivitiesTitle'
+  | 'community.skillExchangeTitle'
   | 'community.successStoriesTitle'
-  | 'community.jobHuntingTitle'
   | 'community.statusActive'
   | 'community.statusEnded'
+  | 'community.statusUpcoming'
+  | 'community.statusOngoing'
+  | 'me.langDefault'
+  | 'me.langAIChinese'
+  | 'me.langAIEnglish'
   | 'community.desc'
   | 'jobs.searchPlaceholder'
   | 'jobs.filterLabel'
@@ -105,6 +137,7 @@ export function normalizeLanguage(input: any): AppLanguage {
   const v = typeof input === 'string' ? input.trim() : input
   if (typeof v === 'string') {
     const lower = v.toLowerCase()
+    if (v === 'AIEnglish' || v === 'AI英文' || lower === 'aienglish') return 'AIEnglish'
     if (v === 'AIChinese' || v === 'AI全中文' || lower === 'aichinese') return 'AIChinese'
     if (v === 'English' || v === '英文' || v === 'en' || v === 'EN' || lower === 'english' || lower === 'en') return 'English'
     if (lower === 'chinese' || lower === 'zh' || lower === 'zh-cn' || lower === 'zh-hans') return 'Chinese'

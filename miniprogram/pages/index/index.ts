@@ -80,6 +80,23 @@ Page({
     wx.setNavigationBarTitle({ title: t('app.navTitle', lang) })
   },
 
+  onPullDownRefresh() {
+    // Handle pull down to refresh
+    this.loadJobs(true).finally(() => {
+      wx.stopPullDownRefresh()
+    })
+  },
+
+  onReachBottom() {
+    // Handle reach bottom to load more
+    this.maybeLoadMore()
+  },
+
+  onScrollLower() {
+    // Handle scroll to lower from job-list component
+    this.maybeLoadMore()
+  },
+
   syncLanguageFromApp() {
       const app = getApp<IAppOption>() as any
       const lang = normalizeLanguage(app?.globalData?.language)
