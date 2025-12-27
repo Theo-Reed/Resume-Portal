@@ -3,15 +3,22 @@
     <!-- Articles -->
     <view
       wx:for="{{articles}}"
+      wx:for-item="article"
       wx:key="id"
       class="article"
     >
-      <view class="article-title">{{item.title}}</view>
+      <view class="article-title-row">
+        <view class="article-title">{{article.title}}</view>
+        <view class="article-all" bindtap="onOpenArticleAll" data-id="{{article.id}}">全部></view>
+      </view>
       <view class="article-list">
         <view
-          wx:for="{{item.items}}"
+          wx:for="{{article.items}}"
           wx:key="id"
           class="article-card"
+          bindtap="onArticleTap"
+          data-article-id="{{article.id}}"
+          data-item-id="{{item.id}}"
         >
           <view wx:if="{{item.status}}" class="article-badge {{'article-badge-' + item.statusType}}">
             <text class="article-badge-text">{{item.status}}</text>

@@ -1,0 +1,15 @@
+<view class="page">
+  <view class="content">
+    <view class="article-list">
+      <view wx:for="{{article.items}}" wx:key="id" class="article-card" bindtap="onItemTap" data-id="{{item.id}}">
+        <image class="article-image" src="{{item.image}}" mode="aspectFill" />
+        <view class="article-content">
+          <text class="article-title-text">{{item.title}}</text>
+          <text class="article-description">{{item.description}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+

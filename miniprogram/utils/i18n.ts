@@ -130,7 +130,10 @@ function getByPath(obj: any, path: string) {
 export function t(key: I18nKey, language: AppLanguage): string {
   const item = getByPath(dict, key)
   const value = item?.[language]
-  return typeof value === 'string' ? value : key
+  if (typeof value === 'string') return value
+  // Fallback to Chinese or English if AI variants don't have an explicit string
+  const fallback = item?.['Chinese'] || item?.['English']
+  return typeof fallback === 'string' ? fallback : key
 }
 
 export function normalizeLanguage(input: any): AppLanguage {

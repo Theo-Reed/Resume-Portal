@@ -21,6 +21,12 @@ Page({
   data: {
     jobs: <JobItem[]>[],
     filteredJobs: <JobItem[]>[],
+    // Tab state
+    currentTab: 0,
+    tabLabels: ['公开', '收藏', '最新'],
+    // Preloaded data per tab (index -> JobItem[])
+    jobsByTab: [<JobItem[]>[], <JobItem[]>[], <JobItem[]>[]] as JobItem[][],
+    hasLoadedTab: [false, false, false] as boolean[],
     showFilter: false,
     currentFilter: '国内' as FilterType,
     filterOptions: ['国内', '国外', 'web3'] as FilterType[],
@@ -64,7 +70,22 @@ Page({
     })
 
     this.getSystemAndUIInfo()
-    this.loadJobs(true)
+    // Load primary tab immediately, then preload others in background
+    this.loadJobs(true).then(() => {
+      // store primary tab data into cache
+      try {
+        const primary = (this.data.jobs || []) as JobItem[]
+        const tabs = this.data.jobsByTab as JobItem[][]
+        tabs[0] = primary
+        const loaded = this.data.hasLoadedTab as boolean[]
+        loaded[0] = true
+        this.setData({ jobsByTab: tabs, hasLoadedTab: loaded })
+      } catch {
+        // ignore
+      }
+      // preload other tabs
+      this.preloadTabs()
+    })
   },
 
   onUnload() {
@@ -95,6 +116,20 @@ Page({
   onScrollLower() {
     // Handle scroll to lower from job-list component
     this.maybeLoadMore()
+  },
+
+  onTabTap(e: any) {
+    const idx = Number(e.currentTarget.dataset.idx || 0)
+    // switch tab visually — load from cache if available
+    const tabs = (this.data as any).jobsByTab as JobItem[][]
+    const loaded = (this.data as any).hasLoadedTab as boolean[]
+    this.setData({ currentTab: idx })
+    if (loaded[idx]) {
+      this.setData({ jobs: tabs[idx], filteredJobs: tabs[idx], scrollTop: 0 })
+    } else {
+      // kick off background load for this tab (do not clear UI)
+      this.loadJobsForTab(idx, true).catch(() => {})
+    }
   },
 
   syncLanguageFromApp() {
@@ -194,6 +229,39 @@ Page({
       } finally {
         this.setData({ loading: false })
       }
+    },
+
+    // Load jobs for a specific tab index (for preloading). For now tabs use the same collection.
+    async loadJobsForTab(tabIndex: number, reset = false) {
+      try {
+        const db = wx.cloud.database()
+        const collectionName = typeCollectionMap[this.data.currentFilter] || 'domestic_remote_jobs'
+        const skip = reset ? 0 : (this.data.jobsByTab[tabIndex] || []).length
+        const res = await db
+          .collection(collectionName)
+          .orderBy('createdAt', 'desc')
+          .skip(skip)
+          .limit(this.data.pageSize)
+          .get()
+
+        const newJobs = mapJobs(res.data || []) as JobItem[]
+        const existing = (this.data.jobsByTab[tabIndex] || []) as JobItem[]
+        const merged = reset ? newJobs : [...existing, ...newJobs]
+
+        const tabs = this.data.jobsByTab as JobItem[][]
+        tabs[tabIndex] = merged
+        const loaded = this.data.hasLoadedTab as boolean[]
+        loaded[tabIndex] = true
+        this.setData({ jobsByTab: tabs, hasLoadedTab: loaded })
+      } catch (err) {
+        console.error('[jobs] loadJobsForTab error', err)
+      }
+    },
+
+    preloadTabs() {
+      // preload tabs 1 and 2 in background
+      this.loadJobsForTab(1, true).catch(() => {})
+      this.loadJobsForTab(2, true).catch(() => {})
     },
 
     closeFilter() {

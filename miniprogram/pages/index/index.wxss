@@ -182,6 +182,41 @@ page::-webkit-scrollbar {
   gap: 12rpx;
 }
 
+.jobs-tabs {
+  display: flex;
+  background: #ffffff;
+  border-radius: 12rpx;
+  padding: 8rpx;
+  margin: 12rpx 0;
+  gap: 8rpx;
+}
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 10rpx 0;
+  border-radius: 8rpx;
+  color: #6b7280;
+  font-weight: 600;
+}
+.tab-active {
+  background: #eef2ff;
+  color: #1d4ed8;
+}
+.jobs-swiper {
+  flex: 1;
+  min-height: 0;
+}
+
+/* Ensure swiper and its items fill remaining vertical space so inner scroll works */
+swiper,
+.jobs-swiper,
+swiper-item,
+.job-list-wrapper,
+job-list {
+  height: 100%;
+  min-height: 0;
+}
+
 .search-input {
   flex: 1;
   width: auto;
@@ -293,8 +328,8 @@ page::-webkit-scrollbar {
 .job-list-wrapper {
   flex: 1;
   min-height: 0;
-  /* prevent wrapper itself from being scrollable */
-  overflow: hidden;
+  /* allow job-list to control scrolling */
+  overflow: visible;
 }
 
 /* Also add bottom padding so the tabbar doesn't cover the last items */

@@ -1,0 +1,7 @@
+<view class="page">
+  <view class="article-detail-content">
+    <rich-text nodes="{{htmlNodes}}" />
+  </view>
+</view>
+
+

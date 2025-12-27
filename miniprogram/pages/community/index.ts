@@ -160,6 +160,13 @@ Page({
         wx.setNavigationBarTitle({ title: t('app.navTitle', lang) })
       },
     })
+    // also publish articles to global for detail page
+    try {
+      const app: any = getApp()
+      if (app && app.globalData) app.globalData.articles = this.data.articles
+    } catch {
+      // ignore
+    }
   },
 
   onUnload: function () {
@@ -198,5 +205,30 @@ Page({
       },
       articles: updatedArticles,
     })
+      // expose articles to global for Article Detail page to pick up
+      try {
+        const app: any = getApp()
+        if (app && app.globalData) app.globalData.articles = updatedArticles
+      } catch {
+        // ignore
+      }
   },
+ 
+  // Open article list page (shows list of items for this article)
+  onOpenArticleAll(e: any) {
+    const id = e?.currentTarget?.dataset?.id
+    if (!id) return
+    wx.navigateTo({ url: `/pages/article-list/index?id=${id}` })
+  },
+
+  // Open specific item inside article (navigates to article detail and passes item id)
+  onArticleTap(e: any) {
+    const articleId = e?.currentTarget?.dataset?.articleId
+    const itemId = e?.currentTarget?.dataset?.itemId
+    if (!articleId) return
+    const url = `/pages/article-detail/index?id=${articleId}${itemId ? `&item=${itemId}` : ''}`
+    wx.navigateTo({ url })
+  },
+
+  // (removed duplicate)
 })

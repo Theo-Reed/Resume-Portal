@@ -1,5 +1,12 @@
 <!-- Remote jobs list page -->
 <view class="page">
+  <!-- Internal tabs for job list (公开 / 收藏 / 最新) -->
+  <view class="jobs-tabs">
+    <view class="tab {{currentTab === 0 ? 'tab-active' : ''}}" data-idx="0" bindtap="onTabTap">公开</view>
+    <view class="tab {{currentTab === 1 ? 'tab-active' : ''}}" data-idx="1" bindtap="onTabTap">收藏</view>
+    <view class="tab {{currentTab === 2 ? 'tab-active' : ''}}" data-idx="2" bindtap="onTabTap">最新</view>
+  </view>
+
   <view class="search-bar">
     <input
       class="search-input"
@@ -23,7 +30,88 @@
       </view>
     </view>
   </view>
+ 
+  <!-- Swiper for animated tab switch; touch disabled so only click switches -->
+  <swiper current="{{currentTab}}" class="jobs-swiper" indicator-dots="{{false}}" autoplay="{{false}}" circular="{{false}}" duration="300" disable-touch="{{true}}">
+    <swiper-item>
+      <view class="job-list-wrapper">
+        <job-list
+          jobs="{{filteredJobs}}"
+          loading="{{loading}}"
+          scroll-y="{{true}}"
+          scroll-top="{{scrollTop}}"
+          lower-threshold="{{lowerThreshold}}"
+          scroll-with-animation="{{true}}"
+          enhanced="{{true}}"
+          show-scrollbar="{{false}}"
+          enable-back-to-top="{{false}}"
+          enable-passive="{{true}}"
 
+          enable-detail="{{true}}"
+          detail-selector="#jobDetail"
+          detail-collection-fallback="{{selectedCollection}}"
+
+          bind:itemtap="onJobTap"
+          bind:scrolltolower="onScrollLower"
+          bind:scroll="onScroll"
+          bind:touchstart="onTouchStart"
+          bind:touchend="onTouchEnd"
+        />
+      </view>
+    </swiper-item>
+    <swiper-item>
+      <view class="job-list-wrapper">
+        <job-list
+          jobs="{{filteredJobs}}"
+          loading="{{loading}}"
+          scroll-y="{{true}}"
+          scroll-top="{{scrollTop}}"
+          lower-threshold="{{lowerThreshold}}"
+          scroll-with-animation="{{true}}"
+          enhanced="{{true}}"
+          show-scrollbar="{{false}}"
+          enable-back-to-top="{{false}}"
+          enable-passive="{{true}}"
+
+          enable-detail="{{true}}"
+          detail-selector="#jobDetail"
+          detail-collection-fallback="{{selectedCollection}}"
+
+          bind:itemtap="onJobTap"
+          bind:scrolltolower="onScrollLower"
+          bind:scroll="onScroll"
+          bind:touchstart="onTouchStart"
+          bind:touchend="onTouchEnd"
+        />
+      </view>
+    </swiper-item>
+    <swiper-item>
+      <view class="job-list-wrapper">
+        <job-list
+          jobs="{{filteredJobs}}"
+          loading="{{loading}}"
+          scroll-y="{{true}}"
+          scroll-top="{{scrollTop}}"
+          lower-threshold="{{lowerThreshold}}"
+          scroll-with-animation="{{true}}"
+          enhanced="{{true}}"
+          show-scrollbar="{{false}}"
+          enable-back-to-top="{{false}}"
+          enable-passive="{{true}}"
+
+          enable-detail="{{true}}"
+          detail-selector="#jobDetail"
+          detail-collection-fallback="{{selectedCollection}}"
+
+          bind:itemtap="onJobTap"
+          bind:scrolltolower="onScrollLower"
+          bind:scroll="onScroll"
+          bind:touchstart="onTouchStart"
+          bind:touchend="onTouchEnd"
+        />
+      </view>
+    </swiper-item>
+  </swiper>
   <!-- Drawer Component -->
   <drawer
     show="{{showDrawer}}"
@@ -54,29 +142,6 @@
     </block>
   </view>
 
-  <view class="job-list-wrapper">
-    <job-list
-      jobs="{{filteredJobs}}"
-      loading="{{loading}}"
-      scroll-y="{{true}}"
-      scroll-top="{{scrollTop}}"
-      lower-threshold="{{lowerThreshold}}"
-      scroll-with-animation="{{true}}"
-      enhanced="{{true}}"
-      show-scrollbar="{{false}}"
-      enable-back-to-top="{{false}}"
-      enable-passive="{{true}}"
-
-      enable-detail="{{true}}"
-      detail-selector="#jobDetail"
-      detail-collection-fallback="{{selectedCollection}}"
-
-      bind:itemtap="onJobTap"
-      bind:scrolltolower="onScrollLower"
-      bind:scroll="onScroll"
-      bind:touchstart="onTouchStart"
-      bind:touchend="onTouchEnd"
-    />
-  </view>
+  <!-- duplicate tabs/swiper removed; use single tabs above search bar and single job-list -->
 
 </view>

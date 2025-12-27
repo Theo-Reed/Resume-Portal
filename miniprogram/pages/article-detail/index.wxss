@@ -1,0 +1,19 @@
+.page {
+  min-height: 100vh;
+  background: #ffffff;
+}
+.article-detail-content {
+  padding: 24rpx;
+}
+.article-detail-content h3 {
+  font-size: 30rpx;
+  color: #111827;
+  margin-bottom: 8rpx;
+}
+.article-detail-content div {
+  font-size: 28rpx;
+  color: #374151;
+  margin-bottom: 16rpx;
+}
+
+
