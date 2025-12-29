@@ -51,6 +51,7 @@
           <job-list
             jobs="{{jobsByTab[0] || []}}"
             loading="{{loading}}"
+            has-more="{{hasMore}}"
             scroll-y="{{true}}"
             scroll-top="{{tabState[0] ? tabState[0].scrollTop : 0}}"
             lower-threshold="{{lowerThreshold}}"
@@ -114,6 +115,7 @@
           <job-list
             jobs="{{jobsByTab[1] || []}}"
             loading="{{loading}}"
+            has-more="{{hasMore}}"
             scroll-y="{{featuredScrollEnabled}}"
             scroll-top="{{tabState[1].scrollTop}}"
             lower-threshold="{{lowerThreshold}}"
@@ -136,7 +138,7 @@
         </view>
         <!-- Subscription overlay for 精选 tab when expired - covers search-bar + job-list -->
         <view wx:if="{{currentTab === 1 && !isFeaturedUnlocked}}" class="featured-overlay">
-          <view class="featured-overlay-text" bindtap="onFeaturedSubscribeTap">订阅后查看更多精选岗位</view>
+          <view class="featured-overlay-text" bindtap="onFeaturedSubscribeTap">订阅后查看精选岗位</view>
         </view>
       </view>
     </swiper-item>
@@ -181,6 +183,7 @@
           <job-list
             jobs="{{jobsByTab[2] || []}}"
             loading="{{loading}}"
+            has-more="{{hasMore}}"
             scroll-y="{{true}}"
             scroll-top="{{tabState[2].scrollTop}}"
             lower-threshold="{{lowerThreshold}}"
@@ -243,6 +246,7 @@
     show="{{showJobDetail}}"
     job-data="{{selectedJobData}}"
     bind:close="closeJobDetail"
+    bind:collectchange="onJobCollectChange"
   />
 
 

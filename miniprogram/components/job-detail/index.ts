@@ -63,6 +63,18 @@ Component({
   observers: {
     'show, jobData'(show: boolean, jobData: any) {
       if (show && jobData && jobData._id) {
+        const currentJobId = (this.data.job as any)?._id
+        const newJobId = jobData._id || jobData.jobId
+        
+        // 如果是同一个职位，只更新 isSaved 状态（避免重新渲染造成抖动）
+        if (currentJobId === newJobId && this.data.job) {
+          if (jobData.isSaved !== undefined && jobData.isSaved !== this.data.collected) {
+            this.setData({ collected: jobData.isSaved })
+          }
+          return
+        }
+        
+        // 职位ID变化，执行完整的初始化逻辑
         if ((this as any)._animation && typeof (this as any)._animation.stop === 'function') {
           ;(this as any)._animation.stop()
           ;(this as any)._animation = null
@@ -179,6 +191,13 @@ Component({
         }
 
         this.setData({ collected: targetCollected })
+        
+        // 触发自定义事件，通知父组件更新列表中对应职位的收藏状态
+        this.triggerEvent('collectchange', {
+          jobId: job._id,
+          isSaved: targetCollected,
+        })
+        
         wx.showToast({
           title: targetCollected ? '收藏成功' : '已取消收藏',
           icon: 'none',

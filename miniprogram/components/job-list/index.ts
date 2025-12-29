@@ -10,13 +10,9 @@ Component({
       type: Boolean,
       value: false,
     },
-    showNoMore: {
+    hasMore: {
       type: Boolean,
-      value: false,
-    },
-    noMoreVisible: {
-      type: Boolean,
-      value: false,
+      value: true,
     },
 
     // scroll-view passthrough props
@@ -69,6 +65,68 @@ Component({
       type: Number,
       value: 2.5,
     },
+  },
+
+  data: {
+    showNoMore: false,
+    noMoreVisible: false,
+  },
+
+  observers: {
+    'loading,hasMore,jobs': function(loading: boolean, hasMore: boolean, jobs: any[]) {
+      // Clear any existing timeout
+      const self = this as any
+      if (self._noMoreTimer) {
+        clearTimeout(self._noMoreTimer)
+        self._noMoreTimer = null
+      }
+      if (self._noMoreFadeOutTimer) {
+        clearTimeout(self._noMoreFadeOutTimer)
+        self._noMoreFadeOutTimer = null
+      }
+      if (self._noMoreRemoveTimer) {
+        clearTimeout(self._noMoreRemoveTimer)
+        self._noMoreRemoveTimer = null
+      }
+
+      // When loading stops and hasMore is false, show "no more" message
+      if (!loading && !hasMore && jobs && jobs.length > 0) {
+        this.setData({ showNoMore: true }, () => {
+          // Trigger fade-in animation
+          self._noMoreTimer = setTimeout(() => {
+            this.setData({ noMoreVisible: true })
+          }, 50)
+          // After showing for a while, fade out and remove
+          self._noMoreFadeOutTimer = setTimeout(() => {
+            this.setData({ noMoreVisible: false }, () => {
+              self._noMoreRemoveTimer = setTimeout(() => {
+                this.setData({ showNoMore: false })
+              }, 300) // Match CSS transition duration
+            })
+          }, 2000) // Show for 2 seconds
+        })
+      } else {
+        // Hide immediately when loading starts or hasMore becomes true
+        this.setData({ showNoMore: false, noMoreVisible: false })
+      }
+    },
+  },
+
+  detached() {
+    // Clean up timers when component is detached
+    const self = this as any
+    if (self._noMoreTimer) {
+      clearTimeout(self._noMoreTimer)
+      self._noMoreTimer = null
+    }
+    if (self._noMoreFadeOutTimer) {
+      clearTimeout(self._noMoreFadeOutTimer)
+      self._noMoreFadeOutTimer = null
+    }
+    if (self._noMoreRemoveTimer) {
+      clearTimeout(self._noMoreRemoveTimer)
+      self._noMoreRemoveTimer = null
+    }
   },
 
   methods: {

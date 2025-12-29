@@ -897,6 +897,66 @@ Page({
       })
     },
 
+    // 处理职位收藏状态变化事件
+    onJobCollectChange(e: any) {
+      const { jobId, isSaved } = e.detail || {}
+      if (!jobId) return
+
+      // 更新所有 tabs 中对应职位的 isSaved 状态
+      const tabs = this.data.jobsByTab as JobItem[][]
+      let updated = false
+
+      for (let tabIndex = 0; tabIndex < tabs.length; tabIndex++) {
+        const jobs = tabs[tabIndex]
+        const updatedJobs = jobs.map(job => {
+          if (job._id === jobId) {
+            updated = true
+            return { ...job, isSaved }
+          }
+          return job
+        })
+        if (updated) {
+          tabs[tabIndex] = updatedJobs
+        }
+      }
+
+      // 更新 regionCache
+      const cache = (this.data as any).regionCache as Record<FilterType, JobItem[]>
+      for (const region in cache) {
+        const jobs = cache[region as FilterType]
+        if (jobs) {
+          const updatedJobs = jobs.map(job => {
+            if (job._id === jobId) {
+              return { ...job, isSaved }
+            }
+            return job
+          })
+          cache[region as FilterType] = updatedJobs
+        }
+      }
+
+      // 更新 filteredJobs（当前显示的列表）
+      const filteredJobs = (this.data.filteredJobs || []).map(job => {
+        if (job._id === jobId) {
+          return { ...job, isSaved }
+        }
+        return job
+      })
+
+      // 更新 selectedJobData（如果当前显示的详情就是这个职位）
+      // 注意：不需要更新 selectedJobData，因为 job-detail 组件内部状态已经更新
+      // 如果更新 selectedJobData，会触发 observers 导致重新渲染造成抖动
+      // 组件内部已经通过 setData 更新了 collected 状态，状态是同步的
+      
+      // 批量更新状态（不更新 selectedJobData，避免触发组件重新渲染）
+      this.setData({
+        jobsByTab: tabs,
+        regionCache: cache,
+        filteredJobs,
+        // selectedJobData 不更新，组件内部状态已经是最新的
+      })
+    },
+
     onDrawerConfirm(e: WechatMiniprogram.CustomEvent) {
       const value = (e.detail?.value || DEFAULT_DRAWER_FILTER) as DrawerFilterValue
       this.updateCurrentTabState({ 
