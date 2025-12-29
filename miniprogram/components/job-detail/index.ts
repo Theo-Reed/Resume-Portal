@@ -126,6 +126,10 @@ Component({
         }
       }
 
+      // 优先使用 jobData.isSaved 字段（如果云端函数已返回）
+      // 如果没有该字段，则查询数据库（向后兼容）
+      const isSaved = jobData.isSaved !== undefined ? jobData.isSaved : null
+      
       this.setData({
         job: {
           ...jobData,
@@ -133,13 +137,17 @@ Component({
           richDescription: formatDescription(jobData.description),
         } as JobDetailItem & { richDescription: string },
         loading: false,
+        collected: isSaved !== null ? isSaved : false, // 如果 isSaved 存在则直接使用，否则先设为 false 避免闪烁
       })
 
-      try {
-        const isCollected = await this.checkCollectState(jobId, true)
-        this.setData({ collected: isCollected })
-      } catch (err) {
-        this.setData({ collected: false })
+      // 只有在 jobData.isSaved 不存在时才查询数据库（向后兼容）
+      if (isSaved === null) {
+        try {
+          const isCollected = await this.checkCollectState(jobId, true)
+          this.setData({ collected: isCollected })
+        } catch (err) {
+          this.setData({ collected: false })
+        }
       }
     },
 

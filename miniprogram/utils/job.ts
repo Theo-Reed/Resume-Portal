@@ -13,6 +13,7 @@ export type JobItem = {
   type: string
   tags: string[]
   displayTags?: string[]
+  isSaved?: boolean // 是否为当前用户收藏（由云端函数返回）
 }
 
 export type ResolvedSavedJob = JobItem & {

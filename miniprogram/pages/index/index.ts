@@ -507,79 +507,67 @@ Page({
     // Load jobs for a specific tab index (for preloading).
     async loadJobsForTab(tabIndex: number, reset = false) {
       try {
-        const db = wx.cloud.database()
-        
         if (tabIndex === 1) {
           // 精选 tab: load from all collections
           const collections = Object.values(typeCollectionMap)
-          const allJobs: JobItem[] = []
           
-          for (const collectionName of collections) {
-            try {
-              const skip = reset ? 0 : 0 // For featured, always start fresh or implement pagination later
-              const res = await db
-                .collection(collectionName)
-                .orderBy('createdAt', 'desc')
-                .skip(skip)
-                .limit(this.data.pageSize)
-                .get()
-              
-              const mapped = mapJobs(res.data || []) as JobItem[]
-              // Add sourceCollection to each job for reference
-              mapped.forEach(job => {
-                (job as any).sourceCollection = collectionName
-              })
-              allJobs.push(...mapped)
-            } catch (err) {
-              console.error(`[jobs] loadJobsForTab error for ${collectionName}`, err)
-            }
-          }
-          
-          // Sort by createdAt descending
-          allJobs.sort((a, b) => {
-            const aTime = new Date(a.createdAt).getTime()
-            const bTime = new Date(b.createdAt).getTime()
-            return bTime - aTime
+          const res = await wx.cloud.callFunction({
+            name: 'getJobList',
+            data: {
+              collectionNames: collections,
+              pageSize: this.data.pageSize,
+            },
           })
           
-          // Limit to pageSize
-          const limited = allJobs.slice(0, this.data.pageSize)
-          
-          const tabs = this.data.jobsByTab as JobItem[][]
-          tabs[tabIndex] = limited
-          const loaded = this.data.hasLoadedTab as boolean[]
-          loaded[tabIndex] = true
-          // For featured tab, set hasMore based on whether we got full pageSize
-          const hasMore = limited.length >= this.data.pageSize
-          this.setData({ jobsByTab: tabs, hasLoadedTab: loaded, hasMore })
+          if (res.result && (res.result as any).ok) {
+            const jobs = (res.result as any).jobs || []
+            const mapped = mapJobs(jobs) as JobItem[]
+            
+            const tabs = this.data.jobsByTab as JobItem[][]
+            tabs[tabIndex] = mapped
+            const loaded = this.data.hasLoadedTab as boolean[]
+            loaded[tabIndex] = true
+            const hasMore = mapped.length >= this.data.pageSize
+            this.setData({ jobsByTab: tabs, hasLoadedTab: loaded, hasMore })
+          } else {
+            console.error('[jobs] loadJobsForTab getJobList failed:', (res.result as any)?.error)
+          }
         } else {
           // 公开 tab: use current filter collection
           const currentState = this.getCurrentTabState()
           const collectionName = typeCollectionMap[currentState.currentFilter] || 'domestic_remote_jobs'
           const skip = reset ? 0 : (this.data.jobsByTab[tabIndex] || []).length
-          const res = await db
-            .collection(collectionName)
-            .orderBy('createdAt', 'desc')
-            .skip(skip)
-            .limit(this.data.pageSize)
-            .get()
+          
+          const res = await wx.cloud.callFunction({
+            name: 'getJobList',
+            data: {
+              collectionName,
+              pageSize: this.data.pageSize,
+              skip,
+            },
+          })
+          
+          if (res.result && (res.result as any).ok) {
+            const jobs = (res.result as any).jobs || []
+            const newJobs = mapJobs(jobs) as JobItem[]
+            const existing = (this.data.jobsByTab[tabIndex] || []) as JobItem[]
+            const merged = reset ? newJobs : [...existing, ...newJobs]
 
-          const newJobs = mapJobs(res.data || []) as JobItem[]
-          const existing = (this.data.jobsByTab[tabIndex] || []) as JobItem[]
-          const merged = reset ? newJobs : [...existing, ...newJobs]
+            // Update cache for current region
+            const cache = (this.data as any).regionCache as Record<FilterType, JobItem[]>
+            cache[currentState.currentFilter] = merged
+            this.setData({ regionCache: cache })
 
-          // Update cache for current region
-          const cache = (this.data as any).regionCache as Record<FilterType, JobItem[]>
-          cache[currentState.currentFilter] = merged
-          this.setData({ regionCache: cache })
-
-          const tabs = this.data.jobsByTab as JobItem[][]
-          tabs[tabIndex] = merged
-          const loaded = this.data.hasLoadedTab as boolean[]
-          loaded[tabIndex] = true
-          // Set hasMore based on whether we got full pageSize
-          const hasMore = newJobs.length >= this.data.pageSize
-          this.setData({ jobsByTab: tabs, hasLoadedTab: loaded, hasMore })
+            const tabs = this.data.jobsByTab as JobItem[][]
+            tabs[tabIndex] = merged
+            const loaded = this.data.hasLoadedTab as boolean[]
+            loaded[tabIndex] = true
+            // Set hasMore based on whether we got full pageSize
+            const hasMore = newJobs.length >= this.data.pageSize
+            this.setData({ jobsByTab: tabs, hasLoadedTab: loaded, hasMore })
+          } else {
+            console.error('[jobs] loadJobsForTab getJobList failed:', (res.result as any)?.error)
+          }
         }
       } catch (err) {
         console.error('[jobs] loadJobsForTab error', err)
