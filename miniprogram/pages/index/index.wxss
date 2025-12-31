@@ -534,3 +534,195 @@ job-list {
   font-size: 28rpx;
   color: #9ca3af;
 }
+
+/* --- Restore Search Condition Bottom Sheet --- */
+.restore-sheet-mask {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 2499;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  will-change: opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.restore-sheet-mask-open {
+  opacity: 1;
+}
+
+.restore-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 80vh;
+  background: #ffffff;
+  border-top-left-radius: 24rpx;
+  border-top-right-radius: 24rpx;
+  transform: translate3d(0, 100%, 0);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 2500;
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 100%, 0);
+}
+
+.restore-sheet-open {
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+}
+
+.restore-sheet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 32rpx;
+  border-bottom: 1rpx solid #e5e7eb;
+}
+
+.restore-sheet-header-left {
+  flex: 1;
+}
+
+.restore-sheet-header-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.restore-header-btn {
+  padding: 8rpx 16rpx;
+  background: transparent;
+  border-radius: 8rpx;
+  transition: background-color 0.2s ease;
+}
+
+.restore-header-btn:active {
+  background: #f3f4f6;
+}
+
+.restore-header-btn-text {
+  font-size: 26rpx;
+  color: #1d4ed8;
+  font-weight: 500;
+}
+
+.restore-sheet-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32rpx;
+  padding-top: 24rpx;
+}
+
+.empty-restore {
+  padding: 120rpx 0;
+  text-align: center;
+}
+
+.empty-restore-text {
+  font-size: 28rpx;
+  color: #9ca3af;
+}
+
+.restore-item {
+  position: relative;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  background: #f5f7fb;
+  border-radius: 18rpx;
+  border: 1rpx solid transparent;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), margin-bottom 0.2s cubic-bezier(0.4, 0, 0.2, 1), padding 0.2s cubic-bezier(0.4, 0, 0.2, 1), max-height 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+}
+
+.restore-item.restore-item-deleting {
+  transform: translate3d(-100%, 0, 0);
+  -webkit-transform: translate3d(-100%, 0, 0);
+  opacity: 0;
+}
+
+.restore-item.restore-item-collapsing {
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  max-height: 0 !important;
+  overflow: hidden;
+}
+
+.restore-item:active {
+  background: #e5f0ff;
+  border-color: #1d4ed8;
+}
+
+.restore-item-editing:active {
+  background: #f5f7fb;
+  border-color: transparent;
+}
+
+.restore-item:last-child {
+  margin-bottom: 0;
+}
+
+.restore-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  padding-right: 50rpx;
+}
+
+.restore-item-delete {
+  position: absolute;
+  top: 50%;
+  right: 20rpx;
+  transform: translate3d(0, -50%, 0);
+  -webkit-transform: translate3d(0, -50%, 0);
+  width: 48rpx;
+  height: 48rpx;
+  min-height: 0;
+  max-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  z-index: 10;
+}
+
+.restore-item-delete:active {
+  transform: translate3d(0, -50%, 0) scale3d(0.95, 0.95, 1);
+  -webkit-transform: translate3d(0, -50%, 0) scale3d(0.95, 0.95, 1);
+}
+
+.restore-item-delete-icon {
+  width: 40rpx;
+  height: 40rpx;
+  display: block;
+}
+
+.restore-item-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #111827;
+}
+
+.restore-item-desc {
+  font-size: 26rpx;
+  color: #6b7280;
+  line-height: 1.5;
+}

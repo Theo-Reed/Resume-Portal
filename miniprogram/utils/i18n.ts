@@ -55,14 +55,20 @@ const dict = {
     desc: { Chinese: '敬请期待', English: 'Coming soon' },
   },
   jobs: {
-    searchPlaceholder: { Chinese: '搜索职位名称或来源..', English: 'Search title or source..' },
+    searchPlaceholder: { Chinese: '搜索职位名称..', English: 'Search job title..' },
     filterLabel: { Chinese: '筛选', English: 'Filter' },
     regionDomestic: { Chinese: '国内 ', English: 'China' },
     regionAbroad: { Chinese: '国外 ', English: 'Intl' },
     regionWeb3: { Chinese: 'Web3', English: 'Web3' },
-    saveMenuLabel: { Chinese: '保存', English: 'Save' },
+    saveMenuLabel: { Chinese: '功能', English: 'Function' },
     collectAllLabel: { Chinese: '一键收藏当前列表', English: 'Collect All Jobs' },
     saveSearchLabel: { Chinese: '保存搜索条件', English: 'Save Search' },
+    restoreSearchLabel: { Chinese: '恢复搜索条件', English: 'Restore Search' },
+    editLabel: { Chinese: '编辑', English: 'Edit' },
+    doneLabel: { Chinese: '完成', English: 'Done' },
+    clearAllLabel: { Chinese: '一键清空', English: 'Clear All' },
+    trySaveSearchHint: { Chinese: '试着保存搜索条件吧', English: 'Try saving a search condition' },
+    tryAddFilterHint: { Chinese: '试着加入筛选条件吧', English: 'Try adding filter conditions' },
   },
   drawer: {
     salary: { Chinese: '薪资', English: 'Salary' },
@@ -122,6 +128,12 @@ export type I18nKey =
   | 'jobs.saveMenuLabel'
   | 'jobs.collectAllLabel'
   | 'jobs.saveSearchLabel'
+  | 'jobs.restoreSearchLabel'
+  | 'jobs.editLabel'
+  | 'jobs.doneLabel'
+  | 'jobs.clearAllLabel'
+  | 'jobs.trySaveSearchHint'
+  | 'jobs.tryAddFilterHint'
   | 'drawer.salary'
   | 'drawer.experience'
   | 'drawer.clear'

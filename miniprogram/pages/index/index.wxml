@@ -45,6 +45,9 @@
           <view class="save-menu-option" bindtap="onSaveSearchCondition">
             <text class="save-menu-option-text">{{ui.saveSearchLabel}}</text>
           </view>
+          <view class="save-menu-option" bindtap="onRestoreSearchCondition">
+            <text class="save-menu-option-text">{{ui.restoreSearchLabel}}</text>
+          </view>
         </view>
 
         <view class="job-list-wrapper">
@@ -108,6 +111,9 @@
           </view>
           <view class="save-menu-option" bindtap="onSaveSearchCondition">
             <text class="save-menu-option-text">{{ui.saveSearchLabel}}</text>
+          </view>
+          <view class="save-menu-option" bindtap="onRestoreSearchCondition">
+            <text class="save-menu-option-text">{{ui.restoreSearchLabel}}</text>
           </view>
         </view>
 
@@ -176,6 +182,9 @@
           </view>
           <view class="save-menu-option" bindtap="onSaveSearchCondition">
             <text class="save-menu-option-text">{{ui.saveSearchLabel}}</text>
+          </view>
+          <view class="save-menu-option" bindtap="onRestoreSearchCondition">
+            <text class="save-menu-option-text">{{ui.restoreSearchLabel}}</text>
           </view>
         </view>
 
@@ -249,5 +258,39 @@
     bind:savechange="onJobSaveChange"
   />
 
+  <!-- Restore Search Condition Bottom Sheet -->
+  <block wx:if="{{showRestoreSheet}}">
+    <view class="restore-sheet-mask {{restoreSheetOpen ? 'restore-sheet-mask-open' : ''}}" bindtap="closeRestoreSheet"></view>
+    <view class="restore-sheet {{restoreSheetOpen ? 'restore-sheet-open' : ''}}">
+      <!-- Header with buttons -->
+      <view class="restore-sheet-header">
+        <view class="restore-sheet-header-left">
+          <view wx:if="{{isRestoreEditing}}" class="restore-header-btn" bindtap="onClearAllRestoreConditions">
+            <text class="restore-header-btn-text">{{ui.clearAllLabel}}</text>
+          </view>
+        </view>
+        <view class="restore-sheet-header-right">
+          <view class="restore-header-btn" bindtap="toggleRestoreEdit">
+            <text class="restore-header-btn-text">{{isRestoreEditing ? ui.doneLabel : ui.editLabel}}</text>
+          </view>
+        </view>
+      </view>
+      
+      <view class="restore-sheet-content">
+        <view wx:if="{{savedSearchConditions.length === 0}}" class="empty-restore">
+          <text class="empty-restore-text">暂无保存的搜索条件</text>
+        </view>
+        <view wx:for="{{savedSearchConditions}}" wx:key="_id" wx:for-item="item" wx:for-index="idx" class="restore-item {{isRestoreEditing ? 'restore-item-editing' : ''}} {{item.deleting ? 'restore-item-deleting' : ''}} {{item.collapsing ? 'restore-item-collapsing' : ''}}" data-index="{{idx}}" bindtap="{{isRestoreEditing ? '' : 'onSelectRestoreCondition'}}">
+          <view class="restore-item-content">
+            <view class="restore-item-title">{{item.title}}</view>
+            <view class="restore-item-desc">{{item.desc}}</view>
+          </view>
+          <view wx:if="{{isRestoreEditing}}" class="restore-item-delete" data-index="{{idx}}" catchtap="onDeleteRestoreCondition">
+            <image class="restore-item-delete-icon" src="/assets/icons/del-btn.png" mode="aspectFit" />
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
 
 </view>

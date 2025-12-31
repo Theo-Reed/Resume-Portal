@@ -36,6 +36,10 @@ Page({
     showJobDetail: false,
     selectedJobData: null as any,
     selectedCollection: 'remote_jobs', // 统一使用 remote_jobs collection
+    showRestoreSheet: false,
+    restoreSheetOpen: false,
+    savedSearchConditions: [] as any[],
+    isRestoreEditing: false,
 
     tabState: [
       {
@@ -72,11 +76,17 @@ Page({
     }>,
 
     ui: {
-      searchPlaceholder: '搜索职位名称或来源..',
+      searchPlaceholder: '搜索职位名称..',
       filterLabel: '筛选',
-      saveMenuLabel: '保存',
+      saveMenuLabel: '功能',
       collectAllLabel: '一键收藏当前列表',
       saveSearchLabel: '保存搜索条件',
+      restoreSearchLabel: '恢复搜索条件',
+      editLabel: '编辑',
+      doneLabel: '完成',
+      clearAllLabel: '一键清空',
+      trySaveSearchHint: '试着保存搜索条件吧',
+      tryAddFilterHint: '试着加入筛选条件吧',
     } as Record<string, string>,
   },
   getCurrentTabState() {
@@ -375,6 +385,12 @@ Page({
           saveMenuLabel: t('jobs.saveMenuLabel', lang),
           collectAllLabel: t('jobs.collectAllLabel', lang),
           saveSearchLabel: t('jobs.saveSearchLabel', lang),
+          restoreSearchLabel: t('jobs.restoreSearchLabel', lang),
+          editLabel: t('jobs.editLabel', lang),
+          doneLabel: t('jobs.doneLabel', lang),
+          clearAllLabel: t('jobs.clearAllLabel', lang),
+          trySaveSearchHint: t('jobs.trySaveSearchHint', lang),
+          tryAddFilterHint: t('jobs.tryAddFilterHint', lang),
         },
       })
     },
@@ -645,7 +661,7 @@ Page({
 
       // 只有在当前tab是收藏tab且需要显示loading时才设置loading状态
       if (showLoading && this.data.currentTab === 2) {
-        this.setData({ loading: true })
+      this.setData({ loading: true })
       }
       try {
         const db = wx.cloud.database()
@@ -670,7 +686,7 @@ Page({
         if (savedRecords.length === 0) {
           const tabs = this.data.jobsByTab as JobItem[][]
           if (reset) {
-            tabs[2] = []
+          tabs[2] = []
           }
           const loaded = this.data.hasLoadedTab as boolean[]
           loaded[2] = true
@@ -678,6 +694,7 @@ Page({
           if (this.data.currentTab === 2) {
             updateData.jobs = tabs[2] || []
             updateData.filteredJobs = tabs[2] || []
+            updateData.loading = false // 确保loading状态被清除
           }
           this.setData(updateData)
           return
@@ -688,7 +705,7 @@ Page({
         if (jobIds.length === 0) {
           const tabs = this.data.jobsByTab as JobItem[][]
           if (reset) {
-            tabs[2] = []
+          tabs[2] = []
           }
           const loaded = this.data.hasLoadedTab as boolean[]
           loaded[2] = true
@@ -696,6 +713,7 @@ Page({
           if (this.data.currentTab === 2) {
             updateData.jobs = tabs[2] || []
             updateData.filteredJobs = tabs[2] || []
+            updateData.loading = false // 确保loading状态被清除
           }
           this.setData(updateData)
           return
@@ -745,15 +763,16 @@ Page({
         if (this.data.currentTab === 2) {
           updateData.jobs = tabs[2]
           updateData.filteredJobs = tabs[2]
+          updateData.loading = false // 确保loading状态被清除
         }
         this.setData(updateData)
       } catch (err) {
         if (showLoading && this.data.currentTab === 2) {
-          wx.showToast({ title: '加载收藏失败', icon: 'none' })
+        wx.showToast({ title: '加载收藏失败', icon: 'none' })
         }
       } finally {
-        // 只有在设置了loading状态时才清除
-        if (showLoading && this.data.currentTab === 2) {
+        // 确保loading状态被清除（无论是否设置了showLoading）
+        if (this.data.currentTab === 2) {
           this.setData({ loading: false })
         }
       }
@@ -907,7 +926,7 @@ Page({
         
         if (jobsToSave.length === 0) {
           wx.hideLoading()
-          wx.showToast({ title: '所有职位均已收藏', icon: 'success' })
+          wx.showToast({ title: '已收藏全部', icon: 'success', duration: 2000 })
           return
         }
 
@@ -935,17 +954,6 @@ Page({
         if (res.result && (res.result as any).success) {
           const result = res.result as any
           successCount = result.savedCount || 0
-          
-          // 如果成功收藏0个，说明所有职位均已收藏
-          if (successCount === 0) {
-            wx.hideLoading()
-            wx.showToast({ 
-              title: '所有职位均已收藏', 
-              icon: 'success',
-              duration: 2000,
-            })
-            return
-          }
         } else {
           wx.hideLoading()
           wx.showToast({ title: '收藏失败', icon: 'none' })
@@ -953,11 +961,20 @@ Page({
         }
 
         wx.hideLoading()
-        wx.showToast({ 
-          title: `成功收藏 ${successCount} 个职位`, 
-          icon: 'success',
-          duration: 2000,
-        })
+        if (successCount === 0) {
+          // 如果成功收藏0个，说明所有职位已收藏
+          wx.showToast({ 
+            title: '已收藏全部', 
+            icon: 'success',
+            duration: 2000,
+          })
+        } else {
+          wx.showToast({ 
+            title: `成功收藏 ${successCount} 个职位`, 
+            icon: 'success',
+            duration: 2000,
+          })
+        }
 
         // 更新职位列表的isSaved状态（只更新成功插入的职位）
         const savedJobIds = new Set(jobsToSave.slice(0, successCount).map(j => j._id))
@@ -995,9 +1012,31 @@ Page({
       }
 
       const currentState = this.getCurrentTabState()
+      const searchKeyword = (currentState.searchKeyword || '').trim()
+      const drawerFilter = currentState.drawerFilter || { ...DEFAULT_DRAWER_FILTER }
+      
+      // 检查是否有搜索关键词或筛选条件
+      const hasKeyword = !!searchKeyword
+      const hasSourceFilter = !!(drawerFilter?.source_name && Array.isArray(drawerFilter.source_name) && drawerFilter.source_name.length > 0)
+      const hasRegionFilter = !!(drawerFilter?.region && drawerFilter.region !== '全部')
+      const hasSalaryFilter = !!(drawerFilter?.salary && drawerFilter.salary !== '全部')
+      const hasExperienceFilter = !!(drawerFilter?.experience && drawerFilter.experience !== '全部')
+      const hasAnyFilter = hasSourceFilter || hasRegionFilter || hasSalaryFilter || hasExperienceFilter
+      
+      // 如果既没有搜索关键词，也没有筛选条件，提示用户
+      if (!hasKeyword && !hasAnyFilter) {
+        const lang = normalizeLanguage(app?.globalData?.language)
+        wx.showToast({ 
+          title: t('jobs.tryAddFilterHint', lang), 
+          icon: 'none',
+          duration: 2000,
+        })
+        return
+      }
+
       const searchCondition = {
-        searchKeyword: currentState.searchKeyword || '',
-        drawerFilter: currentState.drawerFilter || { ...DEFAULT_DRAWER_FILTER },
+        searchKeyword,
+        drawerFilter,
         tabIndex: this.data.currentTab,
       }
 
@@ -1022,6 +1061,240 @@ Page({
       }
     },
 
+    async onRestoreSearchCondition() {
+      // 关闭菜单
+      this.updateCurrentTabState({ showSaveMenu: false })
+
+      // 检查登录状态
+      const app = getApp<IAppOption>() as any
+      const user = app?.globalData?.user
+      const openid = user?.openid
+      const isLoggedIn = !!(user && (user.isAuthed || user.phone))
+      if (!isLoggedIn || !openid) {
+        wx.showToast({ title: '请先登录/绑定手机号', icon: 'none' })
+        return
+      }
+
+      try {
+        const db = wx.cloud.database()
+        
+        // 读取保存的搜索条件列表
+        const res = await db
+          .collection('saved_search_conditions')
+          .where({ openid })
+          .orderBy('createdAt', 'desc')
+          .limit(20)
+          .get()
+
+        const savedConditions = (res.data || []) as any[]
+        
+        // 如果没有保存的搜索条件，只显示toast，不弹窗
+        if (savedConditions.length === 0) {
+          const lang = normalizeLanguage(app?.globalData?.language)
+          wx.showToast({ 
+            title: t('jobs.trySaveSearchHint', lang), 
+            icon: 'none',
+            duration: 2000,
+          })
+          return
+        }
+        
+        // 格式化数据用于显示
+        const formattedConditions = savedConditions.map((condition) => {
+          const keyword = condition.searchKeyword || ''
+          const filter = condition.drawerFilter || {}
+          const tabNames = ['公开', '精选', '收藏']
+          const tabName = tabNames[condition.tabIndex] || '公开'
+          
+          // 构建描述文本
+          const parts: string[] = []
+          if (keyword) {
+            parts.push(`关键词: ${keyword}`)
+          }
+          if (filter.region && filter.region !== '全部') {
+            parts.push(`区域: ${filter.region}`)
+          }
+          if (filter.source_name && Array.isArray(filter.source_name) && filter.source_name.length > 0) {
+            parts.push(`来源: ${filter.source_name.join(',')}`)
+          }
+          if (filter.salary && filter.salary !== '全部') {
+            parts.push(`薪资: ${filter.salary}`)
+          }
+          
+          const desc = parts.length > 0 ? parts.join(' | ') : '无筛选条件'
+          return {
+            ...condition,
+            title: tabName,
+            desc,
+          }
+        })
+
+        // 显示底部弹窗
+        this.setData({
+          savedSearchConditions: formattedConditions,
+          showRestoreSheet: true,
+          isRestoreEditing: false,
+        }, () => {
+          // 延迟显示动画
+          setTimeout(() => {
+            this.setData({ restoreSheetOpen: true })
+          }, 50)
+        })
+      } catch (err) {
+        wx.showToast({ title: '加载失败', icon: 'none' })
+      }
+    },
+
+    closeRestoreSheet() {
+      this.setData({ restoreSheetOpen: false }, () => {
+        setTimeout(() => {
+          this.setData({ 
+            showRestoreSheet: false, 
+            savedSearchConditions: [],
+            isRestoreEditing: false,
+          })
+        }, 250)
+      })
+    },
+
+    toggleRestoreEdit() {
+      this.setData({ isRestoreEditing: !this.data.isRestoreEditing })
+    },
+
+    async onDeleteRestoreCondition(e: any) {
+      const index = e.currentTarget.dataset.index
+      const condition = this.data.savedSearchConditions[index]
+      if (!condition || !condition._id) return
+
+      const isLastItem = this.data.savedSearchConditions.length === 1
+
+      // 先添加向左滑走的删除动画
+      const updatedConditions = [...this.data.savedSearchConditions]
+      updatedConditions[index] = { ...updatedConditions[index], deleting: true }
+      this.setData({ savedSearchConditions: updatedConditions })
+
+      try {
+        const db = wx.cloud.database()
+        await db.collection('saved_search_conditions').doc(condition._id).remove()
+
+        // 等待向左滑走动画完成（200ms）
+        setTimeout(() => {
+          if (isLastItem) {
+            // 如果是最后一个item，直接关闭弹窗
+            this.closeRestoreSheet()
+          } else {
+            // 如果不是最后一个，添加降低高度动画
+            const collapsingConditions = [...this.data.savedSearchConditions]
+            collapsingConditions[index] = { ...collapsingConditions[index], collapsing: true }
+            this.setData({ savedSearchConditions: collapsingConditions })
+
+            // 等待降低高度动画完成（200ms）后从列表中移除
+            setTimeout(() => {
+              const finalConditions = this.data.savedSearchConditions.filter((_, idx) => idx !== index)
+              this.setData({ savedSearchConditions: finalConditions })
+            }, 200)
+          }
+        }, 200) // 向左滑走动画时长200ms
+      } catch (err) {
+        // 如果删除失败，恢复状态
+        const restoredConditions = [...this.data.savedSearchConditions]
+        restoredConditions[index] = { ...restoredConditions[index], deleting: false, collapsing: false }
+        this.setData({ savedSearchConditions: restoredConditions })
+        wx.showToast({ title: '删除失败', icon: 'none' })
+      }
+    },
+
+    async onClearAllRestoreConditions() {
+      const app = getApp<IAppOption>() as any
+      const user = app?.globalData?.user
+      const openid = user?.openid
+      if (!openid) return
+
+      wx.showModal({
+        title: '确认清空',
+        content: '确定要删除所有保存的搜索条件吗？',
+        confirmText: '确定',
+        cancelText: '取消',
+        success: async (res) => {
+          if (res.confirm) {
+            try {
+              const db = wx.cloud.database()
+              // 查询所有该用户的搜索条件
+              const queryRes = await db
+                .collection('saved_search_conditions')
+                .where({ openid })
+                .get()
+
+              const ids = (queryRes.data || []).map((item: any) => item._id).filter(Boolean)
+              
+              if (ids.length > 0) {
+                // 批量删除
+                await Promise.all(
+                  ids.map((id: string) => db.collection('saved_search_conditions').doc(id).remove())
+                )
+              }
+
+              // 清空列表并关闭弹窗
+              this.setData({ savedSearchConditions: [] })
+              this.closeRestoreSheet()
+              wx.showToast({ title: '已清空', icon: 'success' })
+            } catch (err) {
+              wx.showToast({ title: '清空失败', icon: 'none' })
+            }
+          }
+        },
+      })
+    },
+
+    async onSelectRestoreCondition(e: any) {
+      const index = e.currentTarget.dataset.index
+      const selectedCondition = this.data.savedSearchConditions[index]
+      if (!selectedCondition) return
+
+      // 关闭弹窗
+      this.closeRestoreSheet()
+
+      // 应用搜索条件
+      const searchKeyword = selectedCondition.searchKeyword || ''
+      const drawerFilter = selectedCondition.drawerFilter || { ...DEFAULT_DRAWER_FILTER }
+      const tabIndex = selectedCondition.tabIndex ?? this.data.currentTab
+
+      // 如果保存的搜索条件对应的tab与当前tab不同，先切换到对应tab
+      if (tabIndex !== this.data.currentTab) {
+        this.setData({ currentTab: tabIndex })
+      }
+
+      // 更新当前tab的状态
+      this.updateCurrentTabState({
+        searchKeyword,
+        drawerFilter: { ...DEFAULT_DRAWER_FILTER, ...drawerFilter },
+        scrollTop: 0,
+      })
+
+      // 重新加载数据
+      this.setData({ loading: true })
+      
+      try {
+        if (searchKeyword.trim()) {
+          // 如果有搜索关键词，使用搜索方法
+          await this.performCollectionSearch(searchKeyword, true)
+        } else {
+          // 如果没有搜索关键词，直接加载数据
+          await this.loadJobsForTab(this.data.currentTab, true)
+          const tabs = this.data.jobsByTab as JobItem[][]
+          this.setData({
+            jobs: tabs[this.data.currentTab] || [],
+            filteredJobs: tabs[this.data.currentTab] || [],
+            loading: false,
+          })
+        }
+        
+        wx.showToast({ title: '搜索条件已恢复', icon: 'success' })
+      } catch (err) {
+        this.setData({ loading: false })
+        wx.showToast({ title: '恢复失败', icon: 'none' })
+      }
+    },
 
     closeJobDetail() {
       this.setData({ 
