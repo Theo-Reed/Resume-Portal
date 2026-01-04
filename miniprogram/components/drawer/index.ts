@@ -2,6 +2,7 @@
 
 import { normalizeLanguage, t } from '../../utils/i18n'
 const swipeToClose = require('../../behaviors/swipe-to-close')
+const fullscreenDrawerBehavior = require('../../behaviors/fullscreen-drawer')
 
 type DrawerValue = { salary: string; experience: string; source_name?: string[]; region?: string }
 
@@ -12,7 +13,7 @@ type SalaryKey = string
 type ExpKey = string
 
 const SALARY_KEYS: SalaryKey[] = ['全部', '10k以下', '10-20K', '20-50K', '50K以上', '项目制/兼职']
-const EXP_KEYS: ExpKey[] = ['全部', '在校生', '应届生', '1年以内', '1-3年', '3-5年', '5-10年', '10年以上']
+const EXP_KEYS: ExpKey[] = ['全部', '经验不限', '1年以内', '1-3年', '3-5年', '5-10年', '10年以上']
 const REGION_KEYS: string[] = ['全部', '国内', '国外', 'web3']
 
 // 所有来源选项（不再根据区域动态变化）
@@ -29,8 +30,7 @@ const EN_SALARY: Record<string, string> = {
 
 const EN_EXP: Record<string, string> = {
   '全部': 'All',
-  '在校生': 'Student',
-  '应届生': 'Graduate',
+  '经验不限': 'Any',
   '1年以内': '< 1y',
   '1-3年': '1–3y',
   '3-5年': '3–5y',
@@ -45,7 +45,7 @@ const EN_SOURCE: Record<string, string> = {
 }
 
 Component({
-  behaviors: [swipeToClose],
+  behaviors: [swipeToClose, fullscreenDrawerBehavior],
   
   properties: {
     show: { type: Boolean, value: false },
@@ -100,6 +100,9 @@ Component({
   observers: {
     show(open) {
       if (open) {
+        // 初始化 drawer 打开状态（包含 tabBar 隐藏和动画初始化）
+        ;(this as any).initDrawerOpen()
+        
         this.syncLanguageFromApp()
 
         const v = (this.properties && (this.properties.value as any)) || { salary: '全部', experience: '全部', source_name: [], region: '全部' }
@@ -129,30 +132,9 @@ Component({
         
         // 重新同步语言设置以更新 displaySourceOptions
         this.syncLanguageFromApp()
-        
-        // Reset drawer position for swipe-to-close
-        const windowInfo = wx.getWindowInfo()
-        const screenWidth = windowInfo.windowWidth
-        this.setData({ 
-          animationData: null,
-          drawerTranslateX: screenWidth,
-        })
-        setTimeout(() => {
-          if (this.data.show) {
-            this.setData({ drawerTranslateX: 0 } as any)
-          }
-        }, 50)
       } else {
-        // Reset position when closing (animation is handled by closeDrawer method)
-        const windowInfo = wx.getWindowInfo()
-        const screenWidth = windowInfo.windowWidth
-        // Only reset if not already animating (closeDrawer handles animation)
-        if (!(this as any)._animation) {
-          this.setData({
-            drawerTranslateX: screenWidth,
-            animationData: null,
-          })
-        }
+        // 初始化 drawer 关闭状态（包含 tabBar 显示和状态重置）
+        ;(this as any).initDrawerClose()
       }
     },
     value(v) {

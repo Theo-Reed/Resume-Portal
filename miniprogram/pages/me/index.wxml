@@ -32,10 +32,6 @@
   </view>
 
   <view class="me-list">
-    <view class="me-item" bindtap="onOpenSaved">
-      <text class="me-item-text">{{ui.favoritesEntry}}</text>
-    </view>
-
     <view class="me-item" bindtap="onLanguageTap">
       <text class="me-item-text">{{ui.aiTranslateEntry}}</text>
     </view>
@@ -52,25 +48,6 @@
       <text class="me-item-text">{{ui.inviteCodeEntry}}</text>
     </view>
   </view>
-
-  <!-- Saved jobs bottom sheet (5/6 height, no header) -->
-  <block wx:if="{{showSavedSheet}}">
-    <view class="favorites-sheet-mask {{savedSheetOpen ? 'favorites-sheet-mask-open' : ''}}" bindtap="closeSavedSheet"></view>
-    <view class="favorites-sheet {{savedSheetOpen ? 'favorites-sheet-open' : ''}}">
-
-      <view class="favorites-list-padding">
-        <job-list
-          class-name="favorites-job-list"
-          jobs="{{savedJobs}}"
-          loading="{{savedLoading}}"
-          scroll-y="{{true}}"
-          bind:itemtap="onSavedJobTap"
-        />
-      </view>
-
-      <view wx:if="{{!savedLoading && savedJobs.length === 0}}" class="empty-favorites">{{ui.emptyFavorites}}</view>
-    </view>
-  </block>
 
   <!-- Language bottom sheet (same animation as saved sheet) -->
   <block wx:if="{{showLanguageSheet}}">

@@ -1,9 +1,10 @@
 // miniprogram/components/article-detail/index.ts
 import { normalizeLanguage, t } from '../../utils/i18n'
 const swipeToCloseBehavior = require('../../behaviors/swipe-to-close')
+const fullscreenDrawerBehavior = require('../../behaviors/fullscreen-drawer')
 
 Component({
-  behaviors: [swipeToCloseBehavior],
+  behaviors: [swipeToCloseBehavior, fullscreenDrawerBehavior],
 
   properties: {
     show: {
@@ -55,39 +56,16 @@ Component({
   observers: {
     'show, articleData'(show: boolean, articleData: any) {
       if (show && articleData && (articleData._id || articleData.id)) {
-        if ((this as any)._animation && typeof (this as any)._animation.stop === 'function') {
-          ;(this as any)._animation.stop()
-          ;(this as any)._animation = null
-        }
-        
-        const windowInfo = wx.getWindowInfo()
-        const screenWidth = windowInfo.windowWidth
-        
-        this.setData({ 
-          animationData: null,
-          drawerTranslateX: screenWidth,
-        })
-        
-        setTimeout(() => {
-          if (this.data.show && this.data.articleData) {
-            this.setData({ drawerTranslateX: 0 })
-          }
-        }, 50)
+        // 初始化 drawer 打开状态（包含 tabBar 隐藏和动画初始化）
+        ;(this as any).initDrawerOpen()
         this.setArticleFromData(articleData)
       } else if (!show) {
-        if ((this as any)._animation && typeof (this as any)._animation.stop === 'function') {
-          ;(this as any)._animation.stop()
-          ;(this as any)._animation = null
-        }
-        
-        const windowInfo = wx.getWindowInfo()
-        const screenWidth = windowInfo.windowWidth
+        // 初始化 drawer 关闭状态（包含 tabBar 显示和状态重置）
+        ;(this as any).initDrawerClose()
         this.setData({
           article: null,
           htmlNodes: [],
           loading: false,
-          drawerTranslateX: screenWidth,
-          animationData: null,
         })
       }
     },

@@ -1,6 +1,8 @@
 // miniprogram/components/job-detail/index.ts
 import { normalizeLanguage, t } from '../../utils/i18n'
+import { normalizeJobTags, translateFieldValue } from '../../utils/job'
 const swipeToClose = require('../../behaviors/swipe-to-close')
+const fullscreenDrawerBehavior = require('../../behaviors/fullscreen-drawer')
 
 const SAVED_COLLECTION = 'saved_jobs'
 const SAVE_DEBOUNCE_DELAY = 300
@@ -40,7 +42,7 @@ type JobDetailItem = {
 }
 
 Component({
-  behaviors: [swipeToClose],
+  behaviors: [swipeToClose, fullscreenDrawerBehavior],
 
   properties: {
     show: {
@@ -106,41 +108,18 @@ Component({
           return
         }
         
-        if ((this as any)._animation && typeof (this as any)._animation.stop === 'function') {
-          ;(this as any)._animation.stop()
-          ;(this as any)._animation = null
-        }
-        
-        const windowInfo = wx.getWindowInfo()
-        const screenWidth = windowInfo.windowWidth
-        
-        this.setData({ 
-          animationData: null,
-          drawerTranslateX: screenWidth,
-        })
-        
-        setTimeout(() => {
-          if (this.data.show && this.data.jobData) {
-            this.setData({ drawerTranslateX: 0 } as any)
-          }
-        }, 50)
+        // 初始化 drawer 打开状态（包含 tabBar 隐藏和动画初始化）
+        ;(this as any).initDrawerOpen()
         this.setJobFromData(jobData)
       } else if (!show) {
-        if ((this as any)._animation && typeof (this as any)._animation.stop === 'function') {
-          ;(this as any)._animation.stop()
-          ;(this as any)._animation = null
-        }
-        
-        const windowInfo = wx.getWindowInfo()
-        const screenWidth = windowInfo.windowWidth
+        // 初始化 drawer 关闭状态（包含 tabBar 显示和状态重置）
+        ;(this as any).initDrawerClose()
         this.setData({
           job: null,
           loading: false,
           saved: false,
           saveBusy: false,
           saveDocId: '',
-          drawerTranslateX: screenWidth,
-          animationData: null,
         })
       }
     },
@@ -153,24 +132,27 @@ Component({
       
       let displayTags = jobData.displayTags
       if (!displayTags || !Array.isArray(displayTags) || displayTags.length === 0) {
-        const tags = (jobData.summary || '')
-          .split(/[,，]/)
-          .map((t: string) => t.trim().replace(/[。！!.,，、；;]+$/g, '').trim())
-          .filter((t: string) => t && t.length > 1)
-
-        displayTags = [...tags]
-        // AIEnglish 时不插入 source_name 到 tags
-        if (!this.data.isAIEnglish && jobData.source_name && typeof jobData.source_name === 'string' && jobData.source_name.trim()) {
-          const sourceTag = jobData.source_name.trim()
-          displayTags.push(sourceTag)
-        }
+        // 只使用 experience 字段（本地翻译）
+        const app = getApp<IAppOption>() as any
+        const lang = normalizeLanguage(app?.globalData?.language)
+        const experience = jobData.experience && typeof jobData.experience === 'string' ? jobData.experience.trim() : ''
+        
+        const { displayTags: generatedDisplayTags } = normalizeJobTags(jobData, lang, experience)
+        displayTags = generatedDisplayTags
       }
 
       const isSaved = jobData.isSaved !== undefined ? jobData.isSaved : null
       
+      // 翻译 salary 字段
+      const app = getApp<IAppOption>() as any
+      const lang = normalizeLanguage(app?.globalData?.language)
+      const salary = jobData.salary && typeof jobData.salary === 'string' ? jobData.salary.trim() : ''
+      const translatedSalary = translateFieldValue(salary, 'salary', lang)
+      
       this.setData({
         job: {
           ...jobData,
+          salary: translatedSalary || salary, // 使用翻译后的salary
           displayTags,
           richDescription: formatDescription(jobData.description),
         } as JobDetailItem & { richDescription: string },

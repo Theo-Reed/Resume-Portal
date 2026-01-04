@@ -11,9 +11,16 @@
   bindtouchend="onTouchEnd"
   catchtap="stopPropagation"
 >
-  <!-- 头部 -->
-  <detail-header bind:close="onClose" />
-
+  <!-- 关闭按钮 -->
+  <view 
+    wx:if="{{closeButtonVisible}}" 
+    class="drawer-close-button {{closeButtonVisible ? 'drawer-close-button-visible' : ''}}"
+    style="top: {{closeButtonTop}}px;"
+    bindtap="onClose"
+  >
+    <view class="drawer-close-icon"></view>
+  </view>
+  
   <view class="drawer-main">
     <!-- 左侧导航tab -->
     <view class="drawer-nav">

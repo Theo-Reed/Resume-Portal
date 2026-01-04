@@ -1,8 +1,6 @@
 // miniprogram/pages/me/index.ts
 
 import { isAiChineseUnlocked } from '../../utils/subscription'
-import type { ResolvedSavedJob } from '../../utils/job'
-import { mapJobs, getJobFieldsByLanguage, mapJobFieldsToStandard } from '../../utils/job'
 import { normalizeLanguage, t, type AppLanguage } from '../../utils/i18n'
 import { attachLanguageAware } from '../../utils/languageAware'
 import { toDateMs } from '../../utils/time'
@@ -13,11 +11,6 @@ Page({
     userInfo: null as WechatMiniprogram.UserInfo | null,
     isLoggedIn: false,
     phoneAuthBusy: false,
-
-    showSavedSheet: false,
-    savedSheetOpen: false,
-    savedLoading: false,
-    savedJobs: [] as ResolvedSavedJob[],
 
     showJobDetail: false,
     selectedJobId: '',
@@ -56,10 +49,6 @@ Page({
         const lang = normalizeLanguage(app?.globalData?.language)
         wx.setNavigationBarTitle({ title: t('app.navTitle', lang) })
         
-        // 如果收藏列表是打开的，重新加载收藏数据
-        if (this.data.showSavedSheet && this.data.savedSheetOpen) {
-          this.loadSavedJobs()
-        }
       },
     })
   },
@@ -116,7 +105,6 @@ Page({
     const ui = {
       meTitle: t('me.title', lang),
       userNotLoggedIn: t('me.userNotLoggedIn', lang),
-      favoritesEntry: t('me.favoritesEntry', lang),
       generateResumeEntry: t('me.generateResumeEntry', lang),
       publishSkillEntry: t('me.publishSkillEntry', lang),
       aiTranslateEntry: t('me.aiTranslateEntry', lang),
@@ -228,182 +216,8 @@ Page({
     }
   },
 
-  onOpenSaved() {
-    if (!(this.data as any).isLoggedIn) {
-      wx.showToast({ title: '请先授权手机号', icon: 'none' })
-      return
-    }
-
-    this.openSavedSheet()
-  },
-
-  openSavedSheet() {
-    // Mount first, then open on next tick to trigger CSS transition.
-    this.setData({ showSavedSheet: true, savedSheetOpen: false })
-
-    setTimeout(() => {
-      this.setData({ savedSheetOpen: true })
-    }, 30)
-
-    this.loadSavedJobs()
-  },
-
-  closeSavedSheet() {
-    this.setData({ savedSheetOpen: false })
-
-    setTimeout(() => {
-      this.setData({ showSavedSheet: false })
-    }, 260)
-  },
-
-  async loadSavedJobs() {
-    const app = getApp<IAppOption>() as any
-    const user = app?.globalData?.user
-    const openid = user?.openid
-    const isLoggedIn = !!(user && (user.isAuthed || user.phone))
-    if (!isLoggedIn || !openid) {
-      this.setData({ savedJobs: [] })
-      return
-    }
-
-    this.setData({ savedLoading: true })
-    try {
-      const db = wx.cloud.database()
-
-      const savedRes = await db
-        .collection('saved_jobs')
-        .where({ openid })
-        .orderBy('createdAt', 'desc')
-        .limit(100)
-        .get()
-
-      const savedRecords = (savedRes.data || []) as any[]
-      if (savedRecords.length === 0) {
-        this.setData({ savedJobs: [] })
-        return
-      }
-
-      // 获取所有收藏的 jobId
-      const jobIds = savedRecords.map(row => row?.jobId).filter(Boolean) as string[]
-      
-      if (jobIds.length === 0) {
-        this.setData({ savedJobs: [] })
-        return
-      }
-
-      // 获取用户语言设置并确定字段名
-      const app = getApp<IAppOption>() as any
-      const userLanguage = normalizeLanguage(app?.globalData?.language || 'Chinese')
-      const { titleField, summaryField, descriptionField, salaryField, sourceNameField } = getJobFieldsByLanguage(userLanguage)
-
-      // 从 remote_jobs collection 查询所有收藏的职位
-      const results = await Promise.all(
-        jobIds.map(async (id) => {
-            try {
-              let query: any = db.collection('remote_jobs').doc(id)
-              
-              // 根据语言选择字段，只查询需要的字段
-              const fieldSelection: any = {
-                _id: true,
-                createdAt: true,
-                source_url: true,
-                team: true,
-                type: true,
-                tags: true,
-                [titleField]: true,
-                [summaryField]: true,
-                [descriptionField]: true,
-              }
-              
-              // 根据语言选择 salary 和 source_name 字段
-              if (salaryField) {
-                fieldSelection[salaryField] = true
-                if (userLanguage === 'AIEnglish' && salaryField !== 'salary') {
-                  fieldSelection.salary = true
-                }
-              } else {
-                fieldSelection.salary = true
-              }
-              
-              if (sourceNameField) {
-                fieldSelection[sourceNameField] = true
-                if (userLanguage === 'AIEnglish' && sourceNameField !== 'source_name') {
-                  fieldSelection.source_name = true
-                }
-              } else {
-                fieldSelection.source_name = true
-              }
-              
-              query = query.field(fieldSelection)
-              
-            const res = await query.get()
-            let jobData = res.data
-            
-            // 将查询的字段名映射回标准字段名
-            if (jobData) {
-              jobData = mapJobFieldsToStandard(jobData, titleField, summaryField, descriptionField, salaryField, sourceNameField)
-            }
-            
-            return { id, data: jobData }
-          } catch {
-            return null
-          }
-        })
-      )
-
-      const jobByKey = new Map<string, any>()
-      for (const r of results) {
-        if (!r?.data) continue
-        jobByKey.set(r.id, { ...r.data, _id: r.id })
-      }
-
-      // 按照 savedRecords 的顺序合并数据
-      const merged: ResolvedSavedJob[] = []
-      for (const row of savedRecords) {
-        const _id = row?.jobId // 从 saved_jobs 集合读取的 jobId 字段（实际是岗位的 _id）
-        if (!_id) continue
-
-        const job = jobByKey.get(_id)
-        if (!job) continue
-
-        merged.push({
-          ...(job as any),
-          _id,
-          sourceCollection: 'remote_jobs',
-        })
-      }
-
-      // normalize tags/displayTags
-      const normalized = mapJobs(merged, userLanguage) as any
-      this.setData({ savedJobs: normalized })
-    } catch (err) {
-      wx.showToast({ title: '加载收藏失败', icon: 'none' })
-    } finally {
-      this.setData({ savedLoading: false })
-    }
-  },
-
   closeJobDetail() {
     this.setData({ showJobDetail: false })
-  },
-
-  onSavedJobTap(e: any) {
-    const job = e?.detail?.job
-    const _id = (job?._id || e?.currentTarget?.dataset?._id) as string
-    // 统一使用 remote_jobs collection
-    const collection = 'remote_jobs'
-
-    if (!_id) {
-      wx.showToast({ title: '无法打开详情', icon: 'none' })
-      return
-    }
-
-    // Keep favorites sheet open; just show detail over it.
-    this.setData({
-      selectedJobId: _id,
-      selectedCollection: collection,
-      showJobDetail: true,
-    })
   },
 
   openLanguageSheet() {

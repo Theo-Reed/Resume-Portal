@@ -81,6 +81,7 @@ Page({
         [titleField]: true,
         [summaryField]: true,
         [descriptionField]: true,
+        experience: true,
       }
       
       // 根据语言选择 salary 和 source_name 字段

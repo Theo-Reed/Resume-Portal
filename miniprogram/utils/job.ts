@@ -1,6 +1,48 @@
 // miniprogram/utils/job.ts
 import type { AppLanguage } from './i18n'
 
+// 统一的翻译映射表
+const EN_SALARY: Record<string, string> = {
+  '全部': 'All',
+  '10k以下': '< 10K',
+  '10-20K': '10–20K',
+  '20-50K': '20–50K',
+  '50K以上': '50K+',
+  '项目制/兼职': 'Project/Part-time',
+}
+
+const EN_EXP: Record<string, string> = {
+  '全部': 'All',
+  '经验不限': 'Any',
+  '1年以内': '< 1y',
+  '1-3年': '1–3y',
+  '3-5年': '3–5y',
+  '5-10年': '5–10y',
+  '10年以上': '10y+',
+}
+
+/**
+ * 翻译字段值（salary 和 experience）
+ * @param value 原始值（中文）
+ * @param fieldType 'salary' 或 'experience'
+ * @param language 用户语言设置
+ * @returns 翻译后的值
+ */
+export function translateFieldValue(
+  value: string,
+  fieldType: 'salary' | 'experience',
+  language?: AppLanguage | string
+): string {
+  if (!value || typeof value !== 'string') return value
+  
+  // 判断是否需要翻译：English 或 AIEnglish 需要翻译
+  const useEnglish = language === 'English' || language === 'AIEnglish'
+  if (!useEnglish) return value
+  
+  const translationMap = fieldType === 'salary' ? EN_SALARY : EN_EXP
+  return translationMap[value] || value
+}
+
 export type JobItem = {
   _id: string
   createdAt: string
@@ -21,9 +63,10 @@ export type ResolvedSavedJob = JobItem & {
   sourceCollection: string
 }
 
-export function normalizeJobTags<T extends { summary?: string; source_name?: string }>(
+export function normalizeJobTags<T extends { summary?: string; source_name?: string; experience?: string }>(
   item: T,
-  language?: AppLanguage | string
+  language?: AppLanguage | string,
+  experience?: string
 ): {
   tags: string[]
   displayTags: string[]
@@ -34,6 +77,14 @@ export function normalizeJobTags<T extends { summary?: string; source_name?: str
     .filter((t) => t && t.length > 1)
 
   const displayTags = [...tags]
+  
+  // 如果提供了 experience，将其插入到倒数第二个位置（在 source_name 之前）
+  // 根据语言进行翻译
+  if (experience && typeof experience === 'string' && experience.trim()) {
+    const experienceTag = translateFieldValue(experience.trim(), 'experience', language)
+    displayTags.push(experienceTag)
+  }
+  
   // AIEnglish 时不插入 source_name 到 tags
   if (language !== 'AIEnglish' && item.source_name && typeof item.source_name === 'string' && item.source_name.trim()) {
     const sourceTag = item.source_name.trim()
@@ -48,9 +99,17 @@ export function mapJobs<T extends Record<string, any>>(
   language?: AppLanguage | string
 ): (T & { tags: string[]; displayTags: string[] })[] {
   return (jobs || []).map((job) => {
-    const { tags, displayTags } = normalizeJobTags(job, language)
+    // 获取 experience 字段（normalizeJobTags 内部会进行翻译）
+    const experience = job.experience && typeof job.experience === 'string' ? job.experience.trim() : ''
+    
+    // 翻译 salary 字段
+    const salary = job.salary && typeof job.salary === 'string' ? job.salary.trim() : ''
+    const translatedSalary = translateFieldValue(salary, 'salary', language)
+    
+    const { tags, displayTags } = normalizeJobTags(job, language, experience)
     return {
       ...job,
+      salary: translatedSalary || salary, // 使用翻译后的salary
       tags,
       displayTags,
     }
@@ -132,5 +191,6 @@ export function mapJobFieldsToStandard(
     title: jobData[titleField] || '',
     summary: jobData[summaryField] || '',
     description: jobData[descriptionField] || '',
+    experience: jobData.experience || '',
   }
 }

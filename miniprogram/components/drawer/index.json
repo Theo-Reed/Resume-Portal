@@ -1,6 +1,4 @@
 {
   "component": true,
-  "usingComponents": {
-    "detail-header": "../detail-header/index"
-  }
+  "usingComponents": {}
 }

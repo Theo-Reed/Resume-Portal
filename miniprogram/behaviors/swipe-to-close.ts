@@ -270,6 +270,11 @@ module.exports = Behavior({
         return
       }
       
+      // 隐藏关闭按钮（如果存在）
+      if ((this as any).data.closeButtonVisible !== undefined) {
+        this.setData({ closeButtonVisible: false })
+      }
+      
       const windowInfo = wx.getWindowInfo()
       const screenWidth = windowInfo.windowWidth
       

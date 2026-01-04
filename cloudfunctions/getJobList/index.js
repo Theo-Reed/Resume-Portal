@@ -66,11 +66,12 @@ function mapJobFieldsToStandard(jobData, titleField, summaryField, descriptionFi
     title: jobData[titleField] || '',
     summary: jobData[summaryField] || '',
     description: jobData[descriptionField] || '',
+    experience: jobData.experience || '',
   }
 }
 
 exports.main = async (event, context) => {
-  const { pageSize = 15, skip = 0, source_name, types, salary, language } = event || {}
+  const { pageSize = 15, skip = 0, source_name, types, salary, experience, language } = event || {}
 
   const wxContext = cloud.getWXContext()
   const openid = wxContext.OPENID
@@ -127,6 +128,7 @@ exports.main = async (event, context) => {
       [titleField]: true,
       [summaryField]: true,
       [descriptionField]: true,
+      experience: true,
     }
     
     // 根据语言选择 salary 和 source_name 字段
@@ -162,6 +164,14 @@ exports.main = async (event, context) => {
     
     // 将查询的字段名映射回标准字段名（title, summary, description, salary, source_name）
     jobs = jobs.map(job => mapJobFieldsToStandard(job, titleField, summaryField, descriptionField, salaryField, sourceNameField))
+    
+    // 应用经验筛选（如果指定了经验条件）
+    if (experience && experience !== '全部') {
+      jobs = jobs.filter(job => {
+        const jobExperience = job.experience || ''
+        return jobExperience === experience
+      })
+    }
     
     // 应用薪资筛选（如果指定了薪资条件）
     if (salary && salary !== '全部') {

@@ -229,6 +229,12 @@ Component({
         filterParams.salary = salary
       }
       
+      // 经验筛选
+      const experience = this.data.drawerFilter?.experience || '全部'
+      if (experience && experience !== '全部') {
+        filterParams.experience = experience
+      }
+      
       // 语言设置
       const app = getApp<IAppOption>() as any
       const currentLang = normalizeLanguage(app?.globalData?.language || 'Chinese')
@@ -346,6 +352,7 @@ Component({
                 [titleField]: true,
                 [summaryField]: true,
                 [descriptionField]: true,
+                experience: true,
               }
               
               // 根据语言选择 salary 和 source_name 字段
@@ -490,6 +497,7 @@ Component({
           [titleField]: true,
           [summaryField]: true,
           [descriptionField]: true,
+          experience: true,
         }
         
         if (salaryField) {
@@ -520,6 +528,15 @@ Component({
         
         // 将查询的字段名映射回标准字段名
         allJobs = allJobs.map((job: any) => mapJobFieldsToStandard(job, titleField, summaryField, descriptionField, salaryField, sourceNameField))
+        
+        // 应用经验筛选
+        const experience = this.data.drawerFilter?.experience || '全部'
+        if (experience && experience !== '全部') {
+          allJobs = allJobs.filter((job: any) => {
+            const jobExperience = job.experience || ''
+            return jobExperience === experience
+          })
+        }
         
         // 应用薪资筛选
         const salary = this.data.drawerFilter?.salary || '全部'
