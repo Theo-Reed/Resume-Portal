@@ -2,7 +2,7 @@
   <view class="me-card" bindtap="onAvatarTap">
     <view class="user-row">
       <block wx:if="{{userInfo}}">
-        <image class="avatar" src="{{userInfo.avatarUrl}}" />
+        <image class="avatar" src="{{userInfo.avatarUrl}}"/>
       </block>
       <block wx:else>
         <view class="avatar-placeholder"></view>
@@ -11,17 +11,17 @@
       <view class="user-text">
         <block wx:if="{{!isLoggedIn}}">
           <button
-            class="phone-auth-name-btn"
-            open-type="getPhoneNumber"
-            bindgetrealtimephonenumber="onGetRealtimePhoneNumber"
-            bindgetphonenumber="onGetPhoneNumber"
+                  class="phone-auth-name-btn"
+                  open-type="getPhoneNumber"
+                  bindgetrealtimephonenumber="onGetRealtimePhoneNumber"
+                  bindgetphonenumber="onGetPhoneNumber"
           >
             <text class="nickname nickname-login">{{ui.userNotLoggedIn}}</text>
           </button>
         </block>
         <block wx:else>
           <view class="nickname-container">
-          <text class="nickname">{{userInfo ? userInfo.nickName : '已登录'}}</text>
+            <text class="nickname">{{userInfo ? userInfo.nickName : '已登录'}}</text>
             <view wx:if="{{isMember}}" class="member-badge">
               <text class="member-text">{{ui.memberBadge}}</text>
             </view>
@@ -51,37 +51,28 @@
 
   <!-- Language bottom sheet (same animation as saved sheet) -->
   <block wx:if="{{showLanguageSheet}}">
-    <view class="language-sheet-mask {{languageSheetOpen ? 'language-sheet-mask-open' : ''}}" bindtap="closeLanguageSheet"></view>
+    <view class="language-sheet-mask {{languageSheetOpen ? 'language-sheet-mask-open' : ''}}"
+          bindtap="closeLanguageSheet"></view>
     <view class="language-sheet {{languageSheetOpen ? 'language-sheet-open' : ''}}">
 
       <view class="language-sheet-content">
-        <view class="language-item {{currentLanguage === 'Chinese' ? 'language-item-active' : ''}}" data-value="Chinese" bindtap="onLanguageSelect">
+        <view class="language-item {{currentLanguage === 'Chinese' ? 'language-item-active' : ''}}"
+              data-value="Chinese" bindtap="onLanguageSelect">
           <text class="language-item-text">{{ui.langDefault}}</text>
         </view>
-        <view class="language-item {{currentLanguage === 'English' ? 'language-item-active' : ''}}" data-value="English" bindtap="onLanguageSelect">
+        <view class="language-item {{currentLanguage === 'English' ? 'language-item-active' : ''}}"
+              data-value="English" bindtap="onLanguageSelect">
           <text class="language-item-text">{{ui.langEnglish}}</text>
         </view>
-        <view class="language-item {{currentLanguage === 'AIChinese' ? 'language-item-active' : ''}}" data-value="AIChinese" bindtap="onLanguageSelect">
-          <view class="language-item-text">
-            <text>{{ui.langAIChinese}}</text>
-            <image class="member-star-icon" src="/assets/icons/four-point-star-twin.png" mode="aspectFit" />
-            <text wx:if="{{!isAiChineseUnlocked}}"> 🔒</text>
-          </view>
-        </view>
-        <view class="language-item {{currentLanguage === 'AIEnglish' ? 'language-item-active' : ''}}" data-value="AIEnglish" bindtap="onLanguageSelect">
-          <view class="language-item-text">
-            <text>{{ui.langAIEnglish}}</text>
-            <image class="member-star-icon" src="/assets/icons/four-point-star-twin.png" mode="aspectFit" />
-            <text wx:if="{{!isAiChineseUnlocked}}"> 🔒</text>
-          </view>
-        </view>
+
       </view>
     </view>
   </block>
 
   <!-- Invite code bottom sheet -->
   <block wx:if="{{showInviteSheet}}">
-    <view class="invite-sheet-mask {{inviteSheetOpen ? 'invite-sheet-mask-open' : ''}}" bindtap="closeInviteSheet"></view>
+    <view class="invite-sheet-mask {{inviteSheetOpen ? 'invite-sheet-mask-open' : ''}}"
+          bindtap="closeInviteSheet"></view>
     <view class="invite-sheet {{inviteSheetOpen ? 'invite-sheet-open' : ''}}">
 
       <view class="invite-sheet-content">
@@ -96,11 +87,11 @@
         <view class="invite-section">
           <text class="invite-section-title">{{ui.inputInviteCode}}</text>
           <input
-            class="invite-code-input"
-            type="text"
-            placeholder="请输入邀请码"
-            value="{{inputInviteCode}}"
-            bindinput="onInviteCodeInput"
+                  class="invite-code-input"
+                  type="text"
+                  placeholder="请输入邀请码"
+                  value="{{inputInviteCode}}"
+                  bindinput="onInviteCodeInput"
           />
           <button class="invite-apply-btn" bindtap="onApplyInviteCode">应用</button>
         </view>
@@ -110,12 +101,13 @@
 
   <!-- User Profile Sheet (from bottom, same as restore-sheet) -->
   <block wx:if="{{showProfileSheet}}">
-    <view class="bottom-sheet-mask {{profileSheetOpen ? 'bottom-sheet-mask-open' : ''}}" bindtap="closeProfileSheet"></view>
+    <view class="bottom-sheet-mask {{profileSheetOpen ? 'bottom-sheet-mask-open' : ''}}"
+          bindtap="closeProfileSheet"></view>
     <view class="bottom-sheet profile-sheet {{profileSheetOpen ? 'bottom-sheet-open' : ''}}">
       <view class="bottom-sheet-header profile-sheet-header">
         <text class="profile-sheet-title">用户资料</text>
       </view>
-      
+
       <view class="bottom-sheet-content profile-sheet-content">
         <!-- Upload Avatar -->
         <view class="profile-item" catchtap="onUploadAvatar">
@@ -124,7 +116,7 @@
           </view>
           <view class="profile-item-right">
             <block wx:if="{{userInfo}}">
-              <image class="profile-avatar-preview" src="{{userInfo.avatarUrl}}" mode="aspectFill" />
+              <image class="profile-avatar-preview" src="{{userInfo.avatarUrl}}" mode="aspectFill"/>
             </block>
             <block wx:else>
               <view class="profile-avatar-placeholder"></view>
@@ -139,17 +131,19 @@
           </view>
           <view class="profile-item-right">
             <block wx:if="{{editingNickname}}">
-              <input 
-                class="profile-nickname-input" 
-                type="text" 
-                value="{{newNickname}}" 
-                bindinput="onNicknameInput"
-                maxlength="20"
-                placeholder="请输入用户名"
-                focus="{{editingNickname}}"
+              <input
+                      class="profile-nickname-input"
+                      type="text"
+                      value="{{newNickname}}"
+                      bindinput="onNicknameInput"
+                      maxlength="20"
+                      placeholder="请输入用户名"
+                      focus="{{editingNickname}}"
               />
               <view class="profile-edit-actions">
-                <text class="profile-edit-btn profile-edit-cancel" catchtap="onCancelEditNickname">取消</text>
+                <text class="profile-edit-btn profile-edit-cancel" catchtap="onCancelEditNickname">
+                  取消
+                </text>
                 <text class="profile-edit-btn profile-edit-save" catchtap="onSaveNickname">保存</text>
               </view>
             </block>

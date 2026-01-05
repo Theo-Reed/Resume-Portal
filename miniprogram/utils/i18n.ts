@@ -92,7 +92,7 @@ const dict = {
     applyMenuTitle: { Chinese: '申请岗位', English: 'Quick Apply' },
     copySourceLink: { Chinese: '复制来源链接', English: 'Copy Source Link' },
     aiResumeGenerate: { Chinese: 'AI简历生成', English: 'AI Resume Builder' },
-    oneClickSubmitResume: { Chinese: '一键投递简历', English: 'One-Click Apply with Resume' },
+    oneClickSubmitResume: { Chinese: '一键投递简历', English: 'Apply with Resume' },
     noSourceLink: { Chinese: '暂无来源链接', English: 'No source link available' },
     linkCopied: { Chinese: '链接已复制', English: 'Link copied' },
     featureDeveloping: { Chinese: '功能开发中', English: 'Feature under development' },
