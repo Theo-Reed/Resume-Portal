@@ -7,7 +7,8 @@
     "pages/article-list/index",
     "pages/article-detail/index",
     "pages/job-detail/index",
-    "pages/filter/index"
+    "pages/filter/index",
+    "pages/resume-profile/index"
   ],
   "page": {
     "pages/community/index": {

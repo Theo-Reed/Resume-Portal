@@ -31,7 +31,7 @@ const dict = {
         inviteCodeEntry: { Chinese: '邀请码', English: 'Invite Code' },
         myInviteCode: { Chinese: '我的邀请码', English: 'My Invite Code' },
         inputInviteCode: { Chinese: '输入邀请码', English: 'Enter Invite Code' },
-        inviteCodeCopied: { Chinese: '邀请码已复制到剪贴板', English: 'Invite code copied to clipboard' },
+        inviteCodeCopied: { Chinese: '邀请码已复制', English: 'Invite code copied' },
         inviteCodeInvalid: { Chinese: '邀请码格式不正确', English: 'Invalid invite code format' },
         inviteCodeApplied: { Chinese: '邀请码已应用', English: 'Invite code applied successfully' },
         // Language selector labels (also used in AI Translate popup)
@@ -43,6 +43,20 @@ const dict = {
         uploadAvatar: { Chinese: '上传头像', English: 'Upload Avatar' },
         editNickname: { Chinese: '修改用户名', English: 'Edit Username' },
         memberExpiredDate: { Chinese: '会员到期日期', English: 'Expiration Date' },
+        resumeProfileEntry: { Chinese: '简历资料', English: 'Resume Profile' },
+    },
+    resume: {
+        name: { Chinese: '个人姓名', English: 'Name' },
+        photo: { Chinese: '照片', English: 'Photo' },
+        wechat: { Chinese: '微信号', English: 'WeChat' },
+        email: { Chinese: '邮箱', English: 'Email' },
+        phone: { Chinese: '手机号', English: 'Phone' },
+        education: { Chinese: '毕业院校', English: 'Education' },
+        certificates: { Chinese: '证书', English: 'Certificates' },
+        graduationDate: { Chinese: '毕业时间', English: 'Graduation Date' },
+        addEducation: { Chinese: '添加教育经历', English: 'Add Education' },
+        addCertificate: { Chinese: '添加证书', English: 'Add Certificate' },
+        noData: { Chinese: '暂无数据', English: 'No data' },
     },
     community: {
         title: { Chinese: '社区', English: 'Community' },
@@ -160,6 +174,7 @@ export type I18nKey =
     | 'me.uploadAvatar'
     | 'me.editNickname'
     | 'me.memberExpiredDate'
+    | 'me.resumeProfileEntry'
     | 'community.desc'
     | 'jobs.tabPublic'
     | 'jobs.tabFeatured'
@@ -197,6 +212,17 @@ export type I18nKey =
     | 'drawer.sourceTitle'
     | 'drawer.clear'
     | 'drawer.confirm'
+    | 'resume.name'
+    | 'resume.photo'
+    | 'resume.wechat'
+    | 'resume.email'
+    | 'resume.phone'
+    | 'resume.education'
+    | 'resume.certificates'
+    | 'resume.graduationDate'
+    | 'resume.addEducation'
+    | 'resume.addCertificate'
+    | 'resume.noData'
     | 'tab.jobs'
     | 'app.navTitle'
 

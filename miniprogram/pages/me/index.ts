@@ -133,6 +133,7 @@ Page({
             uploadAvatar: t('me.uploadAvatar', lang),
             editNickname: t('me.editNickname', lang),
             memberExpiredDate: t('me.memberExpiredDate', lang),
+            resumeProfileEntry: t('me.resumeProfileEntry', lang),
         }
 
         // Chinese 表示中文（使用原始字段）
@@ -678,5 +679,11 @@ Page({
         const month = String(date.getMonth() + 1).padStart(2, '0')
         const day = String(date.getDate()).padStart(2, '0')
         return `${year}-${month}-${day}`
+    },
+
+    onResumeProfileTap() {
+        wx.navigateTo({
+            url: '/pages/resume-profile/index',
+        })
     },
 })

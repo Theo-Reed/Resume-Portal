@@ -1,0 +1,106 @@
+<!--miniprogram/pages/resume-profile/index.wxml-->
+<view class="page">
+  <scroll-view     
+    class="resume-content" 
+    scroll-y="{{true}}"
+    enhanced="true" 
+    show-scrollbar="{{false}}"
+    upper-threshold="0"
+    bounces="{{false}}"
+  >
+    <view class="resume-body">
+      <!-- 个人姓名 -->
+      <view class="resume-section">
+        <view class="resume-section-header">
+          <text class="resume-section-title">{{ui.name}}</text>
+        </view>
+        <view class="resume-section-content">
+          <text class="resume-text">{{name || ui.noData}}</text>
+        </view>
+      </view>
+
+      <!-- 照片 -->
+      <view class="resume-section">
+        <view class="resume-section-header">
+          <text class="resume-section-title">{{ui.photo}}</text>
+        </view>
+        <view class="resume-section-content">
+          <block wx:if="{{photo}}">
+            <image class="resume-photo" src="{{photo}}" mode="aspectFill"></image>
+          </block>
+          <block wx:else>
+            <view class="resume-photo-placeholder">
+              <text class="resume-photo-placeholder-text">{{ui.noData}}</text>
+            </view>
+          </block>
+        </view>
+      </view>
+
+      <!-- 微信号 -->
+      <view class="resume-section">
+        <view class="resume-section-header">
+          <text class="resume-section-title">{{ui.wechat}}</text>
+        </view>
+        <view class="resume-section-content">
+          <text class="resume-text">{{wechat || ui.noData}}</text>
+        </view>
+      </view>
+
+      <!-- 邮箱 -->
+      <view class="resume-section">
+        <view class="resume-section-header">
+          <text class="resume-section-title">{{ui.email}}</text>
+        </view>
+        <view class="resume-section-content">
+          <text class="resume-text">{{email || ui.noData}}</text>
+        </view>
+      </view>
+
+      <!-- 手机号 -->
+      <view class="resume-section">
+        <view class="resume-section-header">
+          <text class="resume-section-title">{{ui.phone}}</text>
+        </view>
+        <view class="resume-section-content">
+          <text class="resume-text">{{phone || ui.noData}}</text>
+        </view>
+      </view>
+
+      <!-- 毕业院校 -->
+      <view class="resume-section">
+        <view class="resume-section-header">
+          <text class="resume-section-title">{{ui.education}}</text>
+        </view>
+        <view class="resume-section-content">
+          <block wx:if="{{educations && educations.length > 0}}">
+            <view class="education-item" wx:for="{{educations}}" wx:key="index">
+              <view class="education-school">{{item.school || ui.noData}}</view>
+              <view class="education-date">{{ui.graduationDate}}: {{item.graduationDate || ui.noData}}</view>
+            </view>
+          </block>
+          <block wx:else>
+            <text class="resume-text">{{ui.noData}}</text>
+          </block>
+        </view>
+      </view>
+
+      <!-- 证书 -->
+      <view class="resume-section">
+        <view class="resume-section-header">
+          <text class="resume-section-title">{{ui.certificates}}</text>
+        </view>
+        <view class="resume-section-content">
+          <block wx:if="{{certificates && certificates.length > 0}}">
+            <view class="certificate-item" wx:for="{{certificates}}" wx:key="index">
+              <text class="certificate-text">{{item}}</text>
+            </view>
+          </block>
+          <block wx:else>
+            <text class="resume-text">{{ui.noData}}</text>
+          </block>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>
+

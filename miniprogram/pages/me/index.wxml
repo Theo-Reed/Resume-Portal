@@ -32,6 +32,9 @@
   </view>
 
   <view class="me-list">
+    <view class="me-item" bindtap="onResumeProfileTap">
+      <text class="me-item-text">{{ui.resumeProfileEntry}}</text>
+    </view>
     <view class="me-item" bindtap="onAiTranslateTap">
       <text class="me-item-text">{{ui.aiTranslateEntry}}</text>
     </view>
