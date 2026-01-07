@@ -17,6 +17,7 @@ Page({
       major: string; 
       startDate: string; 
       endDate: string;
+      description?: string;
       graduationDate?: string; // 兼容旧版
     }>,
     // 证书
@@ -24,6 +25,14 @@ Page({
     
     // 编辑状态
     showEduDrawer: false,
+    showDegreePicker: false,
+    degreePickerValue: [0, 0],
+    studyTypes: [] as string[],
+    showDatePicker: false,
+    currentDatePickingField: '', // 'startDate' | 'endDate'
+    datePickerValue: [0, 0],
+    years: [] as number[],
+    months: [] as number[],
     editingEduIndex: -1, // -1 表示新增
     eduForm: {
       school: '',
@@ -31,11 +40,12 @@ Page({
       major: '',
       startDate: '',
       endDate: '',
+      description: '',
     },
-    degreeOptions: ['高中', '大专', '本科', '硕士', '博士', '其他'],
+    degreeOptions: [] as string[],
     
     // UI 文本
-    ui: {} as Record<string, string>,
+    ui: {} as Record<string, any>,
   },
 
   onLoad() {
@@ -48,7 +58,21 @@ Page({
     })
 
     this.updateLanguage()
+    this.initDateOptions()
     this.loadResumeData()
+  },
+
+  initDateOptions() {
+    const years = []
+    const currentYear = new Date().getFullYear()
+    for (let i = currentYear - 50; i <= currentYear + 10; i++) {
+      years.push(i)
+    }
+    const months = []
+    for (let i = 1; i <= 12; i++) {
+      months.push(i)
+    }
+    this.setData({ years, months })
   },
 
   onUnload() {
@@ -58,8 +82,6 @@ Page({
   },
 
   onShow() {
-    const app = getApp<IAppOption>() as any
-    const lang = normalizeLanguage(app?.globalData?.language)
     wx.setNavigationBarTitle({ title: '' })
     this.updateLanguage()
   },
@@ -80,13 +102,30 @@ Page({
       phone: t('resume.phone', lang),
       education: t('resume.education', lang),
       certificates: t('resume.certificates', lang),
+      degree: t('resume.degree', lang),
+      major: t('resume.major', lang),
+      startDate: t('resume.startDate', lang),
+      endDate: t('resume.endDate', lang),
       graduationDate: t('resume.graduationDate', lang),
+      timePeriod: t('resume.timePeriod', lang),
+      schoolPlaceholder: t('resume.schoolPlaceholder', lang),
+      majorPlaceholder: t('resume.majorPlaceholder', lang),
+      degreePlaceholder: t('resume.degreePlaceholder', lang),
+      description: t('resume.description', lang),
+      descriptionPlaceholder: t('resume.descriptionPlaceholder', lang),
+      optional: t('resume.optional', lang),
       addEducation: t('resume.addEducation', lang),
       addCertificate: t('resume.addCertificate', lang),
       noData: t('resume.noData', lang),
+      save: t('resume.save', lang),
+      cancel: t('resume.cancel', lang),
+      delete: t('resume.delete', lang),
     }
 
-    this.setData({ ui })
+    const degreeOptions = t<string[]>('resume.degreeOptions', lang)
+    const studyTypes = t<string[]>('resume.studyTypes', lang)
+
+    this.setData({ ui, degreeOptions, studyTypes })
   },
 
   loadResumeData() {
@@ -221,6 +260,7 @@ Page({
         major: '',
         startDate: '',
         endDate: '',
+        description: '',
       }
     })
   },
@@ -236,12 +276,115 @@ Page({
         major: edu.major || '',
         startDate: edu.startDate || '',
         endDate: edu.endDate || edu.graduationDate || '', // 兼容
+        description: edu.description || '',
       }
     })
   },
   closeEduDrawer() {
     this.setData({ showEduDrawer: false })
   },
+  
+  // 自定义学历选择器逻辑
+  openDegreePicker() {
+    const currentDegree = this.data.eduForm.degree
+    let degreeIndex = 0
+    let typeIndex = 0
+
+    if (currentDegree) {
+      // 尝试匹配 "本科 (全日制)" 这种格式
+      const match = currentDegree.match(/^(.+?)\s*\((.+?)\)$/)
+      if (match) {
+        const d = match[1]
+        const t = match[2]
+        const di = this.data.degreeOptions.indexOf(d)
+        const ti = this.data.studyTypes.indexOf(t)
+        if (di > -1) degreeIndex = di
+        if (ti > -1) typeIndex = ti
+      } else {
+        // 如果不匹配，尝试简单匹配学历
+        const di = this.data.degreeOptions.indexOf(currentDegree)
+        if (di > -1) degreeIndex = di
+      }
+    }
+
+    this.setData({ 
+      showDegreePicker: true,
+      degreePickerValue: [degreeIndex, typeIndex]
+    })
+  },
+  closeDegreePicker() {
+    this.setData({ showDegreePicker: false })
+  },
+  onDegreePickerChange(e: any) {
+    this.setData({ degreePickerValue: e.detail.value })
+  },
+  onConfirmDegree() {
+    const [dIdx, tIdx] = this.data.degreePickerValue
+    const degree = this.data.degreeOptions[dIdx]
+    const type = this.data.studyTypes[tIdx]
+    const degreeStr = `${degree} (${type})`
+    
+    this.setData({
+      'eduForm.degree': degreeStr,
+      showDegreePicker: false
+    })
+  },
+
+  // 自定义日期选择器逻辑
+  openDatePicker(e: any) {
+    const field = e.currentTarget.dataset.field
+    const currentDate = (this.data.eduForm as any)[field]
+    
+    let yearIndex = this.data.years.indexOf(new Date().getFullYear())
+    let monthIndex = new Date().getMonth()
+
+    if (currentDate) {
+      const [y, m] = currentDate.split('-').map(Number)
+      const foundYearIndex = this.data.years.indexOf(y)
+      if (foundYearIndex > -1) yearIndex = foundYearIndex
+      monthIndex = m - 1
+    }
+
+    this.setData({ 
+      showDatePicker: true,
+      currentDatePickingField: field,
+      datePickerValue: [yearIndex, monthIndex]
+    })
+  },
+  closeDatePicker() {
+    this.setData({ showDatePicker: false })
+  },
+  onDatePickerChange(e: any) {
+    this.setData({ datePickerValue: e.detail.value })
+  },
+  onConfirmDate() {
+    const [yIdx, mIdx] = this.data.datePickerValue
+    const year = this.data.years[yIdx]
+    const month = String(this.data.months[mIdx]).padStart(2, '0')
+    const dateStr = `${year}-${month}`
+    
+    const field = this.data.currentDatePickingField
+    const otherField = field === 'startDate' ? 'endDate' : 'startDate'
+    const otherDate = (this.data.eduForm as any)[otherField]
+
+    // 校验：开始时间不能晚于结束时间
+    if (otherDate) {
+      if (field === 'startDate' && dateStr > otherDate) {
+        wx.showToast({ title: '开始时间不能晚于结束时间', icon: 'none' })
+        return
+      }
+      if (field === 'endDate' && dateStr < otherDate) {
+        wx.showToast({ title: '结束时间不能早于开始时间', icon: 'none' })
+        return
+      }
+    }
+    
+    this.setData({
+      [`eduForm.${field}`]: dateStr,
+      showDatePicker: false
+    })
+  },
+
   onEduSchoolInput(e: any) {
     this.setData({ 'eduForm.school': e.detail.value })
   },
@@ -257,10 +400,37 @@ Page({
   onEduEndDateChange(e: any) {
     this.setData({ 'eduForm.endDate': e.detail.value })
   },
+  onEduDescriptionInput(e: any) {
+    this.setData({ 'eduForm.description': e.detail.value })
+  },
   async onSaveEducation() {
-    const { eduForm, editingEduIndex, educations } = this.data
-    if (!eduForm.school) {
-      wx.showToast({ title: '请输入学校', icon: 'none' })
+    const { eduForm, editingEduIndex, educations, ui } = this.data
+    
+    // 全字段校验
+    if (!eduForm.school.trim()) {
+      wx.showToast({ title: ui.schoolPlaceholder || '请输入学校', icon: 'none' })
+      return
+    }
+    if (!eduForm.degree) {
+      wx.showToast({ title: ui.degreePlaceholder || '请选择学历', icon: 'none' })
+      return
+    }
+    if (!eduForm.major.trim()) {
+      wx.showToast({ title: ui.majorPlaceholder || '请输入专业', icon: 'none' })
+      return
+    }
+    if (!eduForm.startDate) {
+      wx.showToast({ title: '请选择开始时间', icon: 'none' })
+      return
+    }
+    if (!eduForm.endDate) {
+      wx.showToast({ title: '请选择结束时间', icon: 'none' })
+      return
+    }
+
+    // 时间逻辑校验
+    if (eduForm.startDate > eduForm.endDate) {
+      wx.showToast({ title: '开始时间不能晚于结束时间', icon: 'none' })
       return
     }
 
@@ -295,10 +465,47 @@ Page({
   },
   
   onAddCertificate() {
-    wx.showToast({ title: t('me.comingSoon', normalizeLanguage(getApp().globalData?.language)), icon: 'none' })
+    wx.showModal({
+      title: '添加证书',
+      placeholderText: '请输入证书名称，如：CET-6',
+      editable: true,
+      success: async (res) => {
+        if (res.confirm && res.content.trim()) {
+          const newCertificates = [...this.data.certificates, res.content.trim()]
+          await this.saveResumeProfile({ certificates: newCertificates })
+        }
+      }
+    })
   },
   onEditCertificate(e: any) {
-    wx.showToast({ title: t('me.comingSoon', normalizeLanguage(getApp().globalData?.language)), icon: 'none' })
+    const index = e.currentTarget.dataset.index
+    const currentCert = this.data.certificates[index]
+    wx.showModal({
+      title: '编辑证书',
+      editable: true,
+      content: currentCert,
+      success: async (res) => {
+        if (res.confirm && res.content.trim()) {
+          const newCertificates = [...this.data.certificates]
+          newCertificates[index] = res.content.trim()
+          await this.saveResumeProfile({ certificates: newCertificates })
+        }
+      }
+    })
+  },
+  onDeleteCertificate(e: any) {
+    const index = e.currentTarget.dataset.index
+    wx.showModal({
+      title: '确认删除',
+      content: `确定要删除“${this.data.certificates[index]}”吗？`,
+      success: async (res) => {
+        if (res.confirm) {
+          const newCertificates = [...this.data.certificates]
+          newCertificates.splice(index, 1)
+          await this.saveResumeProfile({ certificates: newCertificates })
+        }
+      }
+    })
   },
 })
 

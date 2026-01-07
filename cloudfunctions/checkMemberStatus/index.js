@@ -46,7 +46,7 @@ exports.main = async (event, context) => {
       
       const resetData = {
         membership: membership,
-        updatedAt: db.serverDate(),
+            updatedAt: db.serverDate(),
       }
 
       await userRef.update({ data: resetData })

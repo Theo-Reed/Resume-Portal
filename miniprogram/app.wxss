@@ -121,3 +121,46 @@
   overflow-y: auto;
   padding: 24rpx 32rpx 32rpx;
 }
+
+/* --- Global Button Styles --- */
+.btn-primary {
+  flex: 1;
+  height: 75rpx;
+  background-color: #1d4ed8;
+  border-radius: 20rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  font-size: 30rpx;
+  font-weight: 600;
+  border: none;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+}
+
+.btn-primary:active {
+  opacity: 0.8;
+}
+
+.btn-secondary {
+  flex: 1;
+  height: 75rpx;
+  background-color: #f1f5f9;
+  border-radius: 20rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #64748b;
+  font-size: 30rpx;
+  font-weight: 600;
+  border: none;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+}
+
+.btn-secondary:active {
+  background-color: #e2e8f0;
+}

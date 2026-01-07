@@ -13,7 +13,7 @@ exports.main = async (event, context) => {
     const user = existing?.data || {}
 
     if (user.openid) {
-      return { openid: OPENID, user }
+    return { openid: OPENID, user }
     }
   } catch (err) {
     let inviteCode = null

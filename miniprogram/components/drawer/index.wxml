@@ -118,8 +118,8 @@
     </scroll-view>
 
       <view class="drawer-footer">
-        <view class="drawer-btn drawer-btn-ghost" bindtap="onReset">{{ui.clear}}</view>
-        <view class="drawer-btn drawer-btn-primary" bindtap="onConfirm">{{ui.confirm}}</view>
+        <view class="btn-secondary" bindtap="onReset">{{ui.clear}}</view>
+        <view class="btn-primary" bindtap="onConfirm">{{ui.confirm}}</view>
       </view>
     </view>
   </view>

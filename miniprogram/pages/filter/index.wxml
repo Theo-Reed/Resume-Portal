@@ -97,8 +97,8 @@
       </scroll-view>
 
       <view class="filter-footer">
-        <view class="filter-btn filter-btn-ghost" bindtap="onReset">{{ui.clear}}</view>
-        <view class="filter-btn filter-btn-primary" bindtap="onConfirm">{{ui.confirm}}</view>
+        <view class="btn-secondary" bindtap="onReset">{{ui.clear}}</view>
+        <view class="btn-primary" bindtap="onConfirm">{{ui.confirm}}</view>
       </view>
     </view>
   </view>

@@ -51,7 +51,7 @@ exports.main = async (event, context) => {
       const jobDetails = membership.job_details || {}
       const currentJob = jobDetails[job_id]
 
-      if (!is_edit) {
+    if (!is_edit) {
         // 首次生成：检查岗位槽位
         if (!currentJob && membership.job_quota.used >= limits.jobs) {
           return { success: false, message: `岗位数量已达上限 (${limits.jobs}个)`, needUpgrade: true }
@@ -62,8 +62,8 @@ exports.main = async (event, context) => {
         if (currentJob.tweak_count >= limits.tweak) {
           return { success: false, message: `该岗位微调次数已达上限 (${limits.tweak}次)`, needUpgrade: true }
         }
-      }
-    }
+          }
+        }
 
     // 3. 执行扣减与更新
     const updateData = {
@@ -81,7 +81,7 @@ exports.main = async (event, context) => {
             tweak_count: 0,
             email_count: 0,
             applied: false,
-            job_title: job_title || '',
+              job_title: job_title || '',
             createdAt: db.serverDate()
           }
         }
@@ -121,18 +121,18 @@ exports.main = async (event, context) => {
         })
       } else {
         await usageCol.add({
-          data: {
-            user_id: OPENID,
+            data: {
+              user_id: OPENID,
             job_id,
-            job_title: job_title || '',
+              job_title: job_title || '',
             resume_edits_count: is_edit ? 1 : 0,
-            email_sends_count: 0,
-            email_communications_count: 0,
-            createdAt: db.serverDate(),
+              email_sends_count: 0,
+              email_communications_count: 0,
+              createdAt: db.serverDate(),
             updatedAt: db.serverDate()
           }
-        })
-      }
+          })
+        }
     } catch (e) { console.error('Sync to user_job_usage failed', e) }
 
     return { success: true, message: is_edit ? '微调成功' : '生成成功' }

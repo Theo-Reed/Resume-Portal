@@ -119,15 +119,15 @@
           </view>
         </view>
         
-        <view class="card certificate-card">
+        <view class="tags-wrapper">
           <block wx:if="{{certificates && certificates.length > 0}}">
-            <view class="certificate-item" wx:for="{{certificates}}" wx:key="index" bindtap="onEditCertificate" data-index="{{index}}">
-              <text class="cert-text">{{item}}</text>
-              <view class="arrow-icon"></view>
+            <view class="tag-item" wx:for="{{certificates}}" wx:key="index" bindtap="onEditCertificate" data-index="{{index}}">
+              <text class="tag-text">{{item}}</text>
+              <view class="tag-del" catchtap="onDeleteCertificate" data-index="{{index}}">×</view>
             </view>
           </block>
           <block wx:else>
-            <view class="empty-state" bindtap="onAddCertificate">
+            <view class="empty-tags" bindtap="onAddCertificate">
               <text class="empty-text">{{ui.noData}}</text>
             </view>
           </block>
@@ -143,7 +143,9 @@
   <view class="drawer {{showEduDrawer ? 'drawer-show' : ''}}">
     <view class="drawer-header">
       <text class="drawer-title">{{editingEduIndex === -1 ? ui.addEducation : ui.education}}</text>
-      <view class="drawer-close" bindtap="closeEduDrawer">×</view>
+      <view wx:if="{{editingEduIndex !== -1}}" class="header-delete" bindtap="onDeleteEducation">
+        <text>{{ui.delete}}</text>
+      </view>
     </view>
     
     <view class="drawer-content">
@@ -154,11 +156,9 @@
 
       <view class="form-item">
         <text class="form-label">{{ui.degree}}</text>
-        <picker mode="selector" range="{{degreeOptions}}" bindchange="onEduDegreeChange">
-          <view class="picker-value {{eduForm.degree ? '' : 'placeholder-text'}}">
-            {{eduForm.degree || ui.degreePlaceholder}}
-          </view>
-        </picker>
+        <view class="picker-value {{eduForm.degree ? '' : 'placeholder-text'}}" bindtap="openDegreePicker">
+          {{eduForm.degree || ui.degreePlaceholder}}
+        </view>
       </view>
 
       <view class="form-item">
@@ -167,31 +167,88 @@
       </view>
 
       <view class="form-item">
-        <text class="form-label">{{ui.startDate}}</text>
-        <picker mode="date" fields="month" value="{{eduForm.startDate}}" bindchange="onEduStartDateChange">
-          <view class="picker-value {{eduForm.startDate ? '' : 'placeholder-text'}}">
+        <text class="form-label">{{ui.timePeriod}}</text>
+        <view class="date-range-row">
+          <view class="picker-value {{eduForm.startDate ? '' : 'placeholder-text'}}" bindtap="openDatePicker" data-field="startDate">
             {{eduForm.startDate || ui.startDate}}
           </view>
-        </picker>
+          <text class="date-sep">-</text>
+          <view class="picker-value {{eduForm.endDate ? '' : 'placeholder-text'}}" bindtap="openDatePicker" data-field="endDate">
+            {{eduForm.endDate || ui.endDate}}
+          </view>
+        </view>
       </view>
 
       <view class="form-item">
-        <text class="form-label">{{ui.endDate}}</text>
-        <picker mode="date" fields="month" value="{{eduForm.endDate}}" bindchange="onEduEndDateChange">
-          <view class="picker-value {{eduForm.endDate ? '' : 'placeholder-text'}}">
-            {{eduForm.endDate || ui.endDate}}
-          </view>
-        </picker>
+        <text class="form-label">{{ui.description}} <text class="optional-hint">({{ui.optional}})</text></text>
+        <textarea 
+          class="form-textarea" 
+          placeholder="{{ui.descriptionPlaceholder}}" 
+          value="{{eduForm.description}}" 
+          bindinput="onEduDescriptionInput"
+          maxlength="500"
+          auto-height
+        />
       </view>
     </view>
 
     <view class="drawer-footer">
-      <view wx:if="{{editingEduIndex !== -1}}" class="btn-delete" bindtap="onDeleteEducation">
-        <text>{{ui.delete}}</text>
+      <view class="btn-secondary" bindtap="closeEduDrawer">
+        <text>{{ui.cancel}}</text>
       </view>
-      <view class="btn-save" bindtap="onSaveEducation">
+      <view class="btn-primary" bindtap="onSaveEducation">
         <text>{{ui.save}}</text>
       </view>
+    </view>
+  </view>
+
+  <!-- 自定义学历选择器 (底部弹出) -->
+  <view class="picker-mask {{showDegreePicker ? 'picker-mask-show' : ''}}" bindtap="closeDegreePicker"></view>
+  <view class="custom-picker {{showDegreePicker ? 'custom-picker-show' : ''}}">
+    <view class="custom-picker-header">
+      <view class="custom-picker-cancel" bindtap="closeDegreePicker">{{ui.cancel}}</view>
+      <text class="custom-picker-title">{{ui.degreePlaceholder}}</text>
+      <view class="custom-picker-confirm" bindtap="onConfirmDegree">{{ui.save}}</view>
+    </view>
+    <view class="picker-view-container">
+      <picker-view 
+        indicator-style="height: 100rpx;" 
+        style="width: 100%; height: 450rpx;" 
+        value="{{degreePickerValue}}" 
+        bindchange="onDegreePickerChange"
+      >
+        <picker-view-column>
+          <view wx:for="{{degreeOptions}}" wx:key="*this" class="picker-column-item">{{item}}</view>
+        </picker-view-column>
+        <picker-view-column>
+          <view wx:for="{{studyTypes}}" wx:key="*this" class="picker-column-item">{{item}}</view>
+        </picker-view-column>
+      </picker-view>
+    </view>
+  </view>
+
+  <!-- 自定义年月选择器 (底部弹出) -->
+  <view class="picker-mask {{showDatePicker ? 'picker-mask-show' : ''}}" bindtap="closeDatePicker"></view>
+  <view class="custom-picker {{showDatePicker ? 'custom-picker-show' : ''}}">
+    <view class="custom-picker-header">
+      <view class="custom-picker-cancel" bindtap="closeDatePicker">{{ui.cancel}}</view>
+      <text class="custom-picker-title">{{currentDatePickingField === 'startDate' ? ui.startDate : ui.endDate}}</text>
+      <view class="custom-picker-confirm" bindtap="onConfirmDate">{{ui.save}}</view>
+    </view>
+    <view class="picker-view-container">
+      <picker-view 
+        indicator-style="height: 100rpx;" 
+        style="width: 100%; height: 450rpx;" 
+        value="{{datePickerValue}}" 
+        bindchange="onDatePickerChange"
+      >
+        <picker-view-column>
+          <view wx:for="{{years}}" wx:key="*this" class="picker-column-item">{{item}}年</view>
+        </picker-view-column>
+        <picker-view-column>
+          <view wx:for="{{months}}" wx:key="*this" class="picker-column-item">{{item}}月</view>
+        </picker-view-column>
+      </picker-view>
     </view>
   </view>
 </view>

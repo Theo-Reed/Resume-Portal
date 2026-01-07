@@ -1,4 +1,6 @@
 {
-  "navigationBarTitleText": ""
+  "navigationBarTitleText": "",
+  "usingComponents": {
+    "education-drawer": "../../components/education-drawer/index"
+  }
 }
-

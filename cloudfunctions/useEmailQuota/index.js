@@ -48,7 +48,7 @@ exports.main = async (event, context) => {
 
       if (!currentJob) {
         return { success: false, message: '请先为该岗位生成简历' }
-      }
+        }
 
       if (email_type === 'send') {
         // 投递：每个岗位仅限1次
@@ -90,7 +90,7 @@ exports.main = async (event, context) => {
         const usageUpdate = { updatedAt: db.serverDate() }
         if (email_type === 'send') {
           usageUpdate.email_sends_count = _.inc(1)
-        } else {
+      } else {
           usageUpdate.email_communications_count = _.inc(1)
         }
         await usageCol.doc(usageRes.data[0]._id).update({ data: usageUpdate })

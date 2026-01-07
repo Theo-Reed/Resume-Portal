@@ -67,14 +67,26 @@ const dict = {
         schoolPlaceholder: { Chinese: '请输入学校名称', English: 'Enter school name' },
         majorPlaceholder: { Chinese: '请输入专业名称', English: 'Enter major name' },
         degreePlaceholder: { Chinese: '请选择学历', English: 'Select degree' },
+        description: { Chinese: '在校描述', English: 'Description' },
+        descriptionPlaceholder: { Chinese: '主要课程、荣誉奖励等', English: 'Main courses, honors, etc.' },
+        optional: { Chinese: '选填', English: 'Optional' },
         certificates: { Chinese: '证书', English: 'Certificates' },
         graduationDate: { Chinese: '毕业时间', English: 'Graduation Date' },
+        timePeriod: { Chinese: '时间段', English: 'Time Period' },
         addEducation: { Chinese: '添加教育经历', English: 'Add Education' },
         addCertificate: { Chinese: '添加证书', English: 'Add Certificate' },
         noData: { Chinese: '暂无数据', English: 'No data' },
         save: { Chinese: '保存', English: 'Save' },
         cancel: { Chinese: '取消', English: 'Cancel' },
         delete: { Chinese: '删除', English: 'Delete' },
+        degreeOptions: {
+            Chinese: ['大专', '本科', '硕士', '博士', '其他'],
+            English: ['Associate', 'Bachelor', 'Master', 'PhD', 'Other']
+        },
+        studyTypes: {
+            Chinese: ['全日制', '非全日制'],
+            English: ['Full-time', 'Part-time']
+        },
     },
     community: {
         title: { Chinese: '社区', English: 'Community' },
@@ -234,17 +246,37 @@ export type I18nKey =
     | 'drawer.sourceTitle'
     | 'drawer.clear'
     | 'drawer.confirm'
+    | 'resume.title'
+    | 'resume.tips'
+    | 'resume.personalInfo'
+    | 'resume.contactInfo'
     | 'resume.name'
     | 'resume.photo'
     | 'resume.wechat'
     | 'resume.email'
     | 'resume.phone'
     | 'resume.education'
+    | 'resume.degree'
+    | 'resume.major'
+    | 'resume.startDate'
+    | 'resume.endDate'
+    | 'resume.schoolPlaceholder'
+    | 'resume.majorPlaceholder'
+    | 'resume.degreePlaceholder'
+    | 'resume.description'
+    | 'resume.descriptionPlaceholder'
+    | 'resume.optional'
     | 'resume.certificates'
     | 'resume.graduationDate'
+    | 'resume.timePeriod'
     | 'resume.addEducation'
     | 'resume.addCertificate'
     | 'resume.noData'
+    | 'resume.save'
+    | 'resume.cancel'
+    | 'resume.delete'
+    | 'resume.degreeOptions'
+    | 'resume.studyTypes'
     | 'tab.jobs'
     | 'app.navTitle'
 
@@ -252,12 +284,17 @@ function getByPath(obj: any, path: string) {
     return path.split('.').reduce((acc, k) => (acc ? acc[k] : undefined), obj)
 }
 
-export function t(key: I18nKey, language: AppLanguage): string {
+/**
+ * Get a localized string or object from the dictionary.
+ */
+export function t<T = string>(key: I18nKey, language: AppLanguage): T {
     const item = getByPath(dict, key)
     const value = item?.[language]
-    if (typeof value === 'string') return value
-    // Fallback logic: AIEnglish -> English, AIChinese -> Chinese, then try the other
-    let fallback: string | undefined
+    
+    if (value !== undefined) return value as T
+    
+    // Fallback logic
+    let fallback: any
     if (language === 'AIEnglish') {
         fallback = item?.['English'] || item?.['Chinese']
     }
@@ -267,7 +304,8 @@ export function t(key: I18nKey, language: AppLanguage): string {
     else {
         fallback = item?.['Chinese'] || item?.['English']
     }
-    return typeof fallback === 'string' ? fallback : key
+    
+    return (fallback !== undefined ? fallback : key) as T
 }
 
 export function normalizeLanguage(input: any): AppLanguage {

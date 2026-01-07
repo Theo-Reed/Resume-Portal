@@ -46,6 +46,9 @@ const EN_SOURCE: Record<string, string> = {
 
 Component({
   behaviors: [swipeToClose, fullscreenDrawerBehavior],
+  options: {
+    addGlobalClass: true
+  },
   
   properties: {
     show: { type: Boolean, value: false },
