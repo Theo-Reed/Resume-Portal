@@ -31,6 +31,7 @@ Page({
         isMember: false, // Member status based on expiredDate
         expiredDate: null as any, // Member expired date
         expiredDateText: '', // Formatted expired date text
+        memberLevel: 0, // 0:普通用户, 1:3天会员, 2:普通月卡, 3:高级月卡
 
         showProfileSheet: false,
         profileSheetOpen: false,
@@ -74,12 +75,20 @@ Page({
         const isLoggedIn = !!(user && (user.isAuthed || user.phone))
         const isVerified = !!(user && (user.isAuthed || user.phone)) // 认证状态：有手机号或已认证
 
-        // 判断是否是会员：expiredDate 在未来
-        const expired = user?.expiredDate
-        const isMember = expired ? (() => {
-            const ms = toDateMs(expired)
-            return ms ? ms > Date.now() : false
-        })() : false
+        // 使用新的会员字段判断会员状态
+        const memberLevel = user?.member_level || 0
+        const memberExpireAt = user?.member_expire_at
+        
+        // 判断是否是有效会员：member_level > 0 且未过期
+        let isMember = false
+        let expiredDate = null
+        if (memberLevel > 0 && memberExpireAt) {
+            const ms = toDateMs(memberExpireAt)
+            if (ms && ms > Date.now()) {
+                isMember = true
+                expiredDate = memberExpireAt
+            }
+        }
 
         const hasCloudProfile = user && typeof user.avatar === 'string' && typeof user.nickname === 'string' && user.avatar && user.nickname
         const userInfo = hasCloudProfile
@@ -92,13 +101,13 @@ Page({
         const myInviteCode = user?.inviteCode || ''
 
         // Sync expired date
-        const expiredDate = user?.expiredDate || null
         const expiredDateText = this.formatExpiredDate(expiredDate)
 
         this.setData({
             isLoggedIn,
             isVerified,
             isMember,
+            memberLevel,
             userInfo,
             isAiChineseUnlocked: isAiUnlocked,
             myInviteCode,

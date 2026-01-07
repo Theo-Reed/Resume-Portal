@@ -106,6 +106,25 @@ App<IAppOption>({
     const user = (res?.result?.user || null) as any
 
     const merged = user ? { ...user, openid } : (openid ? { openid } : null)
+    
+    // 检查会员状态并更新
+    try {
+      const memberStatusRes: any = await wx.cloud.callFunction({
+        name: 'checkMemberStatus',
+        data: {},
+      })
+      
+      if (memberStatusRes?.result?.success && merged) {
+        merged.member_level = memberStatusRes.result.member_level
+        merged.member_expire_at = memberStatusRes.result.member_expire_at
+        merged.ai_resume_quota = memberStatusRes.result.ai_resume_quota
+        merged.email_quota = memberStatusRes.result.email_quota
+      }
+    } catch (err) {
+      // 如果检查失败，使用原有数据
+      console.error('检查会员状态失败:', err)
+    }
+    
     ;(this as any).globalData.user = merged
 
     // Normalize database/user-provided language (handles 'english'/'chinese' etc.)

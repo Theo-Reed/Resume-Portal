@@ -65,7 +65,7 @@
 .nickname-container {
     display: flex;
     align-items: center;
-    gap: 12rpx;
+    gap: 15rpx; /* 从12rpx增加到15rpx，加宽3rpx */
 }
 
 .nickname {
@@ -84,6 +84,20 @@
     font-weight: 600;
     display: flex;
     align-items: center;
+}
+
+/* 体验会员：主题蓝色linear，透明度高一点 */
+.member-badge-trial {
+    background: linear-gradient(135deg, rgba(29, 78, 216, 0.4) 0%, rgba(59, 130, 246, 0.4) 100%);
+}
+
+/* 普通会员：主题蓝色linear，透明度低一点 */
+.member-badge-normal {
+    background: linear-gradient(135deg, rgba(29, 78, 216, 0.7) 0%, rgba(59, 130, 246, 0.7) 100%);
+}
+
+/* 高级会员：沿用现在的linear背景色 */
+.member-badge-premium {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
@@ -442,16 +456,24 @@
     font-weight: 300;
 }
 
+.profile-avatar-wrapper {
+    width: 90rpx; /* 从80rpx增加到90rpx，增大10rpx */
+    height: 90rpx; /* 从80rpx增加到90rpx，增大10rpx */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .profile-avatar-preview {
-    width: 80rpx;
-    height: 80rpx;
+    width: 90rpx; /* 从80rpx增加到90rpx，增大10rpx */
+    height: 90rpx; /* 从80rpx增加到90rpx，增大10rpx */
     border-radius: 50%;
     border: 2rpx solid #e5e7eb;
 }
 
 .profile-avatar-placeholder {
-    width: 80rpx;
-    height: 80rpx;
+    width: 90rpx; /* 从80rpx增加到90rpx，增大10rpx */
+    height: 90rpx; /* 从80rpx增加到90rpx，增大10rpx */
     border-radius: 50%;
     background-color: #e0e0e0;
 }

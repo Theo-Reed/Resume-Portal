@@ -45,6 +45,10 @@ exports.main = async (event, context) => {
         nickname: null,
         avatar: null,
         language: 'Chinese',
+        member_level: 0, // 0:普通用户, 1:3天会员, 2:普通月卡, 3:高级月卡
+        member_expire_at: null,
+        ai_resume_quota: 0,
+        email_quota: 0,
         createdAt: now,
         updatedAt: now,
     }
