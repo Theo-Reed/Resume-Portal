@@ -7,13 +7,21 @@ Page({
   data: {
     // 个人信息
     name: '',
+    name_en: '', // English Name
     photo: '',
     gender: '',
     birthday: '',
     identity: '',
+    location: '',
     wechat: '',
     email: '',
     phone: '',
+    phone_en: '',
+    personal_website: '',
+    whatsapp: '',
+    telegram: '',
+    linkedin: '',
+    currentLang: 'Chinese', // 'Chinese' or 'English'
     // 教育经历（可以有多个）
     educations: [] as Array<{ 
       school: string; 
@@ -31,6 +39,7 @@ Page({
     showEduDrawer: false,
     showWorkDrawer: false,
     showBasicInfoDrawer: false,
+    showContactInfoDrawer: false,
     showDegreePicker: false,
     degreePickerValue: [0, 0],
     studyTypes: [] as string[],
@@ -54,8 +63,12 @@ Page({
     aiMessageForm: '',
     editingEduIndex: -1, // -1 表示新增
     editingWorkIndex: -1, // -1 表示新增
+    universitySuggestions: [] as Array<{ chinese_name: string, english_name: string }>,
+    showUniversitySuggestions: false,
     eduForm: {
       school: '',
+      school_en: '',
+      school_cn: '',
       degree: '',
       major: '',
       startDate: '',
@@ -74,6 +87,17 @@ Page({
       gender: '',
       birthday: '',
       identity: '',
+      location: '',
+    },
+    contactInfoForm: {
+      wechat: '',
+      email: '',
+      phone: '',
+      phone_en: '',
+      whatsapp: '',
+      telegram: '',
+      linkedin: '',
+      personal_website: '',
     },
     degreeOptions: [] as string[],
     genderOptions: [] as string[],
@@ -81,7 +105,8 @@ Page({
     
     // UI 文本
     ui: {} as Record<string, any>,
-    completeness: 0, // 0: incomplete, 1: complete (except certs), 2: perfect (with certs)
+    completeness_cn: 0,
+    completeness_en: 0,
   },
 
   onLoad() {
@@ -122,23 +147,43 @@ Page({
     this.updateLanguage()
   },
 
+  onSwitchLang(e: any) {
+    const lang = e.currentTarget.dataset.lang
+    this.setData({ currentLang: lang }, () => {
+      this.updateLanguage()
+    })
+  },
+
   updateLanguage() {
     const app = getApp<IAppOption>() as any
     const lang = normalizeLanguage(app?.globalData?.language)
+    const { currentLang } = this.data
     
     const ui = {
       title: t('resume.title', lang),
-      tips: t('resume.tips', lang),
+      tabCn: t('resume.tabCn', lang),
+      tabEn: t('resume.tabEn', lang),
+      universityPlaceholder: t('resume.universityPlaceholder', lang),
+      whatsapp: t('resume.whatsapp', lang),
+      telegram: t('resume.telegram', lang),
+      linkedin: t('resume.linkedin', lang),
       personalInfo: t('resume.personalInfo', lang),
       contactInfo: t('resume.contactInfo', lang),
-      name: t('resume.name', lang),
+      name: t('resume.name', lang), // "个人信息"
+      nameLabel: currentLang === 'English' ? t('resume.nameEn', lang) : t('resume.realName', lang), // "姓名" or "英文名"
       photo: t('resume.photo', lang),
       gender: t('resume.gender', lang),
       birthday: t('resume.birthday', lang),
       identity: t('resume.identity', lang),
+      location: t('resume.location', lang),
       wechat: t('resume.wechat', lang),
       email: t('resume.email', lang),
       phone: t('resume.phone', lang),
+      phoneEn: t('resume.phoneEn', lang),
+      whatsapp: t('resume.whatsapp', lang),
+      telegram: t('resume.telegram', lang),
+      linkedin: t('resume.linkedin', lang),
+      personalWebsite: t('resume.personalWebsite', lang),
       education: t('resume.education', lang),
       certificates: t('resume.certificates', lang),
       degree: t('resume.degree', lang),
@@ -153,7 +198,7 @@ Page({
       genderPlaceholder: t('resume.genderPlaceholder', lang),
       identityPlaceholder: t('resume.identityPlaceholder', lang),
       birthdayPlaceholder: t('resume.birthdayPlaceholder', lang),
-      namePlaceholder: t('resume.namePlaceholder', lang),
+      namePlaceholder: currentLang === 'English' ? t('resume.nameEn', lang) : t('resume.namePlaceholder', lang),
       description: t('resume.description', lang),
       descriptionPlaceholder: t('resume.descriptionPlaceholder', lang),
       optional: t('resume.optional', lang),
@@ -186,15 +231,15 @@ Page({
     const genderOptions = t<string[]>('resume.genderOptions', lang)
     const identityOptions = t<string[]>('resume.identityOptions', lang)
 
-    this.setData({ ui, degreeOptions, studyTypes, genderOptions, identityOptions }, () => {
-      this.updateTips()
-    })
+    this.setData({ ui, degreeOptions, studyTypes, genderOptions, identityOptions, interfaceLang: lang })
   },
 
   updateTips() {
-    const { completeness } = this.data
+    const { completeness_cn, completeness_en, currentLang } = this.data
     const app = getApp<IAppOption>() as any
     const lang = normalizeLanguage(app?.globalData?.language)
+
+    const completeness = currentLang === 'English' ? completeness_en : completeness_cn
 
     let tips = t('resume.tips', lang)
     if (completeness === 1) {
@@ -217,44 +262,69 @@ Page({
       const profile = user.resume_profile || {}
       
       const name = profile.name || ''
+      const name_en = profile.name_en || ''
       const photo = profile.photo || ''
       const gender = profile.gender || ''
       const birthday = profile.birthday || ''
       const identity = profile.identity || ''
+      const location = profile.location || ''
       const wechat = profile.wechat || ''
       const email = profile.email || ''
       const phone = profile.phone || ''
+      const phone_en = profile.phone_en || ''
+      const personal_website = profile.personal_website || ''
+      const whatsapp = profile.whatsapp || ''
+      const telegram = profile.telegram || ''
+      const linkedin = profile.linkedin || ''
       const educations = profile.educations || []
       const certificates = profile.certificates || []
       const workExperiences = profile.workExperiences || []
       const aiMessage = profile.aiMessage !== undefined ? profile.aiMessage : t('resume.aiMessageDefault', normalizeLanguage(app?.globalData?.language))
 
-      // 计算完整度
-      const isBasicComplete = !!(name && photo && gender && birthday && identity)
-      const isContactComplete = !!(wechat || email || phone)
+      // 计算完整度 (各自计算各自 shared 的基础信息)
+      const isSharedBasicComplete = !!(photo && gender && birthday && identity)
       const isEducationComplete = educations.length > 0
       const isCertificatesComplete = certificates.length > 0
 
-      let completeness = 0
-      if (isBasicComplete && isContactComplete && isEducationComplete) {
-        completeness = isCertificatesComplete ? 2 : 1
+      // 中文版逻辑：要有姓名，联系方式(微信/电话/邮箱任一)，教育经历
+      const isBasicCompleteCn = !!(name && isSharedBasicComplete)
+      const isContactCompleteCn = !!(wechat || phone || email)
+      let completeness_cn = 0
+      if (isBasicCompleteCn && isContactCompleteCn && isEducationComplete) {
+        completeness_cn = isCertificatesComplete ? 2 : 1
+      }
+
+      // 英文版逻辑：要有英文名、所在地，联系方式(邮箱/领英/英文手机任一)，教育经历
+      const isBasicCompleteEn = !!(name_en && location && isSharedBasicComplete)
+      const isContactCompleteEn = !!(email || linkedin || phone_en)
+      let completeness_en = 0
+      if (isBasicCompleteEn && isContactCompleteEn && isEducationComplete) {
+        completeness_en = isCertificatesComplete ? 2 : 1
       }
 
       this.setData({
         name,
+        name_en,
         photo,
         gender,
         birthday,
         identity,
+        location,
         wechat,
         email,
         phone,
+        phone_en,
+        personal_website,
+        whatsapp,
+        telegram,
+        linkedin,
         educations,
         certificates,
         skills: profile.skills || [],
         workExperiences,
         aiMessage,
-        completeness
+        completeness_cn,
+        completeness_en
       }, () => {
         this.updateTips()
       })
@@ -271,21 +341,32 @@ Page({
       const currentProfile = user.resume_profile || {}
       const newProfile = { ...currentProfile, ...data }
       
-      const isBasicComplete = !!(newProfile.name && newProfile.photo && newProfile.gender && newProfile.birthday && newProfile.identity)
-      const isContactComplete = !!(newProfile.wechat || newProfile.email || newProfile.phone)
+      const isSharedBasicComplete = !!(newProfile.photo && newProfile.gender && newProfile.birthday && newProfile.identity)
       const isEducationComplete = newProfile.educations?.length > 0
       const isCertificatesComplete = newProfile.certificates?.length > 0
 
-      let completeness = 0
-      if (isBasicComplete && isContactComplete && isEducationComplete) {
-        completeness = isCertificatesComplete ? 2 : 1
+      // 中文版逻辑
+      const isBasicCompleteCn = !!(newProfile.name && isSharedBasicComplete)
+      const isContactCompleteCn = !!(newProfile.wechat || newProfile.phone || newProfile.email)
+      let completeness_cn = 0
+      if (isBasicCompleteCn && isContactCompleteCn && isEducationComplete) {
+        completeness_cn = isCertificatesComplete ? 2 : 1
+      }
+
+      // 英文版逻辑
+      const isBasicCompleteEn = !!(newProfile.name_en && newProfile.location && isSharedBasicComplete)
+      const isContactCompleteEn = !!(newProfile.email || newProfile.linkedin || newProfile.phone_en)
+      let completeness_en = 0
+      if (isBasicCompleteEn && isContactCompleteEn && isEducationComplete) {
+        completeness_en = isCertificatesComplete ? 2 : 1
       }
 
       const res: any = await wx.cloud.callFunction({
         name: 'updateUserProfile',
         data: { 
           resume_profile: data,
-          resume_completeness: completeness
+          resume_completeness: completeness_cn,
+          resume_completeness_en: completeness_en
         }
       })
       
@@ -329,63 +410,69 @@ Page({
       }
     })
   },
-  onEditWechat() {
-    wx.showModal({
-      title: '编辑微信号',
-      placeholderText: '请输入微信号',
-      editable: true,
-      content: this.data.wechat,
-      success: (res) => {
-        if (res.confirm && res.content) {
-          this.saveResumeProfile({ wechat: res.content })
-        }
-      }
-    })
-  },
-  onEditEmail() {
-    wx.showModal({
-      title: '编辑邮箱',
-      placeholderText: '请输入联系邮箱',
-      editable: true,
-      content: this.data.email,
-      success: (res) => {
-        if (res.confirm && res.content) {
-          this.saveResumeProfile({ email: res.content })
-        }
-      }
-    })
-  },
-  onEditPhone() {
-    wx.showModal({
-      title: '编辑手机号',
-      placeholderText: '请输入联系手机号',
-      editable: true,
-      content: this.data.phone,
-      success: (res) => {
-        if (res.confirm && res.content) {
-          this.saveResumeProfile({ phone: res.content })
-        }
-      }
-    })
-  },
   
   // 个人基本信息相关逻辑
   onEditBasicInfo() {
+    // Determine which name to show in the form
+    const currentName = this.data.currentLang === 'English' ? this.data.name_en : this.data.name
+    
     this.setData({
       showBasicInfoDrawer: true,
       basicInfoForm: {
-        name: this.data.name,
+        name: currentName,
         gender: this.data.gender,
         birthday: this.data.birthday,
         identity: this.data.identity,
+        location: this.data.location,
       }
     })
   },
   closeBasicInfoDrawer() {
     this.setData({ showBasicInfoDrawer: false })
   },
+  onEditContactInfo() {
+    this.setData({
+      showContactInfoDrawer: true,
+      contactInfoForm: {
+        wechat: this.data.wechat,
+        email: this.data.email,
+        phone: this.data.phone,
+        phone_en: this.data.phone_en,
+        whatsapp: this.data.whatsapp,
+        telegram: this.data.telegram,
+        linkedin: this.data.linkedin,
+        personal_website: this.data.personal_website,
+      }
+    })
+  },
+  closeContactInfoDrawer() {
+    this.setData({ showContactInfoDrawer: false })
+  },
+  onContactInput(e: any) {
+    const field = e.currentTarget.dataset.field
+    this.setData({
+      [`contactInfoForm.${field}`]: e.detail.value
+    })
+  },
+  async onSaveContactInfo() {
+    const { contactInfoForm } = this.data
+    await this.saveResumeProfile({
+      wechat: contactInfoForm.wechat,
+      email: contactInfoForm.email,
+      phone: contactInfoForm.phone,
+      phone_en: contactInfoForm.phone_en,
+      whatsapp: contactInfoForm.whatsapp,
+      telegram: contactInfoForm.telegram,
+      linkedin: contactInfoForm.linkedin,
+      personal_website: contactInfoForm.personal_website,
+    })
+    this.closeContactInfoDrawer()
+  },
   onBasicNameInput(e: any) {
     this.setData({ 'basicInfoForm.name': e.detail.value })
+  },
+  onBasicLocationInput(e: any) {
+    this.setData({ 'basicInfoForm.location': e.detail.value })
   },
   openGenderPicker() {
     this.setData({ showGenderPicker: true })
@@ -430,17 +517,28 @@ Page({
     })
   },
   async onSaveBasicInfo() {
-    const { basicInfoForm, ui } = this.data
+    const { basicInfoForm, ui, currentLang } = this.data
+    const isEnglish = currentLang === 'English'
+
     if (!basicInfoForm.name.trim()) {
       wx.showToast({ title: ui.namePlaceholder, icon: 'none' })
       return
     }
-    await this.saveResumeProfile({
-      name: basicInfoForm.name,
+
+    const dataToUpdate: any = {
       gender: basicInfoForm.gender,
       birthday: basicInfoForm.birthday,
       identity: basicInfoForm.identity,
-    })
+      location: basicInfoForm.location,
+    }
+
+    if (isEnglish) {
+      dataToUpdate.name_en = basicInfoForm.name
+    } else {
+      dataToUpdate.name = basicInfoForm.name
+    }
+
+    await this.saveResumeProfile(dataToUpdate)
     this.closeBasicInfoDrawer()
   },
 
@@ -449,8 +547,12 @@ Page({
     this.setData({
       showEduDrawer: true,
       editingEduIndex: -1,
+      showUniversitySuggestions: false,
+      universitySuggestions: [],
       eduForm: {
         school: '',
+        school_en: '',
+        school_cn: '',
         degree: '',
         major: '',
         startDate: '',
@@ -462,11 +564,23 @@ Page({
   onEditEducation(e: any) {
     const index = e.currentTarget.dataset.index
     const edu = this.data.educations[index]
+    const isEnglish = this.data.currentLang === 'English'
+    
+    // Determine displayed school name
+    let displayedSchool = edu.school || ''
+    if (isEnglish && edu.school_en) {
+        displayedSchool = edu.school_en
+    }
+
     this.setData({
       showEduDrawer: true,
       editingEduIndex: index,
+      showUniversitySuggestions: false,
+      universitySuggestions: [],
       eduForm: {
-        school: edu.school || '',
+        school: displayedSchool,
+        school_en: edu.school_en || '',
+        school_cn: edu.school || '',
         degree: edu.degree || '',
         major: edu.major || '',
         startDate: edu.startDate || '',
@@ -481,6 +595,9 @@ Page({
   
   // 自定义学历选择器逻辑
   openDegreePicker() {
+    // 同时也关闭院校建议，防止遮挡
+    this.setData({ showUniversitySuggestions: false })
+
     const currentDegree = this.data.eduForm.degree
     let degreeIndex = 0
     let typeIndex = 0
@@ -527,6 +644,7 @@ Page({
 
   // 自定义日期选择器逻辑
   openDatePicker(e: any) {
+    this.setData({ showUniversitySuggestions: false })
     const field = e.currentTarget.dataset.field
     const isWorkField = field.startsWith('work_')
     const actualField = isWorkField ? field.replace('work_', '') : field
@@ -605,23 +723,88 @@ Page({
     })
   },
 
+  async searchUniversities(keyword: string) {
+    if (!keyword || keyword.length < 2) {
+      this.setData({ showUniversitySuggestions: false })
+      return
+    }
+    const db = wx.cloud.database()
+    const _ = db.command
+    try {
+      const res = await db.collection('universities').where(
+        _.or([
+          { chinese_name: db.RegExp({ regexp: keyword, options: 'i' }) },
+          { english_name: db.RegExp({ regexp: keyword, options: 'i' }) }
+        ])
+      ).limit(5).get()
+      
+      this.setData({
+        universitySuggestions: res.data,
+        showUniversitySuggestions: res.data.length > 0
+      })
+    } catch (e) {
+      console.error(e)
+    }
+  },
+
+  onSelectUniversity(e: any) {
+    const item = e.currentTarget.dataset.item
+    const isEnglish = this.data.currentLang === 'English'
+    this.setData({
+      'eduForm.school': isEnglish ? item.english_name : item.chinese_name,
+      'eduForm.school_en': item.english_name || '',
+      'eduForm.school_cn': item.chinese_name || '',
+      showUniversitySuggestions: false
+    })
+  },
+
+  onEduSchoolFocus(e: any) {
+    const keyword = e.detail.value
+    if (keyword && keyword.length >= 2) {
+      this.searchUniversities(keyword)
+    }
+  },
+
   onEduSchoolInput(e: any) {
-    this.setData({ 'eduForm.school': e.detail.value })
+    const keyword = e.detail.value
+    this.setData({ 
+      'eduForm.school': keyword,
+      // If user types, we clear the mapped names until a new selection is made
+      'eduForm.school_en': '',
+      'eduForm.school_cn': ''
+    })
+    
+    if ((this as any)._searchTimer) clearTimeout((this as any)._searchTimer);
+    (this as any)._searchTimer = setTimeout(() => {
+        this.searchUniversities(keyword)
+    }, 500)
   },
   onEduDegreeChange(e: any) {
     this.setData({ 'eduForm.degree': this.data.degreeOptions[e.detail.value] })
   },
   onEduMajorInput(e: any) {
-    this.setData({ 'eduForm.major': e.detail.value })
+    this.setData({ 
+      'eduForm.major': e.detail.value,
+      showUniversitySuggestions: false
+    })
   },
   onEduStartDateChange(e: any) {
-    this.setData({ 'eduForm.startDate': e.detail.value })
+    this.setData({ 
+      'eduForm.startDate': e.detail.value,
+      showUniversitySuggestions: false
+    })
   },
   onEduEndDateChange(e: any) {
-    this.setData({ 'eduForm.endDate': e.detail.value })
+    this.setData({ 
+      'eduForm.endDate': e.detail.value,
+      showUniversitySuggestions: false
+    })
   },
   onEduDescriptionInput(e: any) {
-    this.setData({ 'eduForm.description': e.detail.value })
+    this.setData({ 
+      'eduForm.description': e.detail.value,
+      showUniversitySuggestions: false
+    })
   },
   
   // 工作经历相关逻辑
@@ -723,7 +906,7 @@ Page({
   },
 
   async onSaveEducation() {
-    const { eduForm, editingEduIndex, educations, ui } = this.data
+    const { eduForm, editingEduIndex, educations, ui, currentLang } = this.data
     
     // 全字段校验
     if (!eduForm.school.trim()) {
@@ -757,6 +940,24 @@ Page({
 
     const newEducations = [...educations]
     const eduData = { ...eduForm }
+    
+    // Handle Bilingual School Names
+    if (currentLang === 'English') {
+        eduData.school_en = eduForm.school
+        // If we have a mapped Chinese name, use it for 'school' (which is the primary/CN field)
+        if (eduForm.school_cn) {
+            eduData.school = eduForm.school_cn
+        } else if (!eduData.school) {
+             // If manual entry in English w/o mapping, use it as school as well or let it be
+             eduData.school = eduForm.school
+        }
+    } else {
+        eduData.school = eduForm.school
+        // If manual entry in Chinese, we don't zero out school_en, we keep it if it was there (e.g. from existing record)
+    }
+    
+    // Clean up temporary field
+    delete (eduData as any).school_cn
 
     if (editingEduIndex === -1) {
       newEducations.push(eduData)

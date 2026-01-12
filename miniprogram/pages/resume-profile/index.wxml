@@ -1,14 +1,25 @@
 <!--miniprogram/pages/resume-profile/index.wxml-->
+<wxs src="../../utils/format.wxs" module="format" />
 <view class="page">
   <ui-feedback id="ui-feedback" />
   <view class="header-section">
     <view class="title-row">
       <text class="page-title">{{ui.title}}</text>
     </view>
-    <view class="tips-card">
-      <image class="tips-icon" src="../../assets/icons/four-pointed-start.png" mode="aspectFit" />
-      <text class="tips-text">{{ui.tips}}</text>
+    
+    <view class="lang-switcher">
+      <view class="lang-tab {{currentLang === 'Chinese' ? 'active' : ''}}" bindtap="onSwitchLang" data-lang="Chinese">
+        <view class="completeness-dot {{completeness_cn >= 1 ? 'complete' : ''}}"></view>
+        <text>{{ui.tabCn}}</text>
+      </view>
+      <view class="lang-tab {{currentLang === 'English' ? 'active' : ''}}" bindtap="onSwitchLang" data-lang="English">
+        <view class="completeness-dot {{completeness_en >= 1 ? 'complete' : ''}}"></view>
+        <text>{{ui.tabEn}}</text>
+      </view>
     </view>
+
+    <!-- Tips Card Removed -->
+
   </view>
 
   <scroll-view     
@@ -37,9 +48,18 @@
           
           <!-- 姓名 -->
           <view class="list-item" bindtap="onEditBasicInfo">
-            <view class="item-label">{{ui.name}}</view>
+            <view class="item-label">{{ui.nameLabel}}</view>
             <view class="item-value">
-              <text class="{{name ? 'value-text' : 'placeholder-text'}}">{{name || ui.noData}}</text>
+              <text class="{{(currentLang === 'English' ? name_en : name) ? 'value-text' : 'placeholder-text'}}">{{(currentLang === 'English' ? name_en : name) || ui.noData}}</text>
+              <view class="arrow-icon"></view>
+            </view>
+          </view>
+
+          <!-- 所在地 (仅英文版显示) -->
+          <view class="list-item" bindtap="onEditBasicInfo" wx:if="{{currentLang === 'English'}}">
+            <view class="item-label">{{ui.location}}</view>
+            <view class="item-value">
+              <text class="{{location ? 'value-text' : 'placeholder-text'}}">{{location || ui.noData}}</text>
               <view class="arrow-icon"></view>
             </view>
           </view>
@@ -50,29 +70,55 @@
       <view class="section-group">
         <view class="section-group-title">{{ui.contactInfo}}</view>
         <view class="card">
-          <view class="list-item" bindtap="onEditWechat">
-            <view class="item-label">{{ui.wechat}}</view>
-            <view class="item-value">
-              <text class="{{wechat ? 'value-text' : 'placeholder-text'}}">{{wechat || ui.noData}}</text>
-              <view class="arrow-icon"></view>
+          <!-- 中文显示：微信、邮箱、手机 -->
+          <block wx:if="{{currentLang === 'Chinese'}}">
+            <view class="list-item" bindtap="onEditContactInfo">
+              <view class="item-label">{{ui.wechat}}</view>
+              <view class="item-value">
+                <text class="{{wechat ? 'value-text' : 'placeholder-text'}}">{{wechat || ui.noData}}</text>
+                <view class="arrow-icon"></view>
+              </view>
             </view>
-          </view>
-          
-          <view class="list-item" bindtap="onEditEmail">
-            <view class="item-label">{{ui.email}}</view>
-            <view class="item-value">
-              <text class="{{email ? 'value-text' : 'placeholder-text'}}">{{email || ui.noData}}</text>
-              <view class="arrow-icon"></view>
+            <view class="list-item" bindtap="onEditContactInfo">
+              <view class="item-label">{{ui.email}}</view>
+              <view class="item-value">
+                <text class="{{email ? 'value-text' : 'placeholder-text'}}">{{email || ui.noData}}</text>
+                <view class="arrow-icon"></view>
+              </view>
             </view>
-          </view>
-          
-          <view class="list-item" bindtap="onEditPhone">
-            <view class="item-label">{{ui.phone}}</view>
-            <view class="item-value">
-              <text class="{{phone ? 'value-text' : 'placeholder-text'}}">{{phone || ui.noData}}</text>
-              <view class="arrow-icon"></view>
+            <view class="list-item" bindtap="onEditContactInfo">
+              <view class="item-label">{{ui.phone}}</view>
+              <view class="item-value">
+                <text class="{{phone ? 'value-text' : 'placeholder-text'}}">{{phone || ui.noData}}</text>
+                <view class="arrow-icon"></view>
+              </view>
             </view>
-          </view>
+          </block>
+
+          <!-- 英文显示：邮箱、领英、个人网站 -->
+          <block wx:else>
+            <view class="list-item" bindtap="onEditContactInfo">
+              <view class="item-label">{{ui.email}}</view>
+              <view class="item-value">
+                <text class="{{email ? 'value-text' : 'placeholder-text'}}">{{email || ui.noData}}</text>
+                <view class="arrow-icon"></view>
+              </view>
+            </view>
+            <view class="list-item" bindtap="onEditContactInfo">
+              <view class="item-label">{{ui.linkedin}}</view>
+              <view class="item-value">
+                <text class="{{linkedin ? 'value-text' : 'placeholder-text'}}">{{linkedin || ui.noData}}</text>
+                <view class="arrow-icon"></view>
+              </view>
+            </view>
+            <view class="list-item" bindtap="onEditContactInfo">
+              <view class="item-label">{{ui.personalWebsite}}</view>
+              <view class="item-value">
+                <text class="{{personal_website ? 'value-text' : 'placeholder-text'}}">{{personal_website || ui.noData}}</text>
+                <view class="arrow-icon"></view>
+              </view>
+            </view>
+          </block>
         </view>
       </view>
 
@@ -90,9 +136,9 @@
             <view class="education-item" wx:for="{{educations}}" wx:key="index" bindtap="onEditEducation" data-index="{{index}}">
               <view class="edu-info">
                 <view class="edu-header">
-                  <view class="edu-school">{{item.school || ui.noData}}</view>
+                  <view class="edu-school">{{currentLang === 'English' ? (item.school_en || item.school) : item.school || ui.noData}}</view>
                   <view class="edu-date" wx:if="{{item.startDate || item.endDate || item.graduationDate}}">
-                    {{item.startDate || ''}} - {{item.endDate || item.graduationDate || ''}}
+                    {{format.formatDate(item.startDate, currentLang, interfaceLang)}} - {{format.formatDate(item.endDate || item.graduationDate, currentLang, interfaceLang)}}
                   </view>
                 </view>
                 <view class="edu-details">
@@ -128,7 +174,7 @@
                 <view class="edu-header">
                   <view class="edu-school">{{item.company || ui.noData}}</view>
                   <view class="edu-date" wx:if="{{item.startDate || item.endDate}}">
-                    {{item.startDate || ''}} - {{item.endDate || ''}}
+                    {{format.formatDate(item.startDate, currentLang, interfaceLang)}} - {{format.formatDate(item.endDate, currentLang, interfaceLang)}}
                   </view>
                 </view>
                 <view class="edu-details">
@@ -282,14 +328,20 @@
     </view>
     
     <view class="drawer-content">
-      <view class="form-item">
+      <view class="form-item form-item-relative">
         <text class="form-label">{{ui.education}}</text>
-        <input class="form-input" placeholder="{{ui.schoolPlaceholder}}" value="{{eduForm.school}}" bindinput="onEduSchoolInput" />
+        <input class="form-input" placeholder="{{ui.schoolPlaceholder}}" value="{{eduForm.school}}" bindinput="onEduSchoolInput" bindfocus="onEduSchoolFocus" />
+        <scroll-view scroll-y class="suggestions-box" wx:if="{{showUniversitySuggestions && universitySuggestions.length > 0}}">
+          <view class="suggestion-item" wx:for="{{universitySuggestions}}" wx:key="_id" bindtap="onSelectUniversity" data-item="{{item}}">
+            <text class="suggestion-main">{{currentLang === 'English' ? item.english_name : item.chinese_name}}</text>
+            <text class="suggestion-sub" wx:if="{{item.english_name && item.chinese_name}}">{{currentLang === 'English' ? item.chinese_name : item.english_name}}</text>
+          </view>
+        </scroll-view>
       </view>
 
-      <view class="form-item">
+      <view class="form-item" bindtap="openDegreePicker">
         <text class="form-label">{{ui.degree}}</text>
-        <view class="picker-value {{eduForm.degree ? '' : 'placeholder-text'}}" bindtap="openDegreePicker">
+        <view class="picker-value {{eduForm.degree ? '' : 'placeholder-text'}}">
           {{eduForm.degree || ui.degreePlaceholder}}
         </view>
       </view>
@@ -302,11 +354,11 @@
       <view class="form-item">
         <text class="form-label">{{ui.timePeriod}}</text>
         <view class="date-range-row">
-          <view class="picker-value {{eduForm.startDate ? '' : 'placeholder-text'}}" bindtap="openDatePicker" data-field="startDate">
+          <view class="picker-value {{eduForm.startDate ? '' : 'placeholder-text'}}" bindtap="openDatePicker" data-field="startDate" style="flex: 1;">
             {{eduForm.startDate || ui.startDate}}
           </view>
           <text class="date-sep">-</text>
-          <view class="picker-value {{eduForm.endDate ? '' : 'placeholder-text'}}" bindtap="openDatePicker" data-field="endDate">
+          <view class="picker-value {{eduForm.endDate ? '' : 'placeholder-text'}}" bindtap="openDatePicker" data-field="endDate" style="flex: 1;">
             {{eduForm.endDate || ui.endDate}}
           </view>
         </view>
@@ -344,7 +396,7 @@
     
     <view class="drawer-content">
       <view class="form-item">
-        <text class="form-label">{{ui.name}}</text>
+        <text class="form-label">{{ui.nameLabel}}</text>
         <input class="form-input" placeholder="{{ui.namePlaceholder}}" value="{{basicInfoForm.name}}" bindinput="onBasicNameInput" />
       </view>
 
@@ -368,6 +420,11 @@
           {{basicInfoForm.identity || ui.identityPlaceholder}}
         </view>
       </view>
+
+      <view class="form-item" wx:if="{{currentLang === 'English'}}">
+        <text class="form-label">{{ui.location}}</text>
+        <input class="form-input" placeholder="{{ui.locationPlaceholder || ui.location}}" value="{{basicInfoForm.location}}" bindinput="onBasicLocationInput" />
+      </view>
     </view>
 
     <view class="drawer-footer">
@@ -375,6 +432,67 @@
         <text>{{ui.cancel}}</text>
       </view>
       <view class="btn-primary" bindtap="onSaveBasicInfo">
+        <text>{{ui.save}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 联系方式编辑弹窗 (右侧弹出) -->
+  <view class="drawer-mask {{showContactInfoDrawer ? 'drawer-mask-show' : ''}}" bindtap="closeContactInfoDrawer"></view>
+  <view class="drawer {{showContactInfoDrawer ? 'drawer-show' : ''}}">
+    <view class="drawer-header">
+      <text class="drawer-title">{{ui.contactInfo}}</text>
+    </view>
+    
+    <view class="drawer-content">
+      <view class="form-item">
+        <text class="form-label">{{ui.email}}</text>
+        <input class="form-input" placeholder="{{ui.email}}" value="{{contactInfoForm.email}}" bindinput="onContactInput" data-field="email" />
+      </view>
+
+      <view class="form-item" wx:if="{{currentLang === 'Chinese'}}">
+        <text class="form-label">{{ui.wechat}}</text>
+        <input class="form-input" placeholder="{{ui.wechat}}" value="{{contactInfoForm.wechat}}" bindinput="onContactInput" data-field="wechat" />
+      </view>
+
+      <view class="form-item" wx:if="{{currentLang === 'Chinese'}}">
+        <text class="form-label">{{ui.phone}}</text>
+        <input class="form-input" placeholder="{{ui.phone}}" value="{{contactInfoForm.phone}}" bindinput="onContactInput" data-field="phone" />
+      </view>
+
+      <block wx:if="{{currentLang === 'English'}}">
+        <view class="form-item">
+          <text class="form-label">{{ui.phoneEn}}</text>
+          <input class="form-input" placeholder="{{ui.phoneEn}}" value="{{contactInfoForm.phone_en}}" bindinput="onContactInput" data-field="phone_en" />
+        </view>
+
+        <view class="form-item">
+          <text class="form-label">{{ui.whatsapp}}</text>
+          <input class="form-input" placeholder="{{ui.whatsapp}}" value="{{contactInfoForm.whatsapp}}" bindinput="onContactInput" data-field="whatsapp" />
+        </view>
+
+        <view class="form-item">
+          <text class="form-label">{{ui.telegram}}</text>
+          <input class="form-input" placeholder="{{ui.telegram}}" value="{{contactInfoForm.telegram}}" bindinput="onContactInput" data-field="telegram" />
+        </view>
+
+        <view class="form-item">
+          <text class="form-label">{{ui.linkedin}}</text>
+          <input class="form-input" placeholder="{{ui.linkedin}}" value="{{contactInfoForm.linkedin}}" bindinput="onContactInput" data-field="linkedin" />
+        </view>
+
+        <view class="form-item">
+          <text class="form-label">{{ui.personalWebsite}}</text>
+          <input class="form-input" placeholder="{{ui.personalWebsite}}" value="{{contactInfoForm.personal_website}}" bindinput="onContactInput" data-field="personal_website" />
+        </view>
+      </block>
+    </view>
+
+    <view class="drawer-footer">
+      <view class="btn-secondary" bindtap="closeContactInfoDrawer">
+        <text>{{ui.cancel}}</text>
+      </view>
+      <view class="btn-primary" bindtap="onSaveContactInfo">
         <text>{{ui.save}}</text>
       </view>
     </view>
@@ -470,8 +588,8 @@
     </view>
     <view class="bottom-sheet-content picker-view-container">
       <picker-view 
-        indicator-style="height: 100rpx;" 
-        style="width: 100%; height: 450rpx;" 
+        indicator-style="height: 160rpx;" 
+        style="width: 100%; height: 640rpx;" 
         value="{{datePickerValue}}" 
         bindchange="onDatePickerChange"
       >
@@ -480,6 +598,35 @@
         </picker-view-column>
         <picker-view-column>
           <view wx:for="{{months}}" wx:key="*this" class="picker-column-item">{{item}}{{ui.month}}</view>
+        </picker-view-column>
+      </picker-view>
+    </view>
+  </view>
+
+  <!-- 自定义学历选择器 (双滚轮，底部弹出) -->
+  <view class="bottom-sheet-mask {{showDegreePicker ? 'bottom-sheet-mask-open' : ''}}" bindtap="closeDegreePicker"></view>
+  <view class="bottom-sheet {{showDegreePicker ? 'bottom-sheet-open' : ''}}">
+    <view class="bottom-sheet-header">
+      <view class="bottom-sheet-header-left">
+        <view class="bottom-sheet-header-btn" bindtap="closeDegreePicker">{{ui.cancel || '取消'}}</view>
+      </view>
+      <text class="bottom-sheet-title">{{ui.degreePlaceholder}}</text>
+      <view class="bottom-sheet-header-right">
+        <view class="bottom-sheet-header-btn primary" bindtap="onConfirmDegree">{{ui.save || '确定'}}</view>
+      </view>
+    </view>
+    <view class="bottom-sheet-content picker-view-container">
+      <picker-view 
+        indicator-style="height: 160rpx;" 
+        style="width: 100%; height: 640rpx;" 
+        value="{{degreePickerValue}}" 
+        bindchange="onDegreePickerChange"
+      >
+        <picker-view-column>
+          <view wx:for="{{degreeOptions}}" wx:key="*this" class="picker-column-item">{{item}}</view>
+        </picker-view-column>
+        <picker-view-column>
+          <view wx:for="{{studyTypes}}" wx:key="*this" class="picker-column-item">{{item}}</view>
         </picker-view-column>
       </picker-view>
     </view>

@@ -189,14 +189,16 @@
 .edu-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 8rpx;
+  gap: 16rpx;
 }
 
 .edu-school {
   font-size: 30rpx;
   font-weight: 600;
   color: #111827;
+  flex: 1;
 }
 
 .edu-details {
@@ -213,6 +215,9 @@
 .edu-date {
   font-size: 24rpx;
   color: #64748b;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 4rpx;
 }
 
 /* Tags Wrapper for Certificates */
@@ -333,7 +338,7 @@
   z-index: 1000;
   visibility: hidden;
   opacity: 0;
-  transition: all 0.3s ease;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
 }
 
@@ -352,7 +357,7 @@
   background-color: #ffffff;
   z-index: 1001;
   transform: translateX(100%);
-  transition: transform 0.3s ease;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
   box-shadow: -10rpx 0 30rpx rgba(0, 0, 0, 0.05);
@@ -545,9 +550,75 @@
   transform: rotate(45deg);
 }
 
-/* Custom Date Picker Specifics */
-.custom-picker-cancel, .custom-picker-confirm {
-  /* 使用 header 通用样式 */
+/* Bottom Sheet Styles */
+.bottom-sheet-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 2000;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bottom-sheet-mask-open {
+  visibility: visible;
+  opacity: 1;
+}
+
+.bottom-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ffffff;
+  z-index: 2001;
+  border-top-left-radius: 40rpx;
+  border-top-right-radius: 40rpx;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  visibility: hidden;
+}
+
+.bottom-sheet-open {
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.bottom-sheet-header {
+  height: 120rpx;
+  padding: 0 40rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1rpx solid #f1f5f9;
+}
+
+.bottom-sheet-header-btn {
+  font-size: 30rpx;
+  color: #64748b;
+  padding: 20rpx;
+}
+
+.bottom-sheet-header-btn.primary {
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+.bottom-sheet-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.bottom-sheet-content {
+  padding: 40rpx;
+  padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
 }
 
 .picker-view-container {
@@ -555,10 +626,91 @@
 }
 
 .picker-column-item {
-  line-height: 100rpx;
+  height: 160rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 32rpx;
+  font-size: 33rpx;
   color: #1e293b;
+  font-weight: 500;
+}
+
+/* Language Switcher */
+.lang-switcher {
+  display: flex;
+  background: #f1f5f9;
+  border-radius: 16rpx;
+  padding: 8rpx;
+  margin-top: 24rpx;
+}
+.lang-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12rpx 0;
+  font-size: 28rpx;
+  color: #64748b;
+  border-radius: 12rpx;
+  transition: all 0.2s;
+}
+.completeness-dot {
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background-color: #cbd5e1;
+  margin-right: 12rpx;
+}
+.completeness-dot.complete {
+  background-color: #10b981;
+}
+.lang-tab.active {
+  background: #fff;
+  color: #0f172a;
+  font-weight: 600;
+  box-shadow: 0 2rpx 4rpx rgba(0,0,0,0.05);
+}
+
+/* Suggestions Dropdown */
+.form-item-relative {
+  position: relative;
+  z-index: 100;
+}
+.suggestions-box {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 20rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0,0,0,0.12);
+  max-height: 480rpx;
+  z-index: 1000;
+  margin-top: 12rpx;
+  overflow: hidden;
+  border: 1rpx solid #f1f5f9;
+}
+.suggestion-item {
+  padding: 28rpx 32rpx;
+  border-bottom: 1rpx solid #f8fafc;
+  background: #fff;
+  transition: background 0.2s;
+}
+.suggestion-item:active {
+  background: #f8fafc;
+}
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+.suggestion-main {
+  font-size: 30rpx;
+  color: #38b2ac; /* Teal-like color from screenshot */
+  display: block;
+  font-weight: 500;
+}
+.suggestion-sub {
+  font-size: 26rpx;
+  color: #64748b;
+  margin-top: 8rpx;
+  display: block;
 }
