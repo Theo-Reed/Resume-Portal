@@ -156,7 +156,7 @@ Page({
         loading: false,
         ui: {
           ...this.data.ui,
-          all: lang === 'Chinese' ? '全部' : 'All',
+          all: t('community.all', lang),
         }
       })
     } catch (err: any) {

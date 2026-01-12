@@ -1,36 +1,38 @@
 <view class="page">
   <ui-feedback id="ui-feedback" />
-  <!-- 1. 沉浸式头部 Hero Section -->
-  <view class="hero-section">
-    <view class="hero-bg"></view>
-    <view class="user-container" bindtap="onAvatarTap">
-      <view class="avatar-wrapper member-color-{{memberLevel}}">
-        <block wx:if="{{userInfo}}">
-          <image class="avatar-large" src="{{userInfo.avatarUrl}}" />
-        </block>
-        <block wx:else>
-          <view class="avatar-placeholder-large"></view>
-        </block>
-        <view class="edit-badge">
-          <view class="edit-badge-icon"></view>
+
+  <view wx:if="{{isInitialLoading}}" class="loading-box">
+    <view class="loading-spinner"></view>
+    <text>{{ui.loading || '加载中...'}}</text>
+  </view>
+
+  <block wx:else>
+    <!-- 1. 沉浸式头部 Hero Section -->
+    <view class="hero-section">
+      <view class="hero-bg"></view>
+      <view class="user-container" bindtap="onAvatarTap">
+        <view class="avatar-wrapper member-color-{{memberLevel}}">
+          <block wx:if="{{userInfo}}">
+            <image class="avatar-large" src="{{userInfo.avatarUrl}}" />
+          </block>
+          <block wx:else>
+            <view class="avatar-placeholder-large"></view>
+          </block>
+          <view class="edit-badge">
+            <view class="edit-badge-icon"></view>
+          </view>
         </view>
-      </view>
-      <view class="user-info-main">
-        <block wx:if="{{isInitialLoading}}">
-          <text class="nickname-large">{{ui.loading}}</text>
-        </block>
-        <block i:else>
+        <view class="user-info-main">
           <text class="nickname-large">{{userInfo.nickName || ui.loginNow}}</text>
           <view class="user-subtext-wrapper">
             <text class="user-subtext">{{ui.viewEditProfile}}</text>
             <text class="row-arrow">❯</text>
           </view>
-        </block>
+        </view>
       </view>
     </view>
-  </view>
 
-  <view class="content-body">
+    <view class="content-body">
     <!-- 2. 会员权益看板 VIP Benefit Card -->
     <view class="vip-benefit-card vip-level-{{memberLevel}} {{isMember ? 'vip-active' : ''}}" bindtap="onVipCardTap">
       <view class="vip-main-content">
@@ -370,5 +372,6 @@
         </view>
       </view>
     </view>
+  </block>
   </block>
 </view>

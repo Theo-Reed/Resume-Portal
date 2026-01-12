@@ -94,14 +94,16 @@ Page({
             await app.globalData.userPromise
         }
         
-        this.setData({ isInitialLoading: false })
+        this.syncUserFromApp()
+        this.syncLanguageFromApp()
         
-        // Use setTimeout to defer heavy operations and avoid blocking UI
-        setTimeout(() => {
-            this.syncUserFromApp()
-            this.syncLanguageFromApp()
-            // loadMemberBadgeText 会在 syncUserFromApp 和 syncLanguageFromApp 中调用
-        }, 0)
+        // 如果是会员，显式等待徽章文本加载，防止闪烁
+        const membership = (app as any)?.globalData?.user?.membership
+        if (membership && membership.level > 0) {
+            await this.loadMemberBadgeText(membership.level)
+        }
+        
+        this.setData({ isInitialLoading: false })
     },
 
     syncUserFromApp() {
@@ -409,7 +411,7 @@ Page({
         this.setData({ languageSheetOpen: false })
         setTimeout(() => {
             this.setData({ showLanguageSheet: false })
-        }, 260)
+        }, 300)
     },
 
     closeLanguageSheetImmediate() {
@@ -417,7 +419,7 @@ Page({
         this.setData({ languageSheetOpen: false })
         setTimeout(() => {
             this.setData({ showLanguageSheet: false })
-        }, 260)
+        }, 300)
     },
 
     async onLanguageSelect(e: WechatMiniprogram.TouchEvent) {
@@ -504,7 +506,7 @@ Page({
         this.setData({ inviteSheetOpen: false })
         setTimeout(() => {
             this.setData({ showInviteSheet: false })
-        }, 260)
+        }, 300)
     },
 
     async loadInviteCode() {
@@ -628,7 +630,7 @@ Page({
         this.setData({ profileSheetOpen: false })
         setTimeout(() => {
             this.setData({ showProfileSheet: false, newNickname: '' })
-        }, 260)
+        }, 300)
     },
 
     async onUploadAvatar() {
@@ -698,7 +700,7 @@ Page({
         this.setData({ nicknameModalOpen: false })
         setTimeout(() => {
             this.setData({ showNicknameModal: false })
-        }, 260)
+        }, 300)
     },
 
     onNicknameInput(e: any) {
@@ -775,14 +777,14 @@ Page({
         this.setData({ memberHubOpen: false })
         setTimeout(() => {
             this.setData({ showMemberHub: false })
-        }, 260)
+        }, 300)
     },
 
     closeMemberHubImmediate() {
         this.setData({ memberHubOpen: false })
         setTimeout(() => {
             this.setData({ showMemberHub: false })
-        }, 260)
+        }, 300)
     },
 
     onRenew() {

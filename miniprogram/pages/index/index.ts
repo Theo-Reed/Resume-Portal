@@ -304,7 +304,7 @@ Page({
             savedSearchConditions: [],
             isRestoreEditing: false,
           })
-        }, 250)
+        }, 300)
       })
     },
 

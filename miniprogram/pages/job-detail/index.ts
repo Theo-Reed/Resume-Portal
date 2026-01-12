@@ -273,7 +273,7 @@ Page({
     this.setData({ applyMenuOpen: false })
     setTimeout(() => {
       this.setData({ showApplyMenu: false })
-    }, 200)
+    }, 300)
   },
 
   onViewSource() {
