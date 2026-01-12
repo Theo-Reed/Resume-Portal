@@ -769,20 +769,24 @@
     padding: 0 24rpx;
     font-size: 28rpx;
     border: 1rpx solid #e2e8f0;
+    box-sizing: border-box;
 }
 
 .invite-modern-btn {
-    width: 150rpx !important;
-    height: 60rpx;
+    width: 174rpx !important;
+    height: 70rpx !important;
     background: #1e293b;
     color: #ffffff;
     border-radius: 20rpx;
     font-size: 28rpx;
     font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     margin: 0 !important;
+    padding: 0 !important;
+    min-height: 0 !important;
+    line-height: 1 !important;
 }
 
 /* Contact Author Section */

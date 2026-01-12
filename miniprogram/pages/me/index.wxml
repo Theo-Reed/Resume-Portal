@@ -161,7 +161,11 @@
           bindtap="closeLanguageSheet"></view>
     <view class="bottom-sheet {{languageSheetOpen ? 'bottom-sheet-open' : ''}}">
       <view class="bottom-sheet-header">
-         <text class="bottom-sheet-title">{{ui.languageEntry}}</text>
+        <view class="bottom-sheet-header-left"></view>
+        <text class="bottom-sheet-title">{{ui.languageEntry}}</text>
+        <view class="bottom-sheet-header-right">
+          <view class="bottom-sheet-header-btn" bindtap="closeLanguageSheet">{{ui.confirm || '完成'}}</view>
+        </view>
       </view>
       <view class="bottom-sheet-content">
         <!-- Standard Modes -->
@@ -226,7 +230,11 @@
           bindtap="closeInviteSheet"></view>
     <view class="bottom-sheet {{inviteSheetOpen ? 'bottom-sheet-open' : ''}}">
       <view class="bottom-sheet-header">
-         <text class="bottom-sheet-title">{{ui.inviteCodeEntry}}</text>
+        <view class="bottom-sheet-header-left"></view>
+        <text class="bottom-sheet-title">{{ui.inviteCodeEntry}}</text>
+        <view class="bottom-sheet-header-right">
+          <view class="bottom-sheet-header-btn" bindtap="closeInviteSheet">{{ui.confirm || '完成'}}</view>
+        </view>
       </view>
       <view class="bottom-sheet-content invite-sheet-content">
         <!-- Referral Card -->
@@ -253,12 +261,16 @@
 
   <include src="./profile-sheet.wxml"/>
 
-  <!-- 会员权益中心弹窗 Member Hub Sheet -->
+  <!-- 会员权益 center 弹窗 Member Hub Sheet -->
   <block wx:if="{{showMemberHub}}">
     <view class="bottom-sheet-mask {{memberHubOpen ? 'bottom-sheet-mask-open' : ''}}" bindtap="closeMemberHub"></view>
     <view class="bottom-sheet {{memberHubOpen ? 'bottom-sheet-open' : ''}}">
       <view class="bottom-sheet-header">
+        <view class="bottom-sheet-header-left"></view>
         <text class="bottom-sheet-title">{{ui.manageBenefits}}</text>
+        <view class="bottom-sheet-header-right">
+          <view class="bottom-sheet-header-btn" bindtap="closeMemberHub">{{ui.confirm || '完成'}}</view>
+        </view>
       </view>
       <view class="bottom-sheet-content member-hub-content">
         
@@ -342,7 +354,11 @@
           bindtap="closeContactSheet"></view>
     <view class="bottom-sheet {{contactSheetOpen ? 'bottom-sheet-open' : ''}}">
       <view class="bottom-sheet-header">
-         <text class="bottom-sheet-title">{{ui.contactAuthor}}</text>
+        <view class="bottom-sheet-header-left"></view>
+        <text class="bottom-sheet-title">{{ui.contactAuthor}}</text>
+        <view class="bottom-sheet-header-right">
+          <view class="bottom-sheet-header-btn" bindtap="closeContactSheet">{{ui.confirm || '完成'}}</view>
+        </view>
       </view>
       <view class="bottom-sheet-content author-sheet-content">
         <view class="author-sheet-body">

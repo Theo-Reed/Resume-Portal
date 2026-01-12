@@ -4,7 +4,11 @@
         bindtap="closeProfileSheet"></view>
   <view class="bottom-sheet {{profileSheetOpen ? 'bottom-sheet-open' : ''}}">
     <view class="bottom-sheet-header">
+      <view class="bottom-sheet-header-left"></view>
       <text class="bottom-sheet-title">{{ui.userProfileTitle}}</text>
+      <view class="bottom-sheet-header-right">
+        <view class="bottom-sheet-header-btn" bindtap="closeProfileSheet">{{ui.confirm || '完成'}}</view>
+      </view>
     </view>
 
     <view class="bottom-sheet-content profile-sheet-content">
