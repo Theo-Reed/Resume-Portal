@@ -74,6 +74,8 @@ Component({
     _prevLoading: true,
     _prevHasMore: true,
     isAIEnglish: false,
+    isAIChinese: false,
+    isStandardChinese: false,
     ui: {} as any,
   },
 
@@ -84,6 +86,8 @@ Component({
         const lang = normalizeLanguage(app?.globalData?.language)
         this.setData({ 
           isAIEnglish: lang === 'AIEnglish',
+          isAIChinese: lang === 'AIChinese',
+          isStandardChinese: lang === 'Chinese',
           ui: {
             loading: t('jobs.loading', lang),
             allDataLoaded: t('jobs.allDataLoaded', lang),

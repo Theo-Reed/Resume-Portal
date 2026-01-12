@@ -55,18 +55,12 @@ function mapJobFieldsToStandard(jobData, titleField, summaryField, descriptionFi
   if (!jobData) return jobData
   
   return {
-    _id: jobData._id,
-    createdAt: jobData.createdAt,
-    source_url: jobData.source_url,
+    ...jobData,
     salary: salaryField ? (jobData[salaryField] || jobData.salary || '') : (jobData.salary || ''),
     source_name: sourceNameField ? (jobData[sourceNameField] || jobData.source_name || '') : (jobData.source_name || ''),
-    team: jobData.team,
-    type: jobData.type,
-    tags: jobData.tags,
     title: jobData[titleField] || '',
     summary: jobData[summaryField] || '',
     description: jobData[descriptionField] || '',
-    experience: jobData.experience || '',
   }
 }
 

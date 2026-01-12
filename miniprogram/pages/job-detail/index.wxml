@@ -14,12 +14,12 @@
         <view class="detail-header-section">
           <view class="detail-title-meta-wrapper">
         <view class="detail-title-row">
-          <text class="detail-title">{{job.title}}</text>
+          <text class="detail-title">{{(isAIChinese && job.title_chinese) ? job.title_chinese : ((isAIEnglish && job.title_english) ? job.title_english : job.title)}}</text>
         </view>
-        <view class="detail-meta" wx:if="{{(isAIEnglish && job.source_name) || (!isAIEnglish && job.team && job.team !== ui.unknownCompany) || job.salary}}">
-          <text wx:if="{{isAIEnglish && job.source_name}}" class="detail-meta-item">From {{job.source_name}}</text>
+        <view class="detail-meta" wx:if="{{(isAIEnglish && (job.source_name_english || job.source_name)) || (!isAIChinese && job.team && job.team !== ui.unknownCompany) || job.salary}}">
+          <text wx:if="{{isAIEnglish && (job.source_name_english || job.source_name)}}" class="detail-meta-item">From {{job.source_name_english || job.source_name}}</text>
           <text wx:if="{{!isAIEnglish && job.team && job.team !== ui.unknownCompany}}" class="detail-meta-item">{{job.team}}</text>
-          <text wx:if="{{((isAIEnglish && job.source_name) || (!isAIEnglish && job.team && job.team !== ui.unknownCompany)) && job.salary}}" class="detail-meta-dot">·</text>
+          <text wx:if="{{((isAIEnglish && (job.source_name_english || job.source_name)) || (!isAIEnglish && job.team && job.team !== ui.unknownCompany)) && job.salary}}" class="detail-meta-dot">·</text>
           <text wx:if="{{job.salary}}" class="detail-meta-item">{{job.salary}}</text>
             </view>
           </view>
@@ -48,38 +48,63 @@
       <view class="error">{{loadFailedText}}</view>
     </block>
   </scroll-view>
-  <!-- One-Click Apply 悬浮层 -->
+  <!-- 底部操作栏 (Dock) -->
   <view class="apply-overlay" wx:if="{{job}}">
     <view class="apply-overlay-mask"></view>
-    <view class="apply-button" bindtap="onOneClickApply" hover-class="none">
-      <image class="apply-icon" src="/assets/icons/telegram.png" mode="aspectFit"></image>
-      <text class="apply-text">{{oneClickApplyText}}</text>
+    <view class="apply-dock-content">
+      <view class="apply-button" bindtap="onOneClickApply" hover-class="apply-button-active">
+        <image class="apply-icon" src="/assets/icons/telegram.png" mode="aspectFit"></image>
+        <text class="apply-text">{{oneClickApplyText}}</text>
+      </view>
     </view>
   </view>
 
-  <!-- Apply Options Popover Menu -->
+  <!-- 功能抽屉 (Bottom Sheet) -->
   <block wx:if="{{showApplyMenu}}">
-    <view class="apply-menu-mask {{applyMenuOpen ? 'apply-menu-mask-open' : ''}}" bindtap="closeApplyMenu"></view>
-    <view class="apply-menu {{applyMenuOpen ? 'apply-menu-open' : ''}}">
-      <view class="apply-menu-spacer"></view>
-      <view class="apply-menu-content">
-        <view class="apply-menu-title">{{applyMenuTitle}}</view>
-        <view class="apply-menu-options-container">
-          <view class="apply-menu-item" bindtap="onViewSource">
-            <text class="apply-menu-item-text">{{copySourceLinkText}}</text>
-          </view>
-          <view class="apply-menu-divider"></view>
-          <view class="apply-menu-item apply-menu-item-with-icon" bindtap="onGenerateResume">
-            <text class="apply-menu-item-text">{{aiResumeGenerateText}}</text>
-            <image class="apply-menu-star-icon" src="/assets/icons/four-point-star-twin.png" mode="aspectFit"></image>
-          </view>
-          <view class="apply-menu-divider"></view>
-          <view class="apply-menu-item apply-menu-item-with-icon" bindtap="onOneClickResumeSubmit">
-            <text class="apply-menu-item-text">{{oneClickSubmitResumeText}}</text>
-            <image class="apply-menu-star-icon" src="/assets/icons/four-point-star-twin.png" mode="aspectFit"></image>
-          </view>
+    <view class="bottom-sheet-mask {{applyMenuOpen ? 'bottom-sheet-mask-open' : ''}}" bindtap="closeApplyMenu"></view>
+    <view class="bottom-sheet {{applyMenuOpen ? 'bottom-sheet-open' : ''}}">
+      
+      <view class="bottom-sheet-header">
+        <view class="bottom-sheet-header-left"></view>
+        <text class="bottom-sheet-title">{{applyMenuTitle}}</text>
+        <view class="bottom-sheet-header-right">
+          <view class="bottom-sheet-header-btn" bindtap="closeApplyMenu">{{ui.cancel}}</view>
         </view>
       </view>
+      
+      <scroll-view class="apply-menu-scroll" scroll-y>
+        <view class="apply-menu-content-padding">
+          <!-- AI 增强功能区 -->
+          <view class="apply-menu-section ai-section">
+            <view class="apply-menu-item ai-item" bindtap="onOneClickResumeSubmit">
+              <view class="apply-menu-item-left">
+                <image class="apply-menu-item-icon ai-icon" src="/assets/icons/four-point-star-twin.png" mode="aspectFit"></image>
+                <text class="apply-menu-item-text ai-text">{{oneClickSubmitResumeText}}</text>
+              </view>
+            </view>
+            
+            <view class="apply-menu-item ai-item" bindtap="onGenerateResume">
+              <view class="apply-menu-item-left">
+                <image class="apply-menu-item-icon ai-icon" src="/assets/icons/four-point-star-twin.png" mode="aspectFit"></image>
+                <text class="apply-menu-item-text ai-text">{{aiResumeGenerateText}}</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- 常规功能区 -->
+          <view class="apply-menu-section">
+            <view class="apply-menu-item" bindtap="onViewSource">
+              <view class="apply-menu-item-left">
+                <view class="apply-menu-icon-placeholder">🔗</view>
+                <text class="apply-menu-item-text">{{copySourceLinkText}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+
+      <!-- 底部安全间距 -->
+      <view class="apply-menu-safe-bottom"></view>
     </view>
   </block>
 </view>

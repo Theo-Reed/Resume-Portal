@@ -179,18 +179,13 @@ export function mapJobFieldsToStandard(
   if (!jobData) return jobData
   
   // 统一将查询的字段映射回标准字段名
+  // 同时保留其它原始字段，以便 job-list 等组件做更灵活的渲染
   return {
-    _id: jobData._id,
-    createdAt: jobData.createdAt,
-    source_url: jobData.source_url,
+    ...jobData,
     salary: salaryField ? (jobData[salaryField] || jobData.salary || '') : (jobData.salary || ''),
     source_name: sourceNameField ? (jobData[sourceNameField] || jobData.source_name || '') : (jobData.source_name || ''),
-    team: jobData.team,
-    type: jobData.type,
-    tags: jobData.tags,
     title: jobData[titleField] || '',
     summary: jobData[summaryField] || '',
     description: jobData[descriptionField] || '',
-    experience: jobData.experience || '',
   }
 }

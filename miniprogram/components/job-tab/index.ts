@@ -172,8 +172,26 @@ Component({
     async loadData(reset = false) {
       if (this.data.loading) return
       
-      this.setData({ loading: true })
+      // 如果是重置加载（如切换语言），立即清空当前列表并显示加载中，避免旧语言数据闪烁
+      if (reset) {
+        this.setData({ 
+          jobs: [], 
+          hasMore: true, 
+          hasLoaded: false,
+          scrollTop: 0 
+        })
+      }
       
+      this.setData({ loading: true })
+
+      // 确保先确定好语言（等待 app.ts 中的 refreshUser 完成）
+      const app = getApp<IAppOption>() as any
+      if (app?.globalData?.userPromise) {
+        await app.globalData.userPromise
+        // 重新同步 UI 文本和语言状态
+        this.syncLanguageFromApp()
+      }
+
       try {
         const tabType = this.properties.tabType as number
         

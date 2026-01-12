@@ -51,6 +51,8 @@ Page({
     saveBusy: false,
     saveDocId: '',
     isAIEnglish: false,
+    isAIChinese: false,
+    isStandardChinese: false,
     loadingText: '加载中...',
     loadFailedText: '加载失败',
     saveText: 'Saved',
@@ -100,18 +102,29 @@ Page({
       onLanguageRevive: () => {
         wx.setNavigationBarTitle({ title: '' })
         this.updateLanguage()
-        // 如果已有数据，重新处理显示
+        // 如果已有数据，根据语言重新处理显示
         if (this.data.job) {
           const app = getApp<IAppOption>() as any
           const lang = normalizeLanguage(app?.globalData?.language)
           const job = this.data.job
+          
+          // 根据当前语言环境，优先选择对应的翻译内容
+          let currentDesc = job.description || ''
+          if (lang === 'AIChinese' && (job as any).description_chinese) {
+            currentDesc = (job as any).description_chinese
+          } else if (lang === 'AIEnglish' && (job as any).description_english) {
+            currentDesc = (job as any).description_english
+          }
+
           const experience = (job as any).experience && typeof (job as any).experience === 'string' ? (job as any).experience.trim() : ''
           const { displayTags } = normalizeJobTags(job, lang, experience)
           const salary = job.salary && typeof job.salary === 'string' ? job.salary.trim() : ''
           const translatedSalary = translateFieldValue(salary, 'salary', lang)
+          
           this.setData({
             job: {
               ...job,
+              richDescription: formatDescription(currentDesc),
               salary: translatedSalary || salary,
               displayTags,
             } as any,
@@ -138,6 +151,8 @@ Page({
     const lang = normalizeLanguage(app?.globalData?.language)
     this.setData({
       isAIEnglish: lang === 'AIEnglish',
+      isAIChinese: lang === 'AIChinese',
+      isStandardChinese: lang === 'Chinese',
       loadingText: t('jobs.loading', lang),
       loadFailedText: t('jobs.loadFailed', lang),
       saveText: lang === 'Chinese' || lang === 'AIChinese' ? '已收藏' : 'Saved',
@@ -157,6 +172,7 @@ Page({
       operationFailedText: t('jobs.operationFailed', lang),
       ui: {
         unknownCompany: t('jobs.unknownCompany', lang),
+        cancel: t('resume.cancel', lang),
       }
     })
   },
