@@ -669,7 +669,7 @@
         <picker-view-column>
           <view wx:for="{{degreeOptions}}" wx:key="*this" class="picker-column-item">{{item}}</view>
         </picker-view-column>
-        <picker-view-column>
+        <picker-view-column wx:if="{{currentLang === 'Chinese'}}">
           <view wx:for="{{studyTypes}}" wx:key="*this" class="picker-column-item">{{item}}</view>
         </picker-view-column>
       </picker-view>

@@ -2,6 +2,7 @@
   <ui-feedback id="ui-feedback" />
   <view class="header-section" wx:if="{{resumes.length > 0}}">
     <text class="count-text">{{ui.totalPrefix}}{{resumes.length}} {{ui.assetCount}}</text>
+    <view class="edit-btn" bindtap="onToggleEdit">{{isEditMode ? ui.done : ui.edit}}</view>
   </view>
 
   <view class="list-section">
@@ -26,7 +27,7 @@
         
         <view class="card-body">
           <view class="title-row">
-            <text class="job-title">{{item.jobTitle}}</text>
+            <text class="job-title">{{((currentLang === 'English' || currentLang === 'AIEnglish') ? item.jobTitle_en : item.jobTitle_cn) || item.jobTitle}}</text>
             <view wx:if="{{item.status === 'failed'}}" class="failed-tag">{{ui.statusFailed}}</view>
           </view>
           <text class="company-name">{{item.company || ui.generalResume}}</text>
@@ -34,14 +35,19 @@
         </view>
 
         <view class="card-right">
-          <block wx:if="{{item.status === 'processing'}}">
-            <view class="ui-spinner" style="width: 32rpx; height: 32rpx; border-width: 3rpx;"></view>
-          </block>
-          <block wx:elif="{{item.status === 'failed'}}">
-            <text class="retry-text">{{ui.statusFailed}}</text>
+          <block wx:if="{{isEditMode}}">
+             <view class="delete-btn" catchtap="onDeleteResume" data-item="{{item}}">{{ui.delete}}</view>
           </block>
           <block wx:else>
-            <view class="view-btn">{{ui.view}}</view>
+            <block wx:if="{{item.status === 'processing'}}">
+              <view class="ui-spinner" style="width: 32rpx; height: 32rpx; border-width: 3rpx;"></view>
+            </block>
+            <block wx:elif="{{item.status === 'failed'}}">
+              <text class="retry-text">{{ui.statusFailed}}</text>
+            </block>
+            <block wx:else>
+              <view class="view-btn">{{ui.view}}</view>
+            </block>
           </block>
         </view>
       </view>

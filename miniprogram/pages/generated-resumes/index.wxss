@@ -7,7 +7,17 @@
 
 .header-section {
   margin-bottom: 32rpx;
-  padding-left: 8rpx;
+  padding: 0 8rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.edit-btn {
+  font-size: 28rpx;
+  color: #2e5fe9;
+  font-weight: 500;
+  padding: 8rpx 16rpx;
 }
 
 .count-text {
@@ -179,6 +189,15 @@
   border-radius: 100rpx;
 }
 
+.delete-btn {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #ef4444;
+  background: #fef2f2;
+  padding: 12rpx 24rpx;
+  border-radius: 100rpx;
+}
+
 /* 状态相关颜色 */
 .pdf-icon-processing {
   background: #f1f5f9;
@@ -237,9 +256,15 @@
   color: #ffffff;
   font-size: 28rpx;
   font-weight: 700;
-  padding: 24rpx 80rpx;
+  width: 250rpx !important;
+  padding: 24rpx 0;
   border-radius: 100rpx;
   box-shadow: 0 8rpx 20rpx rgba(46, 95, 233, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  min-height: 0; /* Override default button min-height if needed */
 }
 
 .bottom-safe-area {

@@ -398,7 +398,7 @@ Page({
             userId: user.openid,      // 用户 ID (OpenID)
             resume_profile: aiProfile, // 传处理后的资料
             job_data: this.data.job,    // 传完整的岗位 JSON
-            language: lang.toLowerCase() // Pass language field (lowercase for backend compatibility)
+            language: isChineseEnv ? 'chinese' : 'english' // Strictly normalize to 'chinese' or 'english'
           })
 
           ui.hideLoading()

@@ -285,12 +285,24 @@ Page({
         }
 
         try {
-            // 获取会员方案列表
-            const res = await callApi('getMemberSchemes', {})
+            // 优化：优先使用已缓存的 schemesList，避免频繁请求
+            let result: any = null;
+            let schemes = this.data.schemsList || [];
+            
+            if (schemes.length > 0) {
+                 // 使用缓存
+                 result = { success: true, schemes };
+            } else {
+                 // 缓存不存在，发起请求
+                 const res = await callApi('getMemberSchemes', {})
+                 result = res.result || (res as any)
+                 schemes = result?.schemes || []
+                 if (result?.success) {
+                     this.setData({ schemsList: schemes })
+                 }
+            }
 
-            const result = res.result || (res as any)
             if (result?.success) {
-                const schemes = result.schemes || []
                 
                 // Priority: Use the specific userScheme returned by backend (contains hidden schemes like Trial)
                 // Fallback: Use scheme found in general list
@@ -782,9 +794,24 @@ Page({
             memberHubOpen: false
         })
         
-        // Fetch schemes if empty
+        // Fetch schemes if empty or force refresh needed?
+        // Since loadMemberBadgeText might have loaded it, we check again.
         if (!this.data.schemsList || this.data.schemsList.length === 0) {
             await this.fetchSchemes()
+        } else {
+            // Already have schemes (e.g. from loadMemberBadgeText), ensure default selection
+            const schemes = this.data.schemsList
+            let selectedId = this.data.selectedSchemeId
+            const exists = schemes.find((s:any) => s.scheme_id === selectedId)
+            
+            if (!exists && schemes.length > 0) {
+                selectedId = schemes[0].scheme_id
+                this.setData({ 
+                    selectedSchemeId: selectedId,
+                    selectedScheme: schemes[0]
+                })
+                this.calculateFinalPrice(selectedId)
+            }
         }
 
         setTimeout(() => {

@@ -123,6 +123,8 @@ Page({
     percent_cn: 0,
     percent_en: 0,
     currentPercent: 0,
+    currentCompleteness: 0,
+    interfaceLang: '',
   },
 
   onLoad() {
@@ -191,14 +193,55 @@ Page({
 
           // 特殊处理 1：教育经历中的 school_en/major_en 需要转正
           if (syncData.educations) {
-            syncData.educations = syncData.educations.map((e: any) => ({
-              ...e,
-              school: e.school_en || e.school,
-              major: e.major_en || e.major
-            }))
+            const degreeMap: Record<string, string> = {
+              '大专': 'Associate',
+              '本科': 'Bachelor',
+              '硕士': 'Master',
+              '博士': 'PhD',
+              '其他': 'Other'
+            }
+            const studyTypeMap: Record<string, string> = {
+              '全日制': 'Full-time',
+              '非全日制': 'Part-time'
+            }
+
+            syncData.educations = syncData.educations.map((e: any) => {
+              let newDegree = e.degree
+              // Parse "Degree (Type)"
+              const match = e.degree ? e.degree.match(/^(.+?)\s*\((.+?)\)$/) : null
+              
+              if (match) {
+                const cnDegree = match[1]
+                const cnType = match[2]
+                const enDegree = degreeMap[cnDegree] || cnDegree
+                // English resume: just degree, no study type
+                newDegree = enDegree
+              } else {
+                newDegree = degreeMap[e.degree] || e.degree
+              }
+              
+              return {
+                ...e,
+                school: e.school_en || e.school,
+                major: e.major_en || e.major,
+                degree: newDegree
+              }
+            })
           }
 
-          // 特殊处理 2：所在地，如果中文没填，英文默认中国
+          // 特殊处理 2：性别翻译
+          if (syncData.gender) {
+            const genderMap: Record<string, string> = {
+              '男': 'Male',
+              '女': 'Female',
+              '保密': 'Secret'
+            }
+            if (genderMap[syncData.gender]) {
+              syncData.gender = genderMap[syncData.gender]
+            }
+          }
+
+          // 特殊处理 3：所在地，如果中文没填，英文默认中国
           if (!syncData.location) {
             syncData.location = 'China'
           }
@@ -368,7 +411,7 @@ Page({
   },
 
   async saveResumeProfile(data: any, showSuccessToast = true, showMask = false) {
-    const { ui: uiStrings, currentLang, zh, en } = this.data
+    const { ui: uiStrings, currentLang } = this.data
     try {
       ui.showLoading(uiStrings.saving, showMask)
 
@@ -609,7 +652,9 @@ Page({
         country_english: '',
         degree: '',
         major: '',
-        major_e: '',
+        major_en: '',
+        startDate: '',
+        endDate: '',
         description: '',
       }
     })
@@ -617,7 +662,6 @@ Page({
   onEditEducation(e: any) {
     const index = e.currentTarget.dataset.index
     const edu = this.data.educations[index]
-    const isEnglish = this.data.currentLang === 'English'
     
     // Regardless of language, 'edu.school' should contain the school name for the current profile.
     // We use a fallback to school_en/major_en just in case of inconsistent data.
@@ -687,10 +731,15 @@ Page({
     this.setData({ degreePickerValue: e.detail.value })
   },
   onConfirmDegree() {
-    const [dIdx, tIdx] = this.data.degreePickerValue
-    const degree = this.data.degreeOptions[dIdx]
-    const type = this.data.studyTypes[tIdx]
-    const degreeStr = `${degree} (${type})`
+    const { degreePickerValue, degreeOptions, studyTypes, currentLang } = this.data
+    const [dIdx, tIdx] = degreePickerValue
+    const degree = degreeOptions[dIdx]
+    
+    let degreeStr = degree
+    if (currentLang === 'Chinese') {
+      const type = studyTypes[tIdx || 0]
+      degreeStr = `${degree} (${type})`
+    }
     
     this.setData({
       'eduForm.degree': degreeStr,

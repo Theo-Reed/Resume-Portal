@@ -35,9 +35,13 @@ export function translateFieldValue(
 ): string {
   if (!value || typeof value !== 'string') return value
   
-  // 判断是否需要翻译：English 或 AIEnglish 需要翻译
-  const useEnglish = language === 'English' || language === 'AIEnglish'
-  if (!useEnglish) return value
+  // 只有 AIEnglish 以及 AIChinese 可能需要特殊处理（但目前 AIChinese 也是中文，原值通常就是中文）
+  // 普通 English 模式下，应该保持原汁原味（如果是中文数据就显示中文，如果是英文数据就显示英文）
+  // 除非我们认为 Salary/Experience 是 UI 组件的一部分？
+  // 根据用户指示："中文、英文只改变跟页面有关系的系统语言。不改变岗位信息，直接读取岗位原文。"
+  // 因此，translateFieldValue 仅在 AIEnglish 下生效。
+  
+  if (language !== 'AIEnglish') return value
   
   const translationMap = fieldType === 'salary' ? EN_SALARY : EN_EXP
   return translationMap[value] || value
@@ -71,7 +75,19 @@ export function normalizeJobTags<T extends { summary?: string; source_name?: str
   tags: string[]
   displayTags: string[]
 } {
-  const tags = (item.summary || '')
+  let summaryStr = item.summary || ''
+  
+  // 仅在 AIEnglish 下尝试使用 summary_english
+  if (language === 'AIEnglish' && (item as any).summary_english) {
+    const enSum = (item as any).summary_english
+    if (typeof enSum === 'string' && enSum.trim()) {
+      summaryStr = enSum
+    } else if (Array.isArray(enSum) && enSum.length > 0) {
+      summaryStr = enSum.join(',')
+    }
+  }
+
+  const tags = summaryStr
     .split(/[,，]/)
     .map((t) => t.trim().replace(/[。！!.,，、；;]+$/g, '').trim())
     .filter((t) => t && t.length > 1)

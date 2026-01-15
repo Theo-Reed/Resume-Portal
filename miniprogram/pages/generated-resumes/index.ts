@@ -9,6 +9,7 @@ Page({
     page: 1,
     hasMore: true,
     ui: {} as any,
+    isEditMode: false,
   },
 
   watcher: null as any,
@@ -16,16 +17,133 @@ Page({
   onLoad() {
     this.syncLanguage()
     this.fetchResumes()
+    this.startPolling()
+  },
+
+  onShow() {
+    // 每次显示页面时，如果不在轮询中，刷新一次列表
+    if (!this.data.isPolling) {
+       this.fetchResumes()
+       this.startPolling()
+    }
+  },
+
+  onUnload() {
+    this.stopPolling()
+  },
+
+  onToggleEdit() {
+    this.setData({
+      isEditMode: !this.data.isEditMode
+    } as any)
+  },
+
+  onDeleteResume(e: any) {
+    const { item } = e.currentTarget.dataset
+    if (!item || !item._id) return
+
+    wx.showModal({
+      title: this.data.ui.delete || 'Delete',
+       // 简单这里直接硬编码中文提示，也可以根据语言
+      content: this.data.currentLang === 'English' ? 'Are you sure you want to delete this resume?' : '确定要删除这份简历吗？删除后无法恢复。',
+      confirmColor: '#ef4444',
+      success: async (res) => {
+        if (res.confirm) {
+            wx.showLoading({ title: 'Deleting...' })
+            try {
+                const res = await callApi('deleteGeneratedResume', {
+                    resumeId: item._id
+                })
+                
+                wx.hideLoading()
+                
+                if (res.success) {
+                    wx.showToast({ title: 'Success', icon: 'success' })
+                    // Remove from local list
+                    const updatedResumes = this.data.resumes.filter((r: any) => r._id !== item._id)
+                    this.setData({ resumes: updatedResumes } as any);
+                    
+                    // If list becomes empty, exit edit mode
+                    if (updatedResumes.length === 0) {
+                        this.setData({ isEditMode: false } as any)
+                    }
+                } else {
+                    wx.showToast({ title: 'Failed', icon: 'none' })
+                }
+            } catch (err) {
+                wx.hideLoading()
+                console.error('Delete failed', err)
+                wx.showToast({ title: 'Error', icon: 'none' })
+            }
+        }
+      }
+    })
+  },
+
+  onHide() {
+    this.stopPolling()
+  },
+
+  // 简单的轮询机制
+  pollingTimer: null as any,
+  startPolling() {
+      if (this.data.isPolling) return
+      
+      this.setData({ isPolling: true } as any)
+      
+      this.pollingTimer = setInterval(() => {
+          this.fetchResumes(true) // Silent update
+      }, 3000)
+  },
+
+  stopPolling() {
+      if (this.pollingTimer) {
+          clearInterval(this.pollingTimer)
+          this.pollingTimer = null
+      }
+      this.setData({ isPolling: false } as any)
+  },
+
+  async fetchResumes(silent = false) {
+    if (!silent) this.setData({ loading: true })
+    
+    try {
+      const res = await callApi('getGeneratedResumes', {
+        limit: 20
+      })
+
+      const list = (res.result && res.result.data) || []
+      this.processResumes(list)
+      this.setData({ loading: false })
+      
+      // 检查是否还有 processing 状态的任务
+      const hasProcessing = list.some((item: any) => item.status === 'processing')
+      if (!hasProcessing) {
+          this.stopPolling()
+      } else {
+          // 确保轮询开启
+          if (!this.pollingTimer) this.startPolling()
+      }
+
+    } catch (err) {
+      console.error('获取简历列表失败:', err)
+      if (!silent) wx.showToast({ title: '加载失败', icon: 'none' })
+      this.setData({ loading: false })
+    }
   },
 
   syncLanguage() {
     const app = getApp<IAppOption>() as any
     const lang = normalizeLanguage(app?.globalData?.language)
     this.setData({
+      currentLang: lang,
       ui: {
         assetCount: t('resume.assetCount', lang),
         syncingAssets: t('resume.syncingAssets', lang),
         statusFailed: t('resume.statusFailed', lang),
+        edit: t('resume.edit', lang),
+        done: t('resume.done', lang),
+        delete: t('resume.delete', lang),
         generalResume: t('resume.generalResume', lang),
         view: t('resume.view', lang),
         loadFailed: t('jobs.loadFailed', lang),
@@ -37,12 +155,6 @@ Page({
     })
   },
 
-  onUnload() {
-    if (this.watcher) {
-      this.watcher.close()
-    }
-  },
-
   onPullDownRefresh() {
     this.setData({ page: 1, hasMore: true }, () => {
       this.fetchResumes().then(() => {
@@ -51,23 +163,7 @@ Page({
     })
   },
 
-  async fetchResumes() {
-    this.setData({ loading: true })
-    
-    try {
-      const res = await callApi('getGeneratedResumes', {
-        limit: 20
-      })
 
-      const list = (res.result && res.result.data) || []
-      this.processResumes(list)
-      this.setData({ loading: false })
-    } catch (err) {
-      console.error('获取简历列表失败:', err)
-      wx.showToast({ title: '加载失败', icon: 'none' })
-      this.setData({ loading: false })
-    }
-  },
 
   processResumes(data: any[]) {
     const formattedResumes = data.map((item: any) => {

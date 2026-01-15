@@ -108,6 +108,25 @@ interface IAppOption {
     user: AppUser | null,
     userPromise: Promise<any> | null,
     language: import('../miniprogram/utils/i18n').AppLanguage,
+    _langListeners: Set<(lang: import('../miniprogram/utils/i18n').AppLanguage) => void>,
+    _pageData: {
+      jobData: any,
+      filterValue: any,
+      filterTabIndex: number,
+      filterResult: any,
+      filterAction: string | null,
+    },
+    systemConfig: {
+      isBeta: boolean,
+      isMaintenance: boolean,
+      maintenanceMessage?: string,
+    }
   }
   refreshUser: () => Promise<any>,
+  refreshSystemConfig: () => Promise<void>,
+  setLanguage: (lang: import('../miniprogram/utils/i18n').AppLanguage) => Promise<void>,
+  applyLanguage: () => void,
+  emitLanguageChange: (lang: import('../miniprogram/utils/i18n').AppLanguage) => void,
+  onLanguageChange: (cb: (lang: import('../miniprogram/utils/i18n').AppLanguage) => void) => void,
+  offLanguageChange: (cb: (lang: import('../miniprogram/utils/i18n').AppLanguage) => void) => void,
 }

@@ -210,6 +210,8 @@ const dict = {
         aiMessageDefault: { Chinese: '当工作经验不足时，自动补充工作经历；当过往职位名称与目标岗位不匹配时，根据公司业务方向，灵活变更过往职位名称与工作内容。', English: 'Automatically supplement work experience when experience is insufficient; when past job titles do not match the target position, flexibly change past job titles and work contents based on the company\'s business direction.' },
         addEducation: { Chinese: '添加教育经历', English: 'Add Education' },
         noData: { Chinese: '暂无数据', English: 'No data' },
+        edit: { Chinese: '编辑', English: 'Edit' },
+        done: { Chinese: '完成', English: 'Done' },
         save: { Chinese: '保存', English: 'Save' },
         saveSuccess: { Chinese: '保存成功', English: 'Saved successfully' },
         saveFailed: { Chinese: '保存失败', English: 'Save failed' },
@@ -246,7 +248,7 @@ const dict = {
         completed: { Chinese: '已完成', English: 'Completed' },
         emptyTitle: { Chinese: '还没有 AI 为你定制的简历', English: 'No AI-tailored resumes yet' },
         emptySubtitle: { Chinese: '快去探索岗位，让 AI 帮你写简历吧', English: 'Explore jobs and let AI help you write a resume' },
-        goJobs: { Chinese: '去看看岗位', English: 'Check out jobs' },
+        goJobs: { Chinese: '去看看岗位', English: 'Job Market' },
         year: { Chinese: '年', English: 'Year' },
         month: { Chinese: '月', English: 'Month' },
         totalPrefix: { Chinese: '共 ', English: 'Total ' },
@@ -590,6 +592,8 @@ export type I18nKey =
     | 'me.phoneWarningConfirm'
     | 'me.paymentPhoneRequired'
     | 'tab.jobs'
+    | 'tab.positions'
+    | 'tab.me'
     | 'app.navTitle'
     | 'app.maintenanceMsg'
 
