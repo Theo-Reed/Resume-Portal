@@ -229,7 +229,6 @@ const dict = {
         },
         assetCount: { Chinese: '份简历资产', English: 'Resume assets' },
         syncingAssets: { Chinese: '正在同步 AI 资产...', English: 'Syncing AI assets...' },
-        statusApplied: { Chinese: '已投递', English: 'Applied' },
         statusFailed: { Chinese: '失败', English: 'Failed' },
         generalResume: { Chinese: '通用简历', English: 'General Resume' },
         view: { Chinese: '查看', English: 'View' },
@@ -477,14 +476,12 @@ export type I18nKey =
     | 'resume.identityOptions'
     | 'resume.assetCount'
     | 'resume.syncingAssets'
-    | 'resume.statusApplied'
     | 'resume.statusFailed'
     | 'resume.generalResume'
     | 'resume.view'
     | 'resume.aiProcessing'
     | 'resume.generateFailed'
     | 'resume.tryAgain'
-    | 'resume.appliedAt'
     | 'resume.unknownJob'
     | 'resume.pending'
     | 'resume.processing'

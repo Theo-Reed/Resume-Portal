@@ -27,7 +27,6 @@
         <view class="card-body">
           <view class="title-row">
             <text class="job-title">{{item.jobTitle}}</text>
-            <view wx:if="{{item.isApplied}}" class="applied-tag">{{ui.statusApplied}}</view>
             <view wx:if="{{item.status === 'failed'}}" class="failed-tag">{{ui.statusFailed}}</view>
           </view>
           <text class="company-name">{{item.company || ui.generalResume}}</text>

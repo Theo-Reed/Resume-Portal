@@ -25,7 +25,6 @@ Page({
       ui: {
         assetCount: t('resume.assetCount', lang),
         syncingAssets: t('resume.syncingAssets', lang),
-        statusApplied: t('resume.statusApplied', lang),
         statusFailed: t('resume.statusFailed', lang),
         generalResume: t('resume.generalResume', lang),
         view: t('resume.view', lang),
