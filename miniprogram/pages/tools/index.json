@@ -1,6 +1,9 @@
 {
   "usingComponents": {
-    "ui-feedback": "/components/ui-feedback/index"
+    "ui-feedback": "/components/ui-feedback/index",
+    "ui-card": "/components/ui/card/index",
+    "ui-button": "/components/ui/button/index",
+    "ui-drawer": "/components/ui/drawer/index"
   },
   "navigationBarTitleText": "岗位工具"
 }

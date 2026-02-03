@@ -5,7 +5,7 @@ import {normalizeLanguage, type AppLanguage} from '../../utils/i18n'
 import {attachLanguageAware} from '../../utils/languageAware'
 import {toDateMs} from '../../utils/time'
 import {getPhoneNumberFromAuth, updatePhoneNumber} from '../../utils/phoneAuth'
-import {request, callApi, formatFileUrl} from '../../utils/request'
+import {callApi, formatFileUrl} from '../../utils/request'
 import {ui} from '../../utils/ui'
 import * as UIConfig from './ui.config'
 
@@ -74,7 +74,6 @@ Page({
 
     onLoad() {
         // subscribe once for this page instance
-        const env = require('../../env.js')
         
         ;(this as any)._langDetach = attachLanguageAware(this, {
             onLanguageRevive: () => {
@@ -254,9 +253,17 @@ Page({
 
         const uiStrings = UIConfig.buildPageUI(lang, this.data)
 
+        // Calculate current language label for the card description
+        let languageLabel = ''
+        if (lang === 'Chinese') languageLabel = uiStrings.langChinese
+        else if (lang === 'English') languageLabel = uiStrings.langEnglish
+        else if (lang === 'AIChinese') languageLabel = uiStrings.langAIChinese
+        else if (lang === 'AIEnglish') languageLabel = uiStrings.langAIEnglish
+
         this.setData({
             appLanguage: lang,
             ui: uiStrings,
+            languageLabel
         })
 
         // intentionally do not set navigationBarTitleText
@@ -340,7 +347,7 @@ Page({
                     }
                 }
             } else {
-                console.warn('获取会员方案失败:', res?.result)
+                console.warn('获取会员方案失败:', result)
                 this.setData({ memberBadgeText: '' })
             }
         } catch (err) {
@@ -917,7 +924,7 @@ Page({
     },
 
     async onPurchase() {
-        const { selectedSchemeId, schemsList, ui: uiStrings } = this.data
+        const { selectedSchemeId, schemsList } = this.data
         if (!selectedSchemeId) return
 
         const scheme = schemsList.find((s: any) => s.scheme_id === selectedSchemeId)

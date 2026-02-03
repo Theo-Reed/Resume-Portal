@@ -20,11 +20,9 @@
 
   </view>
 
-  <scroll-view     
+  <ui-scroll-view     
     class="resume-content" 
-    scroll-y="{{true}}"
-    enhanced="true"
-    show-scrollbar="{{false}}"
+    scrollY="{{true}}"
   >
     <view class="resume-body">
       <!-- 基本信息 -->
@@ -280,7 +278,7 @@
       
       <view class="bottom-safe-area"></view>
     </view>
-  </scroll-view>
+  </ui-scroll-view>
 
   <!-- 工作经历编辑弹窗 (右侧弹出) -->
   <view class="drawer-mask {{showWorkDrawer ? 'drawer-mask-show' : ''}}" bindtap="closeWorkDrawer"></view>
@@ -365,12 +363,12 @@
       <view class="form-item form-item-relative">
         <text class="form-label">{{ui.education}}</text>
         <input class="form-input" placeholder="{{ui.schoolPlaceholder}}" value="{{eduForm.school}}" bindinput="onEduSchoolInput" bindfocus="onEduSchoolFocus" bindblur="onEduSchoolBlur" />
-        <scroll-view scroll-y enhanced="true" show-scrollbar="{{false}}" class="suggestions-box" wx:if="{{showUniversitySuggestions && universitySuggestions.length > 0}}">
+        <ui-scroll-view scrollY="{{true}}" class="suggestions-box" wx:if="{{showUniversitySuggestions && universitySuggestions.length > 0}}">
           <view class="suggestion-item" wx:for="{{universitySuggestions}}" wx:key="_id" bindtap="onSelectUniversity" data-item="{{item}}">
             <text class="suggestion-main">{{currentLang === 'English' ? (item.english_name + (item.country_english && item.country_english !== 'China' ? ' (' + item.country_english + ')' : '')) : (item.chinese_name + (item.country_chinese && item.country_chinese !== '中国' ? ' (' + item.country_chinese + ')' : ''))}}</text>
             <text class="suggestion-sub" wx:if="{{item.english_name && item.chinese_name}}">{{currentLang === 'English' ? (item.chinese_name + (item.country_chinese && item.country_chinese !== '中国' ? ' (' + item.country_chinese + ')' : '')) : (item.english_name + (item.country_english && item.country_english !== 'China' ? ' (' + item.country_english + ')' : ''))}}</text>
           </view>
-        </scroll-view>
+        </ui-scroll-view>
       </view>
 
       <view class="form-item" bindtap="openDegreePicker">
@@ -383,12 +381,12 @@
       <view class="form-item form-item-relative">
         <text class="form-label">{{ui.major}}</text>
         <input class="form-input" placeholder="{{ui.majorPlaceholder}}" value="{{eduForm.major}}" bindinput="onEduMajorInput" bindfocus="onEduMajorFocus" bindblur="onEduMajorBlur" />
-        <scroll-view scroll-y enhanced="true" show-scrollbar="{{false}}" class="suggestions-box" wx:if="{{showMajorSuggestions && majorSuggestions.length > 0}}">
+        <ui-scroll-view scrollY="{{true}}" class="suggestions-box" wx:if="{{showMajorSuggestions && majorSuggestions.length > 0}}">
           <view class="suggestion-item" wx:for="{{majorSuggestions}}" wx:key="_id" bindtap="onSelectMajor" data-item="{{item}}">
             <text class="suggestion-main">{{currentLang === 'English' ? item.english_name : item.chinese_name}}</text>
             <text class="suggestion-sub" wx:if="{{item.english_name && item.chinese_name}}">{{currentLang === 'English' ? item.chinese_name : item.english_name}}</text>
           </view>
-        </scroll-view>
+        </ui-scroll-view>
       </view>
 
       <view class="form-item">
@@ -573,7 +571,7 @@
       <view class="bottom-sheet-header-right">
       </view>
     </view>
-    <scroll-view class="bottom-sheet-content custom-picker-body" scroll-y enhanced="true" show-scrollbar="{{false}}">
+    <ui-scroll-view class="bottom-sheet-content custom-picker-body" scrollY="{{true}}">
       <view 
         wx:for="{{genderOptions}}" 
         wx:key="*this" 
@@ -584,7 +582,7 @@
         <text class="option-text">{{item}}</text>
         <view class="check-icon" wx:if="{{basicInfoForm.gender === item}}"></view>
       </view>
-    </scroll-view>
+    </ui-scroll-view>
   </view>
 
   <!-- 技能编辑弹窗 -->

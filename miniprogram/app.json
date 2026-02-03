@@ -16,7 +16,11 @@
     "navigationBarBackgroundColor": "#ffffff"
   },
   "usingComponents": {
-    "ui-feedback": "/components/ui-feedback/index"
+    "ui-feedback": "/components/ui-feedback/index",
+    "ui-button": "/components/ui/button/index",
+    "ui-card": "/components/ui/card/index",
+    "ui-drawer": "/components/ui/drawer/index",
+    "ui-scroll-view": "/components/ui/scroll-view/index"
   },
   "tabBar": {
     "color": "#6b7280",

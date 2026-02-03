@@ -61,39 +61,28 @@
 
 
   <!-- Restore Search Condition Bottom Sheet -->
-  <block wx:if="{{showRestoreSheet}}">
-    <view class="bottom-sheet-mask {{restoreSheetOpen ? 'bottom-sheet-mask-open' : ''}}" bindtap="closeRestoreSheet"></view>
-    <view class="bottom-sheet restore-sheet {{restoreSheetOpen ? 'bottom-sheet-open' : ''}}">
-      <!-- Header with buttons -->
-      <view class="bottom-sheet-header restore-sheet-header">
-        <view class="bottom-sheet-header-left restore-sheet-header-left">
-          <view wx:if="{{isRestoreEditing}}" class="bottom-sheet-header-btn" bindtap="onClearAllRestoreConditions">
-            <text class="restore-header-btn-text">{{ui.clearAllLabel}}</text>
-          </view>
-        </view>
-        <text class="bottom-sheet-title">{{ui.restoreSearchLabel}}</text>
-        <view class="bottom-sheet-header-right restore-sheet-header-right">
-          <view class="bottom-sheet-header-btn" bindtap="toggleRestoreEdit">
-            <text class="restore-header-btn-text">{{isRestoreEditing ? ui.doneLabel : ui.editLabel}}</text>
-          </view>
-        </view>
+  <ui-drawer title="{{ui.restoreSearchLabel}}" show="{{showRestoreSheet}}" bindclose="closeRestoreSheet">
+    <view slot="title-extra">
+      <view class="restore-header-actions">
+        <text wx:if="{{isRestoreEditing}}" class="restore-header-btn" bindtap="onClearAllRestoreConditions">{{ui.clearAllLabel}}</text>
+        <text class="restore-header-btn" bindtap="toggleRestoreEdit">{{isRestoreEditing ? ui.doneLabel : ui.editLabel}}</text>
       </view>
-      
-      <view class="bottom-sheet-content restore-sheet-content">
-        <view wx:if="{{savedSearchConditions.length === 0}}" class="empty-restore">
-          <text class="empty-restore-text">{{ui.noSavedSearchConditions}}</text>
+    </view>
+    
+    <view class="restore-sheet-content">
+      <view wx:if="{{savedSearchConditions.length === 0}}" class="empty-restore">
+        <text class="empty-restore-text">{{ui.noSavedSearchConditions}}</text>
+      </view>
+      <view wx:for="{{savedSearchConditions}}" wx:key="_id" wx:for-item="item" wx:for-index="idx" class="restore-item {{isRestoreEditing ? 'restore-item-editing' : ''}} {{item.deleting ? 'restore-item-deleting' : ''}} {{item.collapsing ? 'restore-item-collapsing' : ''}}" data-index="{{idx}}" bindtap="{{isRestoreEditing ? '' : 'onSelectRestoreCondition'}}">
+        <view class="restore-item-content">
+          <view class="restore-item-title">{{item.title}}</view>
+          <view class="restore-item-desc">{{item.desc}}</view>
         </view>
-        <view wx:for="{{savedSearchConditions}}" wx:key="_id" wx:for-item="item" wx:for-index="idx" class="restore-item {{isRestoreEditing ? 'restore-item-editing' : ''}} {{item.deleting ? 'restore-item-deleting' : ''}} {{item.collapsing ? 'restore-item-collapsing' : ''}}" data-index="{{idx}}" bindtap="{{isRestoreEditing ? '' : 'onSelectRestoreCondition'}}">
-          <view class="restore-item-content">
-            <view class="restore-item-title">{{item.title}}</view>
-            <view class="restore-item-desc">{{item.desc}}</view>
-          </view>
-          <view wx:if="{{isRestoreEditing}}" class="restore-item-delete" data-index="{{idx}}" catchtap="onDeleteRestoreCondition">
-            <image class="restore-item-delete-icon" src="/assets/icons/del-btn.png" mode="aspectFit" />
-          </view>
+        <view wx:if="{{isRestoreEditing}}" class="restore-item-delete" data-index="{{idx}}" catchtap="onDeleteRestoreCondition">
+          <image class="restore-item-delete-icon" src="/assets/icons/del-btn.png" mode="aspectFit" />
         </view>
       </view>
     </view>
-  </block>
+  </ui-drawer>
 
 </view>

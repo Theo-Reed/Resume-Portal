@@ -1,70 +1,63 @@
 <!-- 个人资料底部弹窗 -->
-<block wx:if="{{showProfileSheet}}">
-  <view class="bottom-sheet-mask {{profileSheetOpen ? 'bottom-sheet-mask-open' : ''}}"
-        bindtap="closeProfileSheet"></view>
-  <view class="bottom-sheet {{profileSheetOpen ? 'bottom-sheet-open' : ''}}">
-    <view class="bottom-sheet-header">
-      <view class="bottom-sheet-header-left"></view>
-      <text class="bottom-sheet-title">{{ui.userProfileTitle}}</text>
-      <view class="bottom-sheet-header-right">
-        <view class="bottom-sheet-header-btn" bindtap="closeProfileSheet">{{ui.confirm}}</view>
+<ui-drawer title="{{ui.userProfileTitle}}" show="{{showProfileSheet}}" bindclose="closeProfileSheet" showFooter="{{true}}">
+  <view slot="footer">
+    <ui-button bindtap="closeProfileSheet">{{ui.confirm}}</ui-button>
+  </view>
+
+  <view class="bottom-sheet-content profile-sheet-content">
+    <!-- Upload Avatar - 独立一栏，左右布局 -->
+    <view class="profile-avatar-section" catchtap="onUploadAvatar">
+      <text class="profile-avatar-title">{{ui.uploadAvatar}}</text>
+      <view class="profile-avatar-content">
+        <block wx:if="{{userInfo}}">
+          <view class="profile-avatar-wrapper profile-avatar-bordered">
+            <image class="profile-avatar-preview" src="{{userInfo.avatar}}" mode="aspectFill"/>
+          </view>
+        </block>
+        <block wx:else>
+          <view class="profile-avatar-wrapper profile-avatar-bordered">
+            <view class="profile-avatar-placeholder"></view>
+          </view>
+        </block>
       </view>
     </view>
 
-    <view class="bottom-sheet-content profile-sheet-content">
-      <!-- Upload Avatar - 独立一栏，左右布局 -->
-      <view class="profile-avatar-section" catchtap="onUploadAvatar">
-        <text class="profile-avatar-title">{{ui.uploadAvatar}}</text>
-        <view class="profile-avatar-content">
-          <block wx:if="{{userInfo}}">
-            <view class="profile-avatar-wrapper profile-avatar-bordered">
-              <image class="profile-avatar-preview" src="{{userInfo.avatar}}" mode="aspectFill"/>
-            </view>
-          </block>
-          <block wx:else>
-            <view class="profile-avatar-wrapper profile-avatar-bordered">
-              <view class="profile-avatar-placeholder"></view>
-            </view>
-          </block>
+    <!-- Edit Nickname & Phone Number - 合并到一个card -->
+    <view class="profile-info-section">
+      <!-- Edit Nickname -->
+      <view class="profile-info-item">
+        <view class="profile-nickname-header">
+          <text class="profile-nickname-title">{{ui.editNickname}}</text>
+          <view class="profile-nickname-change-btn" catchtap="onEditNickname">
+            <text class="profile-nickname-change-btn-text">{{ui.changePhone}}</text>
+          </view>
+        </view>
+        <view class="profile-nickname-content">
+          <text class="profile-nickname-value">{{userInfo ? userInfo.nickName : ui.notSet}}</text>
         </view>
       </view>
 
-      <!-- Edit Nickname & Phone Number - 合并到一个card -->
-      <view class="profile-info-section">
-        <!-- Edit Nickname -->
-        <view class="profile-info-item">
-          <view class="profile-nickname-header">
-            <text class="profile-nickname-title">{{ui.editNickname}}</text>
-            <view class="profile-nickname-change-btn" catchtap="onEditNickname">
-              <text class="profile-nickname-change-btn-text">{{ui.changePhone}}</text>
-            </view>
-          </view>
-          <view class="profile-nickname-content">
-            <text class="profile-nickname-value">{{userInfo ? userInfo.nickName : ui.notSet}}</text>
-          </view>
+      <!-- Phone Number -->
+      <view class="profile-info-item">
+        <view class="profile-phone-header">
+          <text class="profile-phone-title">{{ui.phoneNumber}}</text>
+          <ui-button
+                  wx:if="{{!userPhone}}"
+                  type="outline"
+                  size="sm"
+                  openType="getPhoneNumber"
+                  bind:getphonenumber="onChangePhoneNumber"
+          >
+            {{ui.setPhone}}
+          </ui-button>
         </view>
-
-        <!-- Phone Number -->
-        <view class="profile-info-item">
-          <view class="profile-phone-header">
-            <text class="profile-phone-title">{{ui.phoneNumber}}</text>
-            <button
-                    wx:if="{{!userPhone}}"
-                    class="profile-phone-change-btn"
-                    open-type="getPhoneNumber"
-                    bindgetphonenumber="onChangePhoneNumber"
-            >
-              <text class="profile-phone-change-btn-text">{{ui.setPhone}}</text>
-            </button>
-          </view>
-          <view class="profile-phone-content">
-            <text class="profile-phone-value">{{userPhone ? maskedPhone : ui.notSet}}</text>
-          </view>
+        <view class="profile-phone-content">
+          <text class="profile-phone-value">{{userPhone ? maskedPhone : ui.notSet}}</text>
         </view>
       </view>
     </view>
   </view>
-</block>
+</ui-drawer>
 
 <!-- Edit Nickname Modal -->
 <block wx:if="{{showNicknameModal}}">
@@ -87,12 +80,12 @@
       />
     </view>
     <view class="nickname-modal-footer">
-      <view class="nickname-modal-btn nickname-modal-cancel" catchtap="onCancelEditNickname">
-        <text class="nickname-modal-btn-text">{{ui.cancel}}</text>
-      </view>
-      <view class="nickname-modal-btn nickname-modal-save" catchtap="onSaveNickname">
-        <text class="nickname-modal-btn-text">{{ui.save}}</text>
-      </view>
+      <ui-button type="secondary" size="md" bindtap="onCancelEditNickname" custom-class="nickname-modal-cancel">
+        {{ui.cancel}}
+      </ui-button>
+      <ui-button type="primary" size="md" bindtap="onSaveNickname" custom-class="nickname-modal-save">
+        {{ui.save}}
+      </ui-button>
     </view>
   </view>
 </block>

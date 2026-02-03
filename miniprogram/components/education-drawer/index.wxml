@@ -12,7 +12,7 @@
     </view>
   </view>
 
-  <scroll-view class="drawer-body" scroll-y enhanced="true" show-scrollbar="{{false}}">
+  <ui-scroll-view class="drawer-body" scrollY="{{true}}">
     <view class="form-group">
       <view class="form-label">{{ui.school}}</view>
       <input 
@@ -60,11 +60,15 @@
         </picker>
       </view>
     </view>
-  </scroll-view>
+  </ui-scroll-view>
 
   <view class="drawer-footer">
-    <button wx:if="{{isEdit}}" class="btn-delete" bindtap="onDelete">{{ui.delete}}</button>
-    <button class="btn-save" bindtap="onSave">{{ui.save}}</button>
+    <ui-button wx:if="{{isEdit}}" type="secondary" bindtap="onDelete" custom-class="btn-delete">
+      {{ui.delete}}
+    </ui-button>
+    <ui-button type="primary" bindtap="onSave" custom-class="btn-save">
+      {{ui.save}}
+    </ui-button>
   </view>
 </view>
 

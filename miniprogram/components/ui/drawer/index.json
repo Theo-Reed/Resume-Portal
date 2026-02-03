@@ -1,6 +1,6 @@
 {
   "component": true,
   "usingComponents": {
-    "ui-button": "../ui/button/index"
+    "ui-scroll-view": "../scroll-view/index"
   }
 }

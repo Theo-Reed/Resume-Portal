@@ -3,6 +3,8 @@
   "onReachBottomDistance": 50,
   "navigationBarTitleText": "",
   "usingComponents": {
-    "job-tab": "../../components/job-tab/index"
+    "job-tab": "../../components/job-tab/index",
+    "ui-drawer": "../../components/ui/drawer/index",
+    "ui-button": "../../components/ui/button/index"
   }
 }

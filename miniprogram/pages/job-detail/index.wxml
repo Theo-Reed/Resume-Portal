@@ -1,12 +1,10 @@
 <!--miniprogram/pages/job-detail/index.wxml-->
 <view class="page">
   <ui-feedback id="ui-feedback" />
-  <scroll-view     
+  <ui-scroll-view     
     class="detail-content" 
-    scroll-y="{{true}}"
-    enhanced="true" 
-    show-scrollbar="{{false}}"
-    upper-threshold="0"
+    scrollY="{{true}}"
+    upperThreshold="0"
     bounces="{{false}}"
   >
     <block wx:if="{{job}}">
@@ -47,7 +45,7 @@
     <block wx:else>
       <view class="error">{{loadFailedText}}</view>
     </block>
-  </scroll-view>
+  </ui-scroll-view>
   <!-- 底部操作栏 (Dock) -->
   <view class="apply-overlay" wx:if="{{job}}">
     <view class="apply-overlay-mask"></view>
@@ -72,7 +70,7 @@
         </view>
       </view>
       
-      <scroll-view class="apply-menu-scroll" scroll-y enhanced="true" show-scrollbar="{{false}}">
+      <ui-scroll-view class="apply-menu-scroll" scrollY="{{true}}">
         <view class="apply-menu-content-padding">
           <!-- AI 增强功能区 -->
           <view class="apply-menu-section ai-section">
@@ -94,7 +92,7 @@
             </view>
           </view>
         </view>
-      </scroll-view>
+      </ui-scroll-view>
 
       <!-- 底部安全间距 -->
       <view class="apply-menu-safe-bottom"></view>

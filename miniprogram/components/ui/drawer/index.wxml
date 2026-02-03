@@ -1,0 +1,29 @@
+<view 
+  wx:if="{{show}}" 
+  class="ui-drawer-mask {{visible ? 'ui-drawer-mask-show' : ''}}" 
+  bindtap="onClose"
+  catchtouchmove="true"
+></view>
+
+<view 
+  class="ui-drawer {{visible ? 'ui-drawer-show' : ''}} custom-class"
+  catchtouchmove="true"
+>
+  <view class="ui-drawer-header" wx:if="{{title || showClose}}">
+    <view class="ui-drawer-title">{{title}}</view>
+    <view wx:if="{{showClose}}" class="ui-drawer-close" bindtap="onClose">
+      <text class="close-icon">×</text>
+    </view>
+  </view>
+
+  <ui-scroll-view 
+    class="ui-drawer-body" 
+    scrollY="{{true}}"
+  >
+    <slot></slot>
+  </ui-scroll-view>
+
+  <view class="ui-drawer-footer" wx:if="{{showFooter}}">
+    <slot name="footer"></slot>
+  </view>
+</view>

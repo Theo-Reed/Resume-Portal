@@ -1,22 +1,18 @@
 <!-- miniprogram/components/job-list/index.wxml -->
-<scroll-view
+<ui-scroll-view
   class="job-list {{className}}"
-  scroll-y="{{scrollY}}"
-  enhanced="true"
-  show-scrollbar="{{false}}"
-  scroll-top="{{scrollTop}}"
-  scroll-with-animation="{{scrollWithAnimation}}"
-  lower-threshold="{{lowerThreshold}}"
-  upper-threshold="0"
+  scrollY="{{scrollY}}"
+  scrollTop="{{scrollTop}}"
+  scrollWithAnimation="{{scrollWithAnimation}}"
+  lowerThreshold="{{lowerThreshold}}"
+  upperThreshold="0"
   bounces="{{false}}"
   bindscrolltolower="onScrollLower"
   bindscroll="onScroll"
   bindtouchstart="onTouchStart"
   bindtouchend="onTouchEnd"
-  enhanced="true"
-  show-scrollbar="{{false}}"
-  enable-back-to-top="{{enableBackToTop}}"
-  enable-passive="{{enablePassive}}"
+  enableBackToTop="{{enableBackToTop}}"
+  enablePassive="{{enablePassive}}"
 >
   <view class="job-list-content" style="padding: 0;">
     <block wx:for="{{jobs}}" wx:key="_id">
@@ -32,11 +28,11 @@
             <text wx:if="{{((isAIEnglish && (item.source_name_english || item.source_name)) || (!isAIEnglish && item.team && item.team !== ui.unknownCompany)) && item.salary}}" class="job-meta-dot">·</text>
             <text wx:if="{{item.salary}}" class="job-meta-item">{{item.salary}}</text>
           </view>
-          <scroll-view enhanced="true" class="job-tags" scroll-x="true" show-scrollbar="{{false}}">
+          <ui-scroll-view class="job-tags" scrollX="{{true}}">
             <view class="job-tag" wx:for="{{item.displayTags || item.tags}}" wx:key="*this">
               <text class="job-tag-text">{{item}}</text>
             </view>
-          </scroll-view>
+          </ui-scroll-view>
         </view>
       </view>
     </block>
@@ -54,4 +50,4 @@
       <text class="no-more-text">{{ui.allDataLoaded}}</text>
     </view>
   </view>
-</scroll-view>
+</ui-scroll-view>

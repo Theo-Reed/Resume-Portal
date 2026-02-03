@@ -351,12 +351,12 @@
 
 /* 2. Member Star: Theme Blue Gradient */
 .badge-level-2 {
-    background: linear-gradient(135deg, #60a5fa 0%, var(--primary) 100%);
+    background: var(--grad-primary);
 }
 
 /* 3. Premium Star: Dazzling Blue Gradient + Glow */
 .badge-level-3 {
-    background: linear-gradient(135deg, #3b82f6 0%, var(--primary) 45%, var(--primary-dark) 100%);
+    background: var(--grad-premium);
     box-shadow: 0 0 12rpx rgb(46 95 233 / 40%);
 }
 
@@ -391,8 +391,8 @@
 }
 
 .btn-level-1 { background: var(--primary); box-shadow: 0 4rpx 10rpx rgb(46 95 233 / 15%); }
-.btn-level-2 { background: linear-gradient(135deg, #60a5fa 0%, var(--primary) 100%); box-shadow: 0 4rpx 12rpx rgb(46 95 233 / 20%); }
-.btn-level-3 { background: linear-gradient(135deg, #3b82f6 0%, var(--primary) 45%, var(--primary-dark) 100%); box-shadow: 0 4rpx 15rpx rgb(29 78 216 / 30%); }
+.btn-level-2 { background: var(--grad-primary); box-shadow: 0 4rpx 12rpx rgb(46 95 233 / 20%); }
+.btn-level-3 { background: var(--grad-premium); box-shadow: 0 4rpx 15rpx rgb(29 78 216 / 30%); }
 
 .vip-active .vip-btn {
     background: rgb(0 0 0 / 5%);
@@ -446,23 +446,7 @@
 }
 
 /* --- 3. Action List Group --- */
-.action-list-group {
-    background: #fff;
-    border-radius: 28rpx;
-    padding: 8rpx 0;
-    box-shadow: 0 8rpx 20rpx rgb(0 0 0 / 3%);
-    border: 1rpx solid rgb(226 232 240 / 60%);
-    margin-bottom: 32rpx;
-}
 
-.action-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 28rpx 32rpx;
-    position: relative;
-    transition: background 0.2s;
-}
 
 .action-row:not(:last-child)::after {
     content: '';
@@ -479,18 +463,6 @@
     align-items: center;
 }
 
-.icon-circle {
-    width: 80rpx;
-    height: 80rpx;
-    border-radius: 20rpx;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 36rpx;
-    margin-right: 24rpx;
-    background: #f0f7ff; /* Consistent Light Blue Base */
-    border: 1rpx solid rgb(46 95 233 / 8%); /* Faint blue border */
-}
 
 /* Unified Brand Blue tint for all list icons */
 .blue-bg, .green-bg, .purple-bg { background: #f0f7ff; }
@@ -500,18 +472,7 @@
     flex-direction: column;
 }
 
-.action-row .row-title {
-    font-size: 30rpx;
-    font-weight: 600; /* Matching overall font refinement */
-    color: var(--text-main);
-    line-height: 1.4;
-}
 
-.action-row .row-subtitle {
-    font-size: 22rpx;
-    color: var(--text-sub); /* Better contrast */
-    margin-top: 4rpx;
-}
 
 .action-row .row-right {
     display: flex;
@@ -533,13 +494,6 @@
     border: 1rpx solid rgb(226 232 240 / 60%);
 }
 
-.setting-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 32rpx;
-    position: relative;
-}
 
 .setting-row:not(:last-child)::after {
     content: '';
@@ -556,21 +510,7 @@
     align-items: center;
 }
 
-.row-icon-box {
-    width: 48rpx;
-    height: 48rpx;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 20rpx;
-    font-size: 32rpx;
-}
 
-.row-label {
-    font-size: 30rpx;
-    font-weight: 500;
-    color: #334155;
-}
 
 .row-right {
     display: flex;
@@ -578,10 +518,6 @@
     gap: 12rpx;
 }
 
-.row-value {
-    font-size: 26rpx;
-    color: var(--text-holder);
-}
 
 .row-hover {
     background: var(--bg-main);
@@ -894,23 +830,8 @@
     font-weight: 400;
 }
 
-.redeem-action-btn {
-    background: var(--border);
-    color: var(--text-holder);
-    padding: 16rpx 40rpx;
-    border-radius: 100rpx;
-    font-size: 26rpx;
-    font-weight: 700;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
 
 /* Active State for Button */
-.redeem-input-group.has-value .redeem-action-btn {
-    background: linear-gradient(135deg, #4979fc 0%, var(--primary) 100%);
-    color: #fff;
-    box-shadow: 0 4rpx 12rpx rgb(46 95 233 / 25%);
-    transform: scale(1.02);
-}
 
 .redeem-input-group.has-value .redeem-action-btn:active {
     transform: scale(0.96);
@@ -1907,13 +1828,4 @@
     align-self: center;
 }
 
-.pay-btn-v3 {
-    background: var(--primary); 
-    color: #fff;
-    font-size: 26rpx;
-    font-weight: 700;
-    padding: 16rpx 50rpx;
-    border-radius: 100rpx;
-    box-shadow: 0 8rpx 20rpx rgb(46 95 233 / 25%);
-}
 .pay-btn-v3:active { transform: scale(0.96); }

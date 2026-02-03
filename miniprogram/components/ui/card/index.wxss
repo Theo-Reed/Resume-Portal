@@ -1,0 +1,69 @@
+.ui-card {
+  display: flex;
+  align-items: center;
+  padding: 32rpx;
+  background: #fff;
+  border-radius: 28rpx;
+  margin-bottom: 24rpx;
+  transition: all 0.2s ease;
+  border: 1rpx solid #f1f5f9;
+}
+
+.ui-card-active {
+  background: #f8fafc;
+  transform: scale(0.99);
+}
+
+.ui-card-left {
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.ui-card-icon-box {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ui-card-icon-box.blue { background: #e0e7ff; color: #4338ca; }
+.ui-card-icon-box.purple { background: #f3e8ff; color: #7e22ce; }
+.ui-card-icon-box.green { background: #dcfce7; color: #15803d; }
+.ui-card-icon-box.orange { background: #ffedd5; color: #c2410c; }
+.ui-card-icon-box.none { background: transparent; color: inherit; width: auto; height: auto; margin-right: 12rpx; }
+
+.ui-card-emoji {
+  font-size: 40rpx;
+}
+
+.ui-card-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.ui-card-title-row {
+  display: flex;
+  align-items: center;
+}
+
+.ui-card-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.ui-card-desc {
+  font-size: 24rpx;
+  color: #64748b;
+  margin-top: 4rpx;
+}
+
+.ui-card-right {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}

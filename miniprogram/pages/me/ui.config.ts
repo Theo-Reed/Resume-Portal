@@ -161,6 +161,8 @@ const UI_MAP = {
     // --- 联系作者 ---
     /** 联系作者行标题 */
     contactAuthor: 'me.contactAuthor',
+    /** 联系作者描述 */
+    contactAuthorDesc: 'me.contactAuthorDesc',
     /** 作者微信引导语 */
     authorWechatSlogan: 'me.authorWechatSlogan',
     /** 二维码长按提示 */

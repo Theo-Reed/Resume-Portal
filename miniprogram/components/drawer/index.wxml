@@ -39,14 +39,12 @@
     </view>
 
     <view class="drawer-content">
-    <scroll-view 
+    <ui-scroll-view 
       class="drawer-body" 
-      scroll-y="{{!isSwiping}}"
-      enhanced="true" 
-      show-scrollbar="{{false}}"
-      scroll-into-view="{{scrollIntoView}}"
-      scroll-with-animation="{{true}}"
-      upper-threshold="0"
+      scrollY="{{!isSwiping}}"
+      scrollIntoView="{{scrollIntoView}}"
+      scrollWithAnimation="{{true}}"
+      upperThreshold="0"
       bounces="{{false}}"
       bindscroll="onScrollViewScroll"
     >
@@ -115,7 +113,7 @@
       </view>
       <!-- 底部间距 -->
       <view class="drawer-bottom-spacer"></view>
-    </scroll-view>
+    </ui-scroll-view>
 
       <view class="drawer-footer">
         <view class="btn-secondary" bindtap="onReset">{{ui.clear}}</view>

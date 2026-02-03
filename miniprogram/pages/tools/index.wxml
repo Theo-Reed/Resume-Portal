@@ -7,103 +7,89 @@
   </view>
 
   <view class="tools-grid">
-    <!-- 1. 不用改 -->
-    <view class="tool-card" bindtap="onUploadScreenshot">
-      <view class="icon-box blue">
-        <text class="tool-emoji">📸</text>
-      </view>
-      <view class="tool-info">
-        <text class="tool-name">截图生成简历</text>
-        <text class="tool-desc">上传岗位截图，AI 自动生成匹配简历</text>
-      </view>
-      <text class="ui-arrow">❯</text>
-    </view>
+    <ui-card 
+      icon="📸" 
+      iconBg="blue" 
+      title="截图生成简历" 
+      desc="上传岗位截图，AI 自动生成匹配简历" 
+      bindtap="onUploadScreenshot"
+    />
 
-    <!-- 2. 文字生成简历 -->
-    <view class="tool-card" bindtap="openJdDrawer">
-      <view class="icon-box purple">
-        <text class="tool-emoji">✨</text>
-      </view>
-      <view class="tool-info">
-        <text class="tool-name">文字生成简历</text>
-        <text class="tool-desc">粘贴文字，AI自动生成匹配简历</text>
-      </view>
-      <text class="ui-arrow">❯</text>
-    </view>
+    <ui-card 
+      icon="✨" 
+      iconBg="purple" 
+      title="文字生成简历" 
+      desc="粘贴文字，AI自动生成匹配简历" 
+      bindtap="openJdDrawer"
+    />
 
-    <!-- 3. 不用改 -->
-    <view class="tool-card" bindtap="onRefineOldResume">
-      <view class="icon-box green">
-        <text class="tool-emoji">📄</text>
-      </view>
-      <view class="tool-info">
-        <text class="tool-name">简历润色</text>
-        <text class="tool-desc">上传旧简历，AI 帮你重写升级</text>
-      </view>
-      <text class="ui-arrow">❯</text>
-    </view>
-
+    <ui-card 
+      icon="📄" 
+      iconBg="green" 
+      title="简历润色" 
+      desc="上传旧简历，AI 帮你重写升级" 
+      bindtap="onRefineOldResume"
+    />
   </view>
 
   <!-- Bottom Drawer for Text/Screenshot Resume Generation -->
-  <view wx:if="{{showJdDrawer}}" class="drawer-mask" bindtap="closeJdDrawer"></view>
-  <view class="drawer-container {{showJdDrawer ? 'drawer-show' : ''}}">
-    <view class="drawer-header">
-      <text class="drawer-title">{{drawerTitle}}</text>
-      <view class="close-btn" bindtap="closeJdDrawer">×</view>
+  <ui-drawer title="{{drawerTitle}}" show="{{showJdDrawer}}" bindclose="closeJdDrawer">
+    <view class="form-item">
+      <text class="label">岗位标题</text>
+      <input 
+        class="input" 
+        placeholder="例如：产品经理 / Java开发" 
+        placeholder-class="placeholder"
+        value="{{targetJob.title}}" 
+        bindinput="onJdFieldChange" 
+        data-field="title"
+      />
+    </view>
+
+    <view class="form-item">
+      <text class="label">公司名称</text>
+      <input 
+        class="input" 
+        placeholder="例如：腾讯 / 字节跳动" 
+        placeholder-class="placeholder"
+        value="{{targetJob.company}}" 
+        bindinput="onJdFieldChange" 
+        data-field="company"
+      />
+    </view>
+
+    <view class="form-item">
+      <text class="label">经验要求</text>
+      <input 
+        class="input" 
+        placeholder="例:1-3年 (填0则ai不会额外生成工作经历)" 
+        placeholder-class="placeholder"
+        value="{{targetJob.experience}}" 
+        bindinput="onJdFieldChange" 
+        data-field="experience"
+      />
     </view>
     
-    <view class="drawer-body">
-      <view class="form-item">
-        <text class="label">岗位标题</text>
-        <input 
-          class="input" 
-          placeholder="例如：产品经理 / Java开发" 
-          placeholder-class="placeholder"
-          value="{{targetJob.title}}" 
-          bindinput="onJdFieldChange" 
-          data-field="title"
-        />
-      </view>
-
-      <view class="form-item">
-        <text class="label">公司名称</text>
-        <input 
-          class="input" 
-          placeholder="例如：腾讯 / 字节跳动" 
-          placeholder-class="placeholder"
-          value="{{targetJob.company}}" 
-          bindinput="onJdFieldChange" 
-          data-field="company"
-        />
-      </view>
-
-      <view class="form-item">
-        <text class="label">经验要求</text>
-        <input 
-          class="input" 
-          placeholder="例:1-3年 (填0则ai不会额外生成工作经历)" 
-          placeholder-class="placeholder"
-          value="{{targetJob.experience}}" 
-          bindinput="onJdFieldChange" 
-          data-field="experience"
-        />
-      </view>
-      
-      <view class="form-item">
-        <text class="label">岗位描述内容</text>
-        <textarea 
-          class="textarea" 
-          placeholder="请粘贴完整的职位描述（JD）..." 
-          placeholder-class="placeholder"
-          value="{{targetJob.content}}" 
-          bindinput="onJdFieldChange" 
-          data-field="content"
-          maxlength="5000"
-        ></textarea>
-      </view>
-
-      <view class="submit-btn {{canSubmit ? 'active' : ''}}" bindtap="onOptimizeKeywords">开始生成</view>
+    <view class="form-item">
+      <text class="label">岗位描述内容</text>
+      <textarea 
+        class="textarea" 
+        placeholder="请粘贴完整的职位描述（JD）..." 
+        placeholder-class="placeholder"
+        value="{{targetJob.content}}" 
+        bindinput="onJdFieldChange" 
+        data-field="content"
+        maxlength="5000"
+      ></textarea>
     </view>
-  </view>
+
+    <ui-button 
+      disabled="{{!canSubmit}}" 
+      bindtap="onOptimizeKeywords"
+      type="primary"
+      size="lg"
+    >
+      {{submitting ? '生成中...' : '开始生成'}}
+    </ui-button>
+  </ui-drawer>
 </view>

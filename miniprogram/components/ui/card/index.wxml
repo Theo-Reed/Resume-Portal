@@ -1,0 +1,25 @@
+<view 
+  class="ui-card {{hover ? 'ui-card-hover' : ''}} custom-class" 
+  hover-class="{{hover ? 'ui-card-active' : 'none'}}"
+  bindtap="onTap"
+>
+  <view class="ui-card-left" wx:if="{{icon}}">
+    <view class="ui-card-icon-box {{iconBg ? iconBg : 'blue'}}">
+      <text class="ui-card-emoji">{{icon}}</text>
+    </view>
+  </view>
+  
+  <view class="ui-card-main">
+    <view class="ui-card-title-row">
+      <text class="ui-card-title">{{title}}</text>
+      <slot name="title-extra"></slot>
+    </view>
+    <text class="ui-card-desc" wx:if="{{desc}}">{{desc}}</text>
+    <slot name="body"></slot>
+  </view>
+
+  <view class="ui-card-right">
+    <slot name="right"></slot>
+    <text class="ui-arrow" wx:if="{{showArrow}}">❯</text>
+  </view>
+</view>

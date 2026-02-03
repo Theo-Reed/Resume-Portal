@@ -28,6 +28,10 @@ page {
   --radius-sm: 12rpx;
   --shadow-sm: 0 4rpx 6rpx -1rpx rgb(0 0 0 / 5%);
   --shadow-md: 0 10rpx 15rpx -3rpx rgb(0 0 0 / 10%);
+
+  /* 渐变色 Gradients (Industrial Style) */
+  --grad-primary: linear-gradient(135deg, #60a5fa 0%, var(--primary) 100%);
+  --grad-premium: linear-gradient(135deg, #3b82f6 0%, var(--primary) 45%, var(--primary-dark) 100%);
 }
 
 /**

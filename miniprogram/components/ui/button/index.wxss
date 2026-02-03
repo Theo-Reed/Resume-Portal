@@ -1,0 +1,84 @@
+.ui-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20rpx;
+  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  padding: 0;
+  margin: 0;
+  width: 100% !important;
+}
+
+.ui-btn::after {
+  display: none;
+}
+
+/* Types */
+.ui-btn-primary {
+  background: var(--grad-primary);
+  color: #fff;
+  box-shadow: 0 4rpx 12rpx rgb(46 95 233 / 20%);
+}
+
+.ui-btn-premium {
+  background: var(--grad-premium);
+  color: #fff;
+  box-shadow: 0 4rpx 15rpx rgb(29 78 216 / 30%);
+}
+
+.ui-btn-secondary {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.ui-btn-outline {
+  background: transparent;
+  border: 2rpx solid var(--primary);
+  color: var(--primary);
+}
+
+/* Sizes */
+.ui-btn-lg {
+  height: 100rpx;
+  font-size: 32rpx;
+}
+
+.ui-btn-md {
+  height: 88rpx;
+  font-size: 30rpx;
+}
+
+.ui-btn-sm {
+  height: 72rpx;
+  font-size: 26rpx;
+  border-radius: 12rpx;
+}
+
+/* States */
+.ui-btn-hover {
+  opacity: 0.85;
+  transform: scale(0.98);
+}
+
+.ui-btn-disabled {
+  opacity: 0.5;
+  filter: grayscale(0.5);
+  cursor: not-allowed;
+}
+
+.ui-btn-loading {
+  opacity: 0.8;
+}
+
+.ui-btn-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-text {
+  margin-left: 8rpx;
+}

@@ -18,14 +18,12 @@
     </view>
 
     <view class="filter-content">
-      <scroll-view 
+      <ui-scroll-view 
         class="filter-body" 
-        scroll-y="{{true}}"
-        enhanced="true" 
-        show-scrollbar="{{false}}"
-        scroll-into-view="{{scrollIntoView}}"
-        scroll-with-animation="{{true}}"
-        upper-threshold="0"
+        scrollY="{{true}}"
+        scrollIntoView="{{scrollIntoView}}"
+        scrollWithAnimation="{{true}}"
+        upperThreshold="0"
         bounces="{{false}}"
         bindscroll="onScrollViewScroll"
       >
@@ -94,7 +92,7 @@
         </view>
         <!-- 底部间距 -->
         <view class="filter-bottom-spacer"></view>
-      </scroll-view>
+      </ui-scroll-view>
 
       <view class="filter-footer">
         <view class="btn-secondary" bindtap="onReset">{{ui.clear}}</view>
