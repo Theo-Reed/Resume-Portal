@@ -16,7 +16,7 @@
         <text class="tool-name">截图生成简历</text>
         <text class="tool-desc">上传岗位截图，AI 自动生成匹配简历</text>
       </view>
-      <view class="arrow">❯</view>
+      <text class="ui-arrow">❯</text>
     </view>
 
     <!-- 2. 文字生成简历 -->
@@ -28,7 +28,7 @@
         <text class="tool-name">文字生成简历</text>
         <text class="tool-desc">粘贴文字，AI自动生成匹配简历</text>
       </view>
-      <view class="arrow">❯</view>
+      <text class="ui-arrow">❯</text>
     </view>
 
     <!-- 3. 不用改 -->
@@ -40,7 +40,7 @@
         <text class="tool-name">简历润色</text>
         <text class="tool-desc">上传旧简历，AI 帮你重写升级</text>
       </view>
-      <view class="arrow">❯</view>
+      <text class="ui-arrow">❯</text>
     </view>
 
   </view>

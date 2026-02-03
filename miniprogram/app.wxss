@@ -287,3 +287,13 @@ page {
   transition: transform 0.1s;
 }
 
+/* 3. 统一右侧箭头 UI Arrow (Chevron Right) */
+.ui-arrow {
+  font-size: 24rpx;
+  color: #cbd5e1;
+  font-weight: 500;
+  margin-left: 8rpx;
+  display: inline-block;
+  flex-shrink: 0;
+}
+

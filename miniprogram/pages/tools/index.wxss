@@ -82,11 +82,6 @@
   color: var(--text-sub);
 }
 
-.arrow {
-  color: var(--text-holder);
-  font-weight: 600;
-}
-
 /* Drawer Styles */
 .drawer-mask {
   position: fixed;

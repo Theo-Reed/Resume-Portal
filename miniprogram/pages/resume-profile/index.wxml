@@ -51,7 +51,7 @@
                   <view class="avatar-placeholder shadow-none"></view>
                 </block>
               </view>
-              <view class="arrow-icon"></view>
+              <text class="ui-arrow">❯</text>
             </view>
           </view>
           
@@ -60,7 +60,7 @@
             <view class="item-label">{{ui.nameLabel}}</view>
             <view class="item-value">
               <text class="{{name ? 'value-text' : 'placeholder-text'}}">{{name || ui.noData}}</text>
-              <view class="arrow-icon"></view>
+              <text class="ui-arrow">❯</text>
             </view>
           </view>
 
@@ -69,7 +69,7 @@
             <view class="item-label">{{ui.location}}</view>
             <view class="item-value">
               <text class="{{location ? 'value-text' : 'placeholder-text'}}">{{location || ui.noData}}</text>
-              <view class="arrow-icon"></view>
+              <text class="ui-arrow">❯</text>
             </view>
           </view>
         </view>
@@ -85,21 +85,21 @@
               <view class="item-label">{{ui.wechat}}</view>
               <view class="item-value">
                 <text class="{{wechat ? 'value-text' : 'placeholder-text'}}">{{wechat || ui.noData}}</text>
-                <view class="arrow-icon"></view>
+                <text class="ui-arrow">❯</text>
               </view>
             </view>
             <view class="list-item" bindtap="onEditContactInfo">
               <view class="item-label">{{ui.email}}</view>
               <view class="item-value">
                 <text class="{{email ? 'value-text' : 'placeholder-text'}}">{{email || ui.noData}}</text>
-                <view class="arrow-icon"></view>
+                <text class="ui-arrow">❯</text>
               </view>
             </view>
             <view class="list-item" bindtap="onEditContactInfo">
               <view class="item-label">{{ui.phone}}</view>
               <view class="item-value">
                 <text class="{{phone ? 'value-text' : 'placeholder-text'}}">{{phone || ui.noData}}</text>
-                <view class="arrow-icon"></view>
+                <text class="ui-arrow">❯</text>
               </view>
             </view>
           </block>
@@ -110,21 +110,21 @@
               <view class="item-label">{{ui.email}}</view>
               <view class="item-value">
                 <text class="{{email ? 'value-text' : 'placeholder-text'}}">{{email || ui.noData}}</text>
-                <view class="arrow-icon"></view>
+                <text class="ui-arrow">❯</text>
               </view>
             </view>
             <view class="list-item" bindtap="onEditContactInfo">
               <view class="item-label">{{ui.linkedin}}</view>
               <view class="item-value">
                 <text class="{{linkedin ? 'value-text' : 'placeholder-text'}}">{{linkedin || ui.noData}}</text>
-                <view class="arrow-icon"></view>
+                <text class="ui-arrow">❯</text>
               </view>
             </view>
             <view class="list-item" bindtap="onEditContactInfo">
               <view class="item-label">{{ui.personalWebsite}}</view>
               <view class="item-value">
                 <text class="{{website ? 'value-text' : 'placeholder-text'}}">{{website || ui.noData}}</text>
-                <view class="arrow-icon"></view>
+                <text class="ui-arrow">❯</text>
               </view>
             </view>
           </block>
@@ -168,7 +168,7 @@
                   <text wx:if="{{item.major}}">{{item.major}}</text>
                 </view>
               </view>
-              <view class="arrow-icon"></view>
+              <text class="ui-arrow">❯</text>
             </view>
           </block>
           <block wx:else>
@@ -208,7 +208,7 @@
                   <text>{{item.businessDirection}}</text>
                 </view>
               </view>
-              <view class="arrow-icon"></view>
+              <text class="ui-arrow">❯</text>
             </view>
           </block>
           <block wx:else>
@@ -272,7 +272,7 @@
           <view class="list-item" bindtap="onEditAiMessage">
             <view class="item-value ai-message-value">
               <text class="{{aiMessage ? 'value-text' : 'placeholder-text'}} ai-message-text">{{aiMessage || ui.aiMessageDefault}}</text>
-              <view class="arrow-icon"></view>
+              <text class="ui-arrow">❯</text>
             </view>
           </view>
         </view>

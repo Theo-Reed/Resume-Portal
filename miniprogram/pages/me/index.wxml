@@ -26,7 +26,7 @@
           <text class="nickname-large">{{userInfo.nickName || ui.loginNow}}</text>
           <view class="user-subtext-wrapper">
             <text class="user-subtext">{{ui.viewEditProfile}}</text>
-            <text class="row-arrow">❯</text>
+            <text class="ui-arrow">❯</text>
           </view>
         </view>
       </view>
@@ -73,7 +73,7 @@
           </view>
         </view>
         <view class="row-right">
-          <text class="row-arrow">❯</text>
+          <text class="ui-arrow">❯</text>
         </view>
       </view>
 
@@ -86,7 +86,7 @@
           </view>
         </view>
         <view class="row-right">
-          <text class="row-arrow">❯</text>
+          <text class="ui-arrow">❯</text>
         </view>
       </view>
     </view>
@@ -100,7 +100,7 @@
         </view>
         <view class="row-right">
           <text class="row-value">{{appLanguage === 'Chinese' ? ui.langChinese : (appLanguage === 'AIChinese' ? ui.langAIChinese : (appLanguage === 'English' ? ui.langEnglish : ui.langAIEnglish))}}</text>
-          <text class="row-arrow">❯</text>
+          <text class="ui-arrow">❯</text>
         </view>
       </view>
 
@@ -110,7 +110,7 @@
           <text class="row-label">{{ui.inviteCodeEntry}}</text>
         </view>
         <view class="row-right">
-          <text class="row-arrow">❯</text>
+          <text class="ui-arrow">❯</text>
         </view>
       </view>
 
@@ -120,7 +120,7 @@
           <text class="row-label">{{ui.contactAuthor}}</text>
         </view>
         <view class="row-right">
-          <text class="row-arrow">❯</text>
+          <text class="ui-arrow">❯</text>
         </view>
       </view>
     </view>
