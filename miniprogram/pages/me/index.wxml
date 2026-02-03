@@ -380,7 +380,7 @@
         <view class="author-sheet-body">
           <text class="author-slogan">{{ui.authorWechatSlogan}}</text>
           <view class="qr-code-container-sheet">
-            <image class="qr-code-image-sheet" src="cloud://{{cloudUrlPrefix}}/contact-info.JPG" mode="widthFix" show-menu-by-longpress="{{true}}" />
+            <image class="qr-code-image-sheet" src="/assets/contact-info.JPG" mode="widthFix" show-menu-by-longpress="{{true}}" />
           </view>
           <text class="qr-hint">{{ui.qrHint}}</text>
         </view>

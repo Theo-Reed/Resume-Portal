@@ -75,10 +75,6 @@ Page({
     onLoad() {
         // subscribe once for this page instance
         const env = require('../../env.js')
-        this.setData({
-            cloudEnv: env.cloudEnv,
-            cloudUrlPrefix: env.cloudUrlPrefix
-        })
         
         ;(this as any)._langDetach = attachLanguageAware(this, {
             onLanguageRevive: () => {
@@ -1049,7 +1045,6 @@ Page({
         try {
             const env = require('../../env.js')
             const mchId = env.mchId || env.default?.mchId
-            const envId = env.cloudEnv || env.default?.cloudEnv
             
             if (!mchId) {
                 throw new Error(uiStrings.mchIdMissing)
@@ -1059,8 +1054,7 @@ Page({
             const orderRes = await callApi('createOrder', {
                 scheme_id: schemeId,
                 amount: amount, // 如果是升级，传补差价金额
-                mchId: mchId,
-                envId: envId
+                mchId: mchId
             })
 
             const orderResult = orderRes.result || (orderRes as any)
