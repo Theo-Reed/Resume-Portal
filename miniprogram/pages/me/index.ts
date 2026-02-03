@@ -661,7 +661,7 @@ Page({
 
             // Upload to our Express server instead of cloud storage
             wx.uploadFile({
-                url: 'http://127.0.0.1:3000/api/upload',
+                url: 'https://feiwan.online/api/upload',
                 filePath: tempFilePath,
                 name: 'file',
                 header: {

@@ -1,7 +1,7 @@
 // miniprogram/utils/request.ts
 
-const BASE_URL = 'http://127.0.0.1:3000/api';
-const HOST_URL = 'http://127.0.0.1:3000';
+const BASE_URL = 'https://feiwan.online/api';
+const HOST_URL = 'https://feiwan.online';
 
 export const formatFileUrl = (url: string | undefined): string => {
   if (!url) return '';
