@@ -923,42 +923,11 @@ Page({
         const scheme = schemsList.find((s: any) => s.scheme_id === selectedSchemeId)
         if (!scheme) return
 
-        const price = scheme.price / 100
-        
-        wx.showLoading({ title: 'Creating Order...' })
-        
-        try {
-            // Mock Purchase Logic for now (Since payments require backend callback)
-            const res = await callApi('createOrder', { scheme_id: selectedSchemeId })
-            const orderResult = (res?.result || res) as any
+        if (!this.checkPhoneBeforePayment()) return;
 
-            if (orderResult.success) {
-               // Verify Payment (Mock: simulate payment success immediately for now or open Pay sheet)
-               // In real world: wx.requestPayment(orderResult.payParams)
-               // Here we assume createOrder directly activates for demo (or we call activateMembership manually)
-               
-               // Mocking the activation call (usually done by webhook)
-               const activateRes = await callApi('activateMembership', { order_id: orderResult.order_id })
-               const actData = (activateRes?.result || activateRes) as any
-               
-               if (actData.success) {
-                   wx.hideLoading()
-                   wx.showToast({ title: 'Purchase Success', icon: 'success' })
-                   this.closeMemberHub()
-                   // Refresh user data
-                   const app = getApp<IAppOption>() as any
-                   await app.refreshUser()
-                   this.syncUserFromApp()
-               } else {
-                   throw new Error(actData.message || 'Activation failed')
-               }
-            } else {
-                throw new Error(orderResult.message || 'Order creation failed')
-            }
-        } catch (err: any) {
-            wx.hideLoading()
-            wx.showToast({ title: err.message || 'Payment Failed', icon: 'none' })
-        }
+        // 统一调用真实的支付流程
+        await this.executePaymentFlow(selectedSchemeId)
+        this.closeMemberHub()
     },
 
     closeMemberHub() {
