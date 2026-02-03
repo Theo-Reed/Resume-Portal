@@ -10,7 +10,7 @@
     <!-- 1. 不用改 -->
     <view class="tool-card" bindtap="onUploadScreenshot">
       <view class="icon-box blue">
-        <image src="/assets/icons/camera.png" mode="aspectFit" class="tool-icon"/>
+        <text class="tool-emoji">📸</text>
       </view>
       <view class="tool-info">
         <text class="tool-name">截图生成简历</text>
@@ -22,7 +22,7 @@
     <!-- 2. 文字生成简历 -->
     <view class="tool-card" bindtap="openJdDrawer">
       <view class="icon-box purple">
-        <image src="/assets/icons/magic.png" mode="aspectFit" class="tool-icon"/>
+        <text class="tool-emoji">✨</text>
       </view>
       <view class="tool-info">
         <text class="tool-name">文字生成简历</text>
@@ -34,7 +34,7 @@
     <!-- 3. 不用改 -->
     <view class="tool-card" bindtap="onRefineOldResume">
       <view class="icon-box green">
-        <image src="/assets/icons/upload.png" mode="aspectFit" class="tool-icon"/>
+        <text class="tool-emoji">📄</text>
       </view>
       <view class="tool-info">
         <text class="tool-name">简历润色</text>

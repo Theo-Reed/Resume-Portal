@@ -61,6 +61,10 @@
   height: 48rpx;
 }
 
+.tool-emoji {
+  font-size: 44rpx;
+}
+
 .tool-info {
   flex: 1;
 }
