@@ -28,7 +28,6 @@
         <view class="card-body">
           <view class="title-row">
             <text class="job-title">{{((currentLang === 'English' || currentLang === 'AIEnglish') ? item.jobTitle_en : item.jobTitle_cn) || item.jobTitle}}</text>
-            <view wx:if="{{item.status === 'failed'}}" class="failed-tag">{{ui.statusFailed}}</view>
           </view>
           <text class="company-name">{{item.company || ui.generalResume}}</text>
           <text class="date-text">{{item.formattedDate}}</text>
