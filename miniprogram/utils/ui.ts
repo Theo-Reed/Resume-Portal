@@ -41,6 +41,7 @@ export const ui = {
       feedback.setData({ title, type: 'success', mask: false, visible: true });
       setTimeout(() => feedback.setData({ visible: false }), duration);
     } else {
+      /* eslint-disable-next-line no-restricted-globals */
       wx.showToast({ title, icon: 'success', duration });
     }
   },
@@ -55,6 +56,23 @@ export const ui = {
       feedback.setData({ title, type: 'error', mask: false, visible: true });
       setTimeout(() => feedback.setData({ visible: false }), duration);
     } else {
+      /* eslint-disable-next-line no-restricted-globals */
+      wx.showToast({ title, icon: 'none', duration });
+    }
+  },
+
+  /**
+   * 显示轻量级提示 (替代原生 showToast)
+   */
+  showToast(title: string, duration: number = 2000) {
+    const page = getCurrentPages().pop();
+    const feedback = page?.selectComponent('#ui-feedback') as any;
+    if (feedback) {
+      // type: 'info' 或者不传，在 ui-feedback 中实现为中性样式
+      feedback.setData({ title, type: 'info', mask: false, visible: true });
+      setTimeout(() => feedback.setData({ visible: false }), duration);
+    } else {
+      /* eslint-disable-next-line no-restricted-globals */
       wx.showToast({ title, icon: 'none', duration });
     }
   }

@@ -1,6 +1,7 @@
 // miniprogram/utils/phoneAuth.ts
 // 手机号授权相关工具函数（仅使用 code 方式）
 import { callApi } from './request'
+import { ui } from './ui'
 
 interface PhoneAuthDetail {
     code?: string
@@ -30,7 +31,7 @@ export async function getPhoneNumberFromAuth(detail: PhoneAuthDetail): Promise<s
 
     if (!hasCodeData) {
         console.warn('[PhoneAuth] Missing code')
-        wx.showToast({ title: '未获取到手机号授权', icon: 'none' })
+        ui.showToast('未获取到手机号授权')
         return undefined
     }
 

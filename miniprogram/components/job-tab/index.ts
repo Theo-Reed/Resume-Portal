@@ -385,7 +385,7 @@ Component({
         
         this.triggerEvent('dataupdate', { jobs: mergedJobs, hasMore })
       } catch (err) {
-        wx.showToast({ title: '搜索失败', icon: 'none' })
+        ui.showToast('搜索失败')
         if (reset) {
           this.setData({ isSearching: false })
         }
@@ -477,13 +477,13 @@ Component({
       const openid = user?.openid
       const isVerified = !!(user && (user.isAuthed || user.phone))
       if (!isVerified || !openid) {
-        wx.showToast({ title: '请先绑定手机号', icon: 'none' })
+        ui.showToast('请先绑定手机号')
         return
       }
       
       const currentJobs = this.data.jobs
       if (currentJobs.length === 0) {
-        wx.showToast({ title: '当前列表为空', icon: 'none' })
+        ui.showToast('当前列表为空')
         return
       }
       
@@ -495,7 +495,7 @@ Component({
         
         if (jobsToCheck.length === 0) {
           wx.hideLoading()
-          wx.showToast({ title: '当前列表为空', icon: 'none' })
+          ui.showToast('当前列表为空')
           return
         }
 
@@ -517,11 +517,7 @@ Component({
         })
         
         wx.hideLoading()
-        wx.showToast({ 
-          title: '收藏成功', 
-          icon: 'success',
-          duration: 2000,
-        })
+        ui.showToast('收藏成功')
         
         // 更新职位列表的isSaved状态
         const savedJobIds = new Set(jobIds)
@@ -536,7 +532,7 @@ Component({
         this.triggerEvent('refreshsaved')
       } catch (err) {
         wx.hideLoading()
-        wx.showToast({ title: '收藏失败', icon: 'none' })
+        ui.showToast('收藏失败')
       }
     },
 
@@ -549,7 +545,7 @@ Component({
       const openid = user?.openid
       const isVerified = !!(user && (user.isAuthed || user.phone))
       if (!isVerified || !openid) {
-        wx.showToast({ title: '请先绑定手机号', icon: 'none' })
+        ui.showToast('请先绑定手机号')
         return
       }
       
@@ -567,11 +563,7 @@ Component({
       // 如果既没有搜索关键词，也没有筛选条件，提示用户
       if (!hasKeyword && !hasAnyFilter) {
         const lang = normalizeLanguage(app?.globalData?.language)
-        wx.showToast({ 
-          title: t('jobs.tryAddFilterHint', lang), 
-          icon: 'none',
-          duration: 2000,
-        })
+        ui.showToast(t('jobs.tryAddFilterHint', lang))
         return
       }
       
@@ -587,9 +579,9 @@ Component({
           ...searchCondition,
         })
         
-        wx.showToast({ title: '搜索条件已保存', icon: 'success' })
+        ui.showToast('搜索条件已保存')
       } catch (err) {
-        wx.showToast({ title: '保存失败', icon: 'none' })
+        ui.showToast('保存失败')
       }
     },
 
@@ -602,7 +594,7 @@ Component({
       const openid = user?.openid
       const isVerified = !!(user && (user.isAuthed || user.phone))
       if (!isVerified || !openid) {
-        wx.showToast({ title: '请先绑定手机号', icon: 'none' })
+        ui.showToast('请先绑定手机号')
         return
       }
       

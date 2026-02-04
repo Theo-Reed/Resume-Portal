@@ -1,5 +1,6 @@
 // miniprogram/components/education-drawer/index.ts
 import { normalizeLanguage, t } from '../../utils/i18n'
+import { ui } from '../../utils/ui'
 
 Component({
   properties: {
@@ -123,7 +124,7 @@ Component({
     onSave() {
       const { formData } = this.data
       if (!formData.school) {
-        wx.showToast({ title: '请输入学校名称', icon: 'none' })
+        ui.showToast('请输入学校名称')
         return
       }
       this.triggerEvent('save', { education: formData })

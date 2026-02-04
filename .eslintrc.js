@@ -27,5 +27,13 @@ module.exports = {
     requireMiniProgram: true,
   },
   // extends: 'eslint:recommended',
-  rules: {},
+  rules: {
+    'no-restricted-globals': [
+      'error',
+      {
+        name: 'wx.showToast',
+        message: 'Please use ui.showToast from utils/ui.ts instead of native wx.showToast.'
+      }
+    ]
+  },
 }

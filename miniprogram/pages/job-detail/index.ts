@@ -92,7 +92,7 @@ Page({
       }
     } else {
       this.setData({ loading: false })
-      wx.showToast({ title: this.data.dataLoadFailedText, icon: 'none' })
+      ui.showToast(this.data.dataLoadFailedText)
       setTimeout(() => {
         wx.navigateBack()
       }, 1500)
@@ -228,7 +228,7 @@ Page({
     const user = app?.globalData?.user
     const isVerified = !!(user && (user.isAuthed || user.phone))
     if (!isVerified) {
-      wx.showToast({ title: this.data.pleaseLoginText, icon: 'none' })
+      ui.showToast(this.data.pleaseLoginText)
       return
     }
 

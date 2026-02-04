@@ -159,7 +159,7 @@ Page({
 
     } catch (err) {
       console.error('获取简历列表失败:', err)
-      if (!silent) wx.showToast({ title: '加载失败', icon: 'none' })
+      if (!silent) ui.showToast('加载失败')
       this.setData({ loading: false })
     }
   },
@@ -268,11 +268,7 @@ Page({
                      // 提示用户稍等
                      setTimeout(() => {
                          wx.hideLoading();
-                         wx.showToast({ 
-                             title: '文件已在云端重新渲染中，请稍候', 
-                             icon: 'none', 
-                             duration: 4000 
-                         });
+                         ui.showToast('文件已在云端重新渲染中，请稍候')
                      }, 500);
                  } else {
                      throw new Error(restoreRes.message || 'Restoration failed');

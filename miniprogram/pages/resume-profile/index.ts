@@ -467,11 +467,11 @@ Page({
                 const payload: any = { photo: data.url }
                 await this.saveResumeProfile(payload)
               } else {
-                wx.showToast({ title: uiStrings.uploadFailed, icon: 'none' })
+                ui.showToast(uiStrings.uploadFailed)
               }
             },
             fail: () => {
-              wx.showToast({ title: uiStrings.uploadFailed, icon: 'none' })
+              ui.showToast(uiStrings.uploadFailed)
             },
             complete: () => {
               wx.hideLoading()
@@ -479,7 +479,7 @@ Page({
           })
         } catch (e) {
           wx.hideLoading()
-          wx.showToast({ title: uiStrings.uploadFailed, icon: 'none' })
+          ui.showToast(uiStrings.uploadFailed)
         }
       }
     })
@@ -595,7 +595,7 @@ Page({
     const isEnglish = currentLang === 'English'
 
     if (!basicInfoForm.name.trim()) {
-      wx.showToast({ title: uiStrings.namePlaceholder, icon: 'none' })
+      ui.showToast(uiStrings.namePlaceholder)
       return
     }
 
@@ -790,11 +790,11 @@ Page({
     // 校验：开始时间不能晚于结束时间
     if (otherDate && dateStr !== this.data.ui.toPresent && otherDate !== this.data.ui.toPresent) {
       if (actualField === 'startDate' && dateStr > otherDate) {
-        wx.showToast({ title: '开始时间不能晚于结束时间', icon: 'none' })
+        ui.showToast('开始时间不能晚于结束时间')
         return
       }
       if (actualField === 'endDate' && dateStr < otherDate) {
-        wx.showToast({ title: '结束时间不能早于开始时间', icon: 'none' })
+        ui.showToast('结束时间不能早于开始时间')
         return
       }
     }
@@ -1010,25 +1010,25 @@ Page({
     const { workForm, editingWorkIndex, workExperiences, ui: uiStrings, currentLang, en } = this.data
     
     if (!workForm.company.trim()) {
-      wx.showToast({ title: uiStrings.companyPlaceholder || '请输入公司名称', icon: 'none' })
+      ui.showToast(uiStrings.companyPlaceholder || '请输入公司名称')
       return
     }
     if (!workForm.jobTitle.trim()) {
-      wx.showToast({ title: uiStrings.jobTitlePlaceholder || '请输入职位名称', icon: 'none' })
+      ui.showToast(uiStrings.jobTitlePlaceholder || '请输入职位名称')
       return
     }
     if (!workForm.startDate) {
-      wx.showToast({ title: '请选择开始时间', icon: 'none' })
+      ui.showToast('请选择开始时间')
       return
     }
     if (!workForm.endDate) {
-      wx.showToast({ title: '请选择结束时间', icon: 'none' })
+      ui.showToast('请选择结束时间')
       return
     }
 
     if (workForm.startDate && workForm.endDate && workForm.startDate !== uiStrings.toPresent && workForm.endDate !== uiStrings.toPresent) {
       if (workForm.startDate > workForm.endDate) {
-        wx.showToast({ title: '开始时间不能晚于结束时间', icon: 'none' })
+        ui.showToast('开始时间不能晚于结束时间')
         return
       }
     }
@@ -1097,30 +1097,30 @@ Page({
     
     // 全字段校验
     if (!eduForm.school.trim()) {
-      wx.showToast({ title: uiStrings.schoolPlaceholder || '请输入学校', icon: 'none' })
+      ui.showToast(uiStrings.schoolPlaceholder || '请输入学校')
       return
     }
     if (!eduForm.degree) {
-      wx.showToast({ title: uiStrings.degreePlaceholder || '请选择学历', icon: 'none' })
+      ui.showToast(uiStrings.degreePlaceholder || '请选择学历')
       return
     }
     if (!eduForm.major.trim()) {
-      wx.showToast({ title: uiStrings.majorPlaceholder || '请输入专业', icon: 'none' })
+      ui.showToast(uiStrings.majorPlaceholder || '请输入专业')
       return
     }
     if (!eduForm.startDate) {
-      wx.showToast({ title: '请选择开始时间', icon: 'none' })
+      ui.showToast('请选择开始时间')
       return
     }
     if (!eduForm.endDate) {
-      wx.showToast({ title: '请选择结束时间', icon: 'none' })
+      ui.showToast('请选择结束时间')
       return
     }
 
     // 时间逻辑校验
     if (eduForm.startDate && eduForm.endDate && eduForm.startDate !== uiStrings.toPresent && eduForm.endDate !== uiStrings.toPresent) {
       if (eduForm.startDate > eduForm.endDate) {
-        wx.showToast({ title: '开始时间不能晚于结束时间', icon: 'none' })
+        ui.showToast('开始时间不能晚于结束时间')
         return
       }
     }

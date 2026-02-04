@@ -546,7 +546,7 @@ Page({
             }
         }
         catch (err) {
-            wx.showToast({ title: this.data.ui.loadInviteCodeFailed, icon: 'none' })
+            ui.showToast(this.data.ui.loadInviteCodeFailed)
         }
     },
 
@@ -557,7 +557,7 @@ Page({
         wx.setClipboardData({
             data: myInviteCode,
             success: () => {
-                wx.showToast({ title: ui.inviteCodeCopied, icon: 'success' })
+                ui.showToast(ui.inviteCodeCopied)
             }
         })
     },
@@ -592,7 +592,7 @@ Page({
     async onApplyInviteCode() {
         const { inputInviteCode, ui } = this.data
         if (!inputInviteCode || inputInviteCode.length !== 8) {
-            wx.showToast({ title: ui.inviteCodeInvalid, icon: 'none' })
+            ui.showToast(ui.inviteCodeInvalid)
             return
         }
 
@@ -601,16 +601,16 @@ Page({
 
             const resultData = result?.result as any
             if (resultData?.success) {
-                wx.showToast({ title: ui.inviteCodeApplied, icon: 'success' })
+                ui.showToast(ui.inviteCodeApplied)
                 this.setData({ inputInviteCode: '' })
                 this.closeInviteSheet()
             }
             else {
-                wx.showToast({ title: resultData?.message || ui.applyFailed, icon: 'none' })
+                ui.showToast(resultData?.message || ui.applyFailed)
             }
         }
         catch (err) {
-            wx.showToast({ title: ui.applyFailed, icon: 'none' })
+            ui.showToast(ui.applyFailed)
         }
     },
 
@@ -682,13 +682,13 @@ Page({
                         }
                     } catch (e) {
                         ui.hideLoading()
-                        wx.showToast({ title: uiStrings.uploadFailed, icon: 'none' })
+                        ui.showToast(uiStrings.uploadFailed)
                     }
                 },
                 fail: (err) => {
                     console.error('Upload failed:', err)
                     ui.hideLoading()
-                    wx.showToast({ title: uiStrings.uploadFailed, icon: 'none' })
+                    ui.showToast(uiStrings.uploadFailed)
                 }
             })
         }
@@ -698,7 +698,7 @@ Page({
                 return
             }
             ui.hideLoading()
-            wx.showToast({ title: uiStrings.uploadFailed, icon: 'none' })
+            ui.showToast(uiStrings.uploadFailed)
         }
     },
 
@@ -734,7 +734,7 @@ Page({
         const trimmedNickname = (newNickname || '').trim()
         
         if (trimmedNickname.length === 0) {
-            wx.showToast({ title: uiStrings.nicknameEmpty, icon: 'none' })
+            ui.showToast(uiStrings.nicknameEmpty)
             return
         }
 
@@ -749,7 +749,7 @@ Page({
         }
 
         if (totalLen > 20) {
-            wx.showToast({ title: uiStrings.nicknameTooLong, icon: 'none' })
+            ui.showToast(uiStrings.nicknameTooLong)
             return
         }
 
@@ -928,7 +928,6 @@ Page({
 
         // 统一调用真实的支付流程
         await this.executePaymentFlow(selectedSchemeId)
-        this.closeMemberHub()
     },
 
     closeMemberHub() {
@@ -1091,15 +1090,17 @@ Page({
             ui.hideLoading()
             console.error('[Payment] Error:', err)
             
-            if (err.errMsg && err.errMsg.includes('requestPayment:fail cancel')) {
-                ui.showError(uiStrings.payCancelled)
+            if (err.errMsg && (err.errMsg.includes('requestPayment:fail cancel') || err.errMsg.includes('cancel'))) {
+                // 温和提示用户再次重试，且不关闭弹窗
+                ui.showToast(this.data.appLanguage.includes('Chinese') ? '支付已取消，如有需要请再次重试' : 'Payment cancelled. Please try again if needed.')
                 return
             }
 
             wx.showModal({
                 title: uiStrings.payPrompt,
-                content: err.message || uiStrings.payError,
-                showCancel: false
+                content: (err.message || err.errMsg || uiStrings.payError) + (err.order_id ? ` (ID: ${err.order_id})` : ''),
+                showCancel: false,
+                confirmText: uiStrings.confirm
             })
         }
     },
@@ -1152,7 +1153,7 @@ Page({
                             try {
                                 await updatePhoneNumber(phone)
                                 this.syncUserFromApp()
-                                wx.showToast({ title: uiStrings.phoneUpdateSuccess, icon: 'success' })
+                                ui.showToast(uiStrings.phoneUpdateSuccess)
                             } catch (err: any) {
                                 this.handlePhoneUpdateError(err)
                             } finally {
@@ -1170,7 +1171,7 @@ Page({
                 // 如果已经有手机号（理论上按钮已隐藏，但为保险起见保留逻辑）
                 await updatePhoneNumber(phone)
                 this.syncUserFromApp()
-                wx.showToast({ title: uiStrings.phoneUpdateSuccess, icon: 'success' })
+                ui.showToast(uiStrings.phoneUpdateSuccess)
                 this.setData({ phoneAuthBusy: false })
             }
         }
@@ -1184,11 +1185,7 @@ Page({
         const { ui: uiStrings } = this.data
         console.error('[PhoneAuth] phone update error:', err)
         const errorMsg = err?.message || err?.errMsg || uiStrings.phoneUpdateFailed
-        wx.showToast({ 
-            title: errorMsg.length > 10 ? uiStrings.phoneUpdateFailed : errorMsg, 
-            icon: 'none',
-            duration: 2000
-        })
+        ui.showToast(errorMsg.length > 10 ? uiStrings.phoneUpdateFailed : errorMsg)
     },
 
     onResumeProfileTap() {

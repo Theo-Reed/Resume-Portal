@@ -174,7 +174,7 @@ Page({
       const openid = user?.openid
       const isVerified = !!(user && (user.isAuthed || user.phone))
       if (!isVerified || !openid) {
-        wx.showToast({ title: '请先绑定手机号', icon: 'none' })
+        ui.showToast('请先绑定手机号')
         return
       }
 
@@ -201,11 +201,7 @@ Page({
         // 如果没有保存的搜索条件，只显示toast，不弹窗
         if (savedConditions.length === 0) {
           const lang = normalizeLanguage(app?.globalData?.language)
-          wx.showToast({ 
-            title: t('jobs.trySaveSearchHint', lang), 
-            icon: 'none',
-            duration: 2000,
-          })
+          ui.showToast(t('jobs.trySaveSearchHint', lang))
           return
         }
         
@@ -286,7 +282,7 @@ Page({
           }, 50)
         })
       } catch (err) {
-        wx.showToast({ title: '加载失败', icon: 'none' })
+        ui.showToast('加载失败')
       }
     },
 
@@ -345,7 +341,7 @@ Page({
         const restoredConditions = [...this.data.savedSearchConditions]
         restoredConditions[index] = { ...restoredConditions[index], deleting: false, collapsing: false }
         this.setData({ savedSearchConditions: restoredConditions })
-        wx.showToast({ title: '删除失败', icon: 'none' })
+        ui.showToast('删除失败')
       }
     },
 
@@ -369,9 +365,9 @@ Page({
 
               this.setData({ savedSearchConditions: [] })
               this.closeRestoreSheet()
-              wx.showToast({ title: t('jobs.cleared', lang), icon: 'success' })
+              ui.showToast(t('jobs.cleared', lang))
             } catch (err) {
-              wx.showToast({ title: t('jobs.clearFailed', lang), icon: 'none' })
+              ui.showToast(t('jobs.clearFailed', lang))
             }
           }
         },
