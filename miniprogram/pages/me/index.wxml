@@ -45,7 +45,7 @@
           <view class="card-points">
             <view class="points-upper">
               <text class="points-label">{{ui.available}}:</text>
-              <text class="points-current">{{(isMember || totalBalance > 0) ? totalBalance : '-'}}</text>
+              <text class="points-current ui-value-bold">{{(isMember || totalBalance > 0) ? totalBalance : '-'}}</text>
               <text class="points-total">/{{(isMember || totalBalance > 0) ? displayLimit : '--'}}</text>
             </view>
             <view class="points-progress-wrap">
@@ -56,7 +56,7 @@
         <view class="card-bottom">
           <view class="card-validity">
             <text class="val-label">{{isMember ? (ui.memberExpiredDate || 'Expires') : (ui.unlockAIFeatures || 'Unlock AI Power')}}</text>
-            <text class="val-date" wx:if="{{isMember}}">{{expiredDateText}}</text>
+            <text class="val-date ui-value-bold" wx:if="{{isMember}}">{{expiredDateText}}</text>
           </view>
         </view>
       </view>
@@ -99,7 +99,7 @@
           <text class="row-label">{{ui.languageEntry}}</text>
         </view>
         <view class="row-right">
-          <text class="row-value">{{appLanguage === 'Chinese' ? ui.langChinese : (appLanguage === 'AIChinese' ? ui.langAIChinese : (appLanguage === 'English' ? ui.langEnglish : ui.langAIEnglish))}}</text>
+          <text class="row-value ui-value-bold">{{appLanguage === 'Chinese' ? ui.langChinese : (appLanguage === 'AIChinese' ? ui.langAIChinese : (appLanguage === 'English' ? ui.langEnglish : ui.langAIEnglish))}}</text>
           <text class="ui-arrow">❯</text>
         </view>
       </view>
@@ -259,7 +259,7 @@
         </view>
       </view>
 
-      <scroll-view scroll-y class="sheet-body-v3" enhanced="{{true}}" show-scrollbar="{{false}}">
+      <ui-scroll-view scroll-y custom-class="sheet-body-v3">
         <!-- 1. Dashboard: Points & Identity (Clean version without user info) -->
         <view class="dashboard-card tier-{{memberLevel}}">
           <view class="dash-row-top">
@@ -274,12 +274,12 @@
           <view class="dash-balance-row">
              <view class="balance-item">
                 <text class="bal-label">{{ui.available}}</text>
-                <text class="bal-value">{{totalBalance}} / {{displayLimit}}</text>
+                <text class="bal-value ui-value-bold">{{totalBalance}} / {{displayLimit}}</text>
              </view>
              <view class="balance-sep"></view>
              <view class="balance-item align-right">
                 <text class="bal-label">{{ui.memberExpiredDate}}</text>
-                <text class="bal-value small">{{expiredDateText || ui.notActivated}}</text>
+                <text class="bal-value small ui-value-bold">{{expiredDateText || ui.notActivated}}</text>
              </view>
           </view>
         </view>
@@ -291,7 +291,7 @@
            </view>
            
            <!-- Product List (Horizontal) -->
-           <scroll-view scroll-x class="product-scroll-v3" enable-flex enhanced="{{true}}" show-scrollbar="{{false}}">
+           <ui-scroll-view scroll-x custom-class="product-scroll-v3">
               <block wx:for="{{ schemsList || [] }}" wx:key="scheme_id">
                  <view class="prod-card-v3 {{selectedSchemeId === item.scheme_id ? 'selected' : ''}} {{item.type === 'topup' ? 'type-topup' : 'type-plan'}}"
                        bindtap="onSelectScheme" 
@@ -314,7 +314,7 @@
                     <view class="selection-check"></view>
                  </view>
               </block>
-           </scroll-view>
+           </ui-scroll-view>
            
            <!-- Selected Product Details -->
            <view class="selection-detail-box" wx:if="{{selectedScheme}}">
@@ -339,7 +339,7 @@
            </view>
         </view>
         <view class="bottom-spacer"></view>
-      </scroll-view>
+      </ui-scroll-view>
 
       <!-- Sticky Footer: Pay Action -->
       <view class="sheet-footer-v3">

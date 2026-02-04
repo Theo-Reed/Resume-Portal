@@ -4,6 +4,7 @@ page {
   /* 核心颜色 Core Colors */
   --primary: #2E5FE9;
   --primary-dark: #1D4ED8;
+  --primary-mid: #3B82F6; /* 中间蓝：介于深蓝和浅蓝之间 */
   --primary-light: #F0F7FF;
   
   /* 基础背景与文字 Neutral Colors */
@@ -317,5 +318,12 @@ page {
   background: var(--divider);
   transform: scaleY(0.5);
   transform-origin: bottom;
+}
+
+/* 5. 统一“关键值”样式 - 用于数字、选项结果等深色加粗文本 */
+.ui-value-bold {
+  font-weight: 500;
+  color: #475569;
+  font-family: -apple-system, SF UI Text, Arial, sans-serif;
 }
 

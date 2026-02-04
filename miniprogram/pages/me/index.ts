@@ -15,7 +15,8 @@ Page({
         userInfo: null as { avatar: string, nickName: string } | null,
         isInitialLoading: true,
         phoneAuthBusy: false,
-
+        isLogin: false, // 是否已登录
+        isBeta: false, // 是否测试环境
 
         showLanguageSheet: false,
         languageSheetOpen: false,
@@ -222,6 +223,7 @@ Page({
         const systemConfig = app?.globalData?.systemConfig || { isBeta: true }
 
         this.setData({
+            isLogin: !!user,
             isVerified,
             isMember,
             memberLevel,

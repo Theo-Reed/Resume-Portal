@@ -65,20 +65,9 @@
     width: 140rpx;
     height: 140rpx;
     border-radius: 50%;
-    border: 6rpx solid #fff;
+    border: 6rpx solid var(--primary); /* 使用项目主色蓝 */
     box-shadow: 0 8rpx 24rpx rgb(15 23 42 / 8%);
     transition: border-color 0.3s ease;
-}
-
-.member-color-3 .avatar-large,
-.member-color-4 .avatar-large {
-    border-color: var(--primary-dark);
-    box-shadow: 0 0 20rpx rgb(29 78 216 / 15%);
-}
-
-.member-color-1 .avatar-large,
-.member-color-2 .avatar-large {
-    border-color: #5182f6;
 }
 
 .avatar-placeholder-large {
@@ -91,23 +80,19 @@
     bottom: 0;
     width: 44rpx;
     height: 44rpx;
-    background: #5182f6;
+    background: #fff;
     border-radius: 50%;
-    border: 4rpx solid #fff;
+    border: 4rpx solid var(--primary); /* 使用项目主色蓝 */
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.3s ease;
-}
-
-.member-color-3 .edit-badge {
-    background: var(--primary-dark);
+    transition: all 0.3s ease;
 }
 
 .edit-badge-icon {
-    width: 47%;
-    height: 47%;
-    background: #fff;
+    width: 45%;
+    height: 45%;
+    background: var(--primary); /* 使用项目主色蓝 */
     border-radius: 50%;
 }
 
@@ -289,8 +274,7 @@
 
 .points-current {
     font-size: 32rpx;
-    font-weight: 800;
-    color: var(--primary);
+    /* weight/color 由 .ui-value-bold 提供 */
 }
 
 .points-total {
@@ -301,14 +285,14 @@
 .points-progress-wrap {
     width: 100%;
     height: 8rpx;
-    background: #f1f5f9;
+    background: var(--border); /* 使用浅灰色变量 */
     border-radius: 100rpx;
     overflow: hidden;
 }
 
 .points-progress-inner {
     height: 100%;
-    background: var(--grad-primary);
+    background: var(--primary); /* 使用项目主色蓝 */
     border-radius: 100rpx;
     transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
@@ -332,8 +316,7 @@
 
 .val-date {
     font-size: 26rpx;
-    font-weight: 600;
-    color: var(--text-main);
+    /* 应用 UI 统一样式 */
 }
 
 /* --- 3. Action List Group --- */
@@ -456,8 +439,7 @@
 
 .setting-row .row-value {
     font-size: 26rpx;
-    color: var(--text-sub);
-    font-weight: 500;
+    /* 样式由 .ui-value-bold 提供 */
 }
 
 .row-hover {
@@ -1469,8 +1451,6 @@
 }
 .points-current {
     font-size: 29rpx;
-    font-weight: 600;
-    color: #5a687c;
 }
 .points-progress-wrap {
     width: 100%;
@@ -1552,9 +1532,9 @@
 .balance-item.align-right { align-items: flex-end; }
 
 .bal-label { font-size: 20rpx; color: var(--text-holder); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5rpx; margin-bottom: 8rpx;}
-.bal-value { font-size: 40rpx; font-weight: 900; color: var(--primary); font-family: 'DIN Alternate'; }
+.bal-value { font-size: 40rpx; font-family: 'DIN Alternate'; }
 .bal-unit-v3 { font-size: 22rpx; margin-left: 6rpx; color: var(--text-holder); font-weight: 700; }
-.bal-value.small { font-size: 28rpx; font-weight: 700; }
+.bal-value.small { font-size: 28rpx; }
 
 /* 2. Shop Section */
 .shop-section {
@@ -1735,4 +1715,19 @@
     align-self: center;
 }
 
-.pay-btn-v3:active { transform: scale(0.96); }
+.pay-btn-v3 {
+    height: 88rpx;
+    background: var(--primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 64rpx;
+    border-radius: 100rpx;
+    font-size: 30rpx;
+    font-weight: 700;
+    box-shadow: 0 12rpx 30rpx rgba(46, 95, 233, 0.2);
+    transition: all 0.2s ease;
+}
+
+.pay-btn-v3:active { transform: scale(0.96); opacity: 0.9; }
