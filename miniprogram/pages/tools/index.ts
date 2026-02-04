@@ -127,15 +127,14 @@ Page({
     this.setData({ jdText: e.detail.value })
   },
 
-  async onOptimizeKeywords() {
+  async onOptimizeKeywords(e?: any) {
     if (!this.data.canSubmit) return
 
     const { title, company, content, experience } = this.data.targetJob
     const app = getApp<IAppOption>()
+    const detail = e?.detail || {}
     
     try {
-      ui.showLoading('正在保存岗位信息...')
-      
       // 1. 保存自定义岗位
       const saveRes: any = await callApi('saveCustomJob', {
         title,
@@ -173,7 +172,6 @@ Page({
       }
 
       // 3. 调用生成接口
-      // [Optimization] Removed clunky loading before API call
       const genRes: any = await callApi('generate', {
         jobId: jobId,
         openid: user.openid,
@@ -183,8 +181,9 @@ Page({
       })
 
       if (genRes.success) {
-        ui.hideLoading()
-        
+        // 通知抽屉成功
+        if (detail.complete) detail.complete()
+
         wx.showModal({
           title: isChineseEnv ? '生成任务已提交' : 'Task Submitted',
           content: isChineseEnv 
@@ -201,25 +200,20 @@ Page({
           }
         })
         
-        // 成功后关闭当前抽屉并清空
-        this.closeJdDrawer()
+        // 成功后清空
         this.setData({
-          targetJob: { title: '', content: '', experience: '' },
+          showJdDrawer: false,
+          targetJob: { title: '', company: '', content: '', experience: '' },
           canSubmit: false
         })
-
-        // 跳转到列表页
-        setTimeout(() => {
-          wx.navigateTo({
-            url: '/pages/generated-resumes/index'
-          })
-        }, 1200)
       } else {
          throw new Error(genRes.message || '提交失败')
       }
 
     } catch (err: any) {
-      ui.hideLoading()
+      // 通知抽屉失败
+      if (detail.fail) detail.fail()
+      
       console.error('生成任务异常:', err)
 
       // Handle 409 Processing Error
@@ -238,7 +232,7 @@ Page({
         return;
       }
 
-      ui.showError(err.message || '服务异常，请重试')
+      ui.showToast(err.message || '保存失败', 'none')
     }
   },
 

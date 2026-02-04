@@ -45,14 +45,16 @@
 
   </view>
 
-  <!-- Bottom Drawer for Text/Screenshot Resume Generation -->
-  <view wx:if="{{showJdDrawer}}" class="drawer-mask" bindtap="closeJdDrawer"></view>
-  <view class="drawer-container {{showJdDrawer ? 'drawer-show' : ''}}">
-    <view class="drawer-header">
-      <text class="drawer-title">{{drawerTitle}}</text>
-      <view class="close-btn" bindtap="closeJdDrawer">×</view>
-    </view>
-    
+  <!-- Unified Drawer for Text/Screenshot Resume Generation -->
+  <ui-drawer 
+    id="jdDrawer" 
+    show="{{showJdDrawer}}" 
+    title="{{drawerTitle}}" 
+    confirmText="生成"
+    confirmActive="{{canSubmit}}"
+    bind:close="closeJdDrawer"
+    bind:confirm="onOptimizeKeywords"
+  >
     <view class="drawer-body">
       <view class="form-item">
         <text class="label">岗位标题</text>
@@ -96,14 +98,13 @@
           class="textarea" 
           placeholder="请粘贴完整的职位描述（JD）..." 
           placeholder-class="placeholder"
+          style="min-height: 200rpx;"
           value="{{targetJob.content}}" 
           bindinput="onJdFieldChange" 
           data-field="content"
           maxlength="5000"
         ></textarea>
       </view>
-
-      <view class="submit-btn {{canSubmit ? 'active' : ''}}" bindtap="onOptimizeKeywords">开始生成</view>
     </view>
-  </view>
+  </ui-drawer>
 </view>
