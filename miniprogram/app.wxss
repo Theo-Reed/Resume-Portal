@@ -8,6 +8,7 @@ page {
   
   /* 基础背景与文字 Neutral Colors */
   --bg-page: #F8FAFC;
+  --bg-main: #F8FAFC;
   --bg-card: #FFF;
   --text-main: #1E293B;
   --text-sub: #64748B;
@@ -22,16 +23,16 @@ page {
   --warning: #F59E0B;
   --danger: #EF4444;
 
+  /* 各种渐变 Gradients */
+  --grad-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  --grad-premium: linear-gradient(135deg, #4F7FFF 0%, var(--primary-dark) 100%);
+
   /* 圆角与阴影 Borders & Shadows */
   --radius-lg: 40rpx;
   --radius-md: 24rpx;
   --radius-sm: 12rpx;
   --shadow-sm: 0 4rpx 6rpx -1rpx rgb(0 0 0 / 5%);
   --shadow-md: 0 10rpx 15rpx -3rpx rgb(0 0 0 / 10%);
-
-  /* 渐变色 Gradients (Industrial Style) */
-  --grad-primary: linear-gradient(135deg, #60a5fa 0%, var(--primary) 100%);
-  --grad-premium: linear-gradient(135deg, #3b82f6 0%, var(--primary) 45%, var(--primary-dark) 100%);
 }
 
 /**

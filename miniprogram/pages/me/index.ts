@@ -253,17 +253,9 @@ Page({
 
         const uiStrings = UIConfig.buildPageUI(lang, this.data)
 
-        // Calculate current language label for the card description
-        let languageLabel = ''
-        if (lang === 'Chinese') languageLabel = uiStrings.langChinese
-        else if (lang === 'English') languageLabel = uiStrings.langEnglish
-        else if (lang === 'AIChinese') languageLabel = uiStrings.langAIChinese
-        else if (lang === 'AIEnglish') languageLabel = uiStrings.langAIEnglish
-
         this.setData({
             appLanguage: lang,
             ui: uiStrings,
-            languageLabel
         })
 
         // intentionally do not set navigationBarTitleText

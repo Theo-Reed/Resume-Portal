@@ -1,20 +1,10 @@
 <button 
-  class="ui-btn {{type ? 'ui-btn-' + type : 'ui-btn-primary'}} {{size ? 'ui-btn-' + size : 'ui-btn-md'}} {{loading ? 'ui-btn-loading' : ''}} {{disabled ? 'ui-btn-disabled' : ''}} custom-class"
-  hover-class="{{disabled || loading ? 'none' : 'ui-btn-hover'}}"
-  bindtap="onTap"
-  disabled="{{disabled || loading}}"
+  class="ui-button cu-btn {{type}} {{size}} {{round?'round':''}} {{shadow?'shadow':''}} {{block?'block':''}} {{disabled?'disabled':''}} custom-class" 
+  bindtap="onTap" 
+  disabled="{{disabled}}"
   loading="{{loading}}"
-  form-type="{{formType}}"
   open-type="{{openType}}"
-  bindgetphonenumber="onGetPhoneNumber"
-  bindchooseavatar="onChooseAvatar"
-  bindcontact="onContact"
-  bindopensetting="onOpenSetting"
-  bindlaunchapp="onLaunchApp"
-  binderror="onError"
+  form-type="{{formType}}"
 >
-  <view class="ui-btn-inner">
-    <slot wx:if="{{!loading}}"></slot>
-    <text wx:if="{{loading}}" class="loading-text">{{loadingText || '处理中...'}}</text>
-  </view>
+  <slot></slot>
 </button>

@@ -64,187 +64,207 @@
 
     <!-- 3. 核心功能列表 Action List Group -->
     <view class="action-list-group">
-      <ui-card
-        icon="📄"
-        iconBg="blue"
-        title="{{ui.resumeProfileEntry}}"
-        desc="{{ui.resumeProfileSubtitle}}"
-        bindtap="onResumeProfileTap"
-        showArrow="{{true}}"
-      />
+      <view class="action-row" bindtap="onResumeProfileTap" hover-class="row-hover">
+        <view class="row-left">
+          <view class="icon-circle blue-bg">📄</view>
+          <view class="row-text">
+            <text class="row-title">{{ui.resumeProfileEntry}}</text>
+            <text class="row-subtitle">{{ui.resumeProfileSubtitle}}</text>
+          </view>
+        </view>
+        <view class="row-right">
+          <text class="ui-arrow">❯</text>
+        </view>
+      </view>
 
-      <ui-card
-        icon="✨"
-        iconBg="green"
-        title="{{ui.generatedResumesEntry}}"
-        desc="{{ui.generatedResumesSubtitle}}"
-        bindtap="onGeneratedResumesTap"
-        showArrow="{{true}}"
-      />
+      <view class="action-row" bindtap="onGeneratedResumesTap" hover-class="row-hover">
+        <view class="row-left">
+          <view class="icon-circle green-bg">✨</view>
+          <view class="row-text">
+            <text class="row-title">{{ui.generatedResumesEntry}}</text>
+            <text class="row-subtitle">{{ui.generatedResumesSubtitle}}</text>
+          </view>
+        </view>
+        <view class="row-right">
+          <text class="ui-arrow">❯</text>
+        </view>
+      </view>
     </view>
 
-    <!-- 4. 设置列表 Settings List -->
+    <!-- 4. 设置列表 Settings List (Individual Cards for better focus) -->
     <view class="settings-group">
-      <ui-card
-        icon="🌍"
-        iconBg="none"
-        title="{{ui.languageEntry}}"
-        bindtap="onLanguageTap"
-        showArrow="{{true}}"
-      >
-        <view slot="right" style="font-size: 26rpx; color: #64748b;">
-          {{languageLabel}}
+      <view class="setting-row" bindtap="onLanguageTap" hover-class="row-hover">
+        <view class="row-left">
+          <view class="row-icon-box"><text>🌍</text></view>
+          <text class="row-label">{{ui.languageEntry}}</text>
         </view>
-      </ui-card>
+        <view class="row-right">
+          <text class="row-value">{{appLanguage === 'Chinese' ? ui.langChinese : (appLanguage === 'AIChinese' ? ui.langAIChinese : (appLanguage === 'English' ? ui.langEnglish : ui.langAIEnglish))}}</text>
+          <text class="ui-arrow">❯</text>
+        </view>
+      </view>
+    </view>
 
-      <ui-card
-        wx:if="{{isBeta}}"
-        icon="✉️"
-        iconBg="none"
-        title="{{ui.inviteCodeEntry}}"
-        bindtap="onInviteTap"
-        showArrow="{{true}}"
-      />
+    <view class="settings-group" wx:if="{{isBeta}}">
+      <view class="setting-row" bindtap="onInviteTap" hover-class="row-hover">
+        <view class="row-left">
+          <view class="row-icon-box"><text>✉️</text></view>
+          <text class="row-label">{{ui.inviteCodeEntry}}</text>
+        </view>
+        <view class="row-right">
+          <text class="ui-arrow">❯</text>
+        </view>
+      </view>
+    </view>
 
-      <ui-card
-        icon="💬"
-        iconBg="none"
-        title="{{ui.contactAuthor}}"
-        bindtap="onContactAuthor"
-        showArrow="{{true}}"
-      />
+    <view class="settings-group">
+      <view class="setting-row" bindtap="onContactAuthor" hover-class="row-hover">
+        <view class="row-left">
+          <view class="row-icon-box"><text style="font-size: 28rpx;">💬</text></view>
+          <text class="row-label">{{ui.contactAuthor}}</text>
+        </view>
+        <view class="row-right">
+          <text class="ui-arrow">❯</text>
+        </view>
+      </view>
     </view>
 
   </view>
 
-  <!-- Bottom Sheets & Modals -->
-  <ui-drawer title="{{ui.languageEntry}}" show="{{showLanguageSheet}}" bindclose="closeLanguageSheet" showFooter="{{true}}">
-    <view slot="footer">
-      <ui-button bindtap="closeLanguageSheet">{{ui.confirm}}</ui-button>
-    </view>
-    <view class="bottom-sheet-content">
-      <!-- Standard Modes -->
-      <view class="mode-section-title">{{ui.basicMode}}</view>
-      <view class="mode-card {{appLanguage === 'Chinese' ? 'mode-card-active' : ''}}"
-            data-value="Chinese" bindtap="onLanguageSelect">
-        <view class="mode-card-main">
-          <text class="mode-name">{{ui.langChinese}}</text>
-          <text class="mode-desc">{{ui.langChineseDesc}}</text>
-        </view>
-        <view class="mode-check" wx:if="{{appLanguage === 'Chinese'}}">
-          <icon type="success_no_circle" size="16" color="#1d4ed8"/>
+  <!-- Bottom Sheets & Modals (Rest of the original code) -->
+  <block wx:if="{{showLanguageSheet}}">
+    <view class="bottom-sheet-mask {{languageSheetOpen ? 'bottom-sheet-mask-open' : ''}}"
+          bindtap="closeLanguageSheet"></view>
+    <view class="bottom-sheet {{languageSheetOpen ? 'bottom-sheet-open' : ''}}">
+      <view class="bottom-sheet-header">
+        <view class="bottom-sheet-header-left"></view>
+        <text class="bottom-sheet-title">{{ui.languageEntry}}</text>
+        <view class="bottom-sheet-header-right">
+          <view class="bottom-sheet-header-btn" bindtap="closeLanguageSheet">{{ui.confirm}}</view>
         </view>
       </view>
-
-      <view class="mode-card {{appLanguage === 'English' ? 'mode-card-active' : ''}}"
-            data-value="English" bindtap="onLanguageSelect">
-        <view class="mode-card-main">
-          <text class="mode-name">{{ui.langEnglish}}</text>
-          <text class="mode-desc">{{ui.langEnglishDesc}}</text>
+      <view class="bottom-sheet-content">
+        <!-- Standard Modes -->
+        <view class="mode-section-title">{{ui.basicMode}}</view>
+        <view class="mode-card {{appLanguage === 'Chinese' ? 'mode-card-active' : ''}}"
+              data-value="Chinese" bindtap="onLanguageSelect">
+          <view class="mode-card-main">
+            <text class="mode-name">{{ui.langChinese}}</text>
+            <text class="mode-desc">{{ui.langChineseDesc}}</text>
+          </view>
+          <view class="mode-check" wx:if="{{appLanguage === 'Chinese'}}">
+            <icon type="success_no_circle" size="16" color="#1d4ed8"/>
+          </view>
         </view>
-        <view class="mode-check" wx:if="{{appLanguage === 'English'}}">
-          <icon type="success_no_circle" size="16" color="#1d4ed8"/>
-        </view>
-      </view>
 
-      <!-- AI VIP Modes -->
-      <view class="mode-section-title mode-section-title-vip">
-        <text>{{ui.aiMode}}</text>
-        <text class="vip-tag-mini">{{ui.vipTag}}</text>
-      </view>
-
-      <view class="mode-card mode-card-vip {{appLanguage === 'AIChinese' ? 'mode-card-active' : ''}}"
-            data-value="AIChinese" bindtap="onLanguageSelect">
-        <view class="mode-card-icon">✨</view>
-        <view class="mode-card-main">
-          <text class="mode-name">{{ui.langAIChinese}}</text>
-          <text class="mode-desc">{{ui.langAIChineseDesc}}</text>
+        <view class="mode-card {{appLanguage === 'English' ? 'mode-card-active' : ''}}"
+              data-value="English" bindtap="onLanguageSelect">
+          <view class="mode-card-main">
+            <text class="mode-name">{{ui.langEnglish}}</text>
+            <text class="mode-desc">{{ui.langEnglishDesc}}</text>
+          </view>
+          <view class="mode-check" wx:if="{{appLanguage === 'English'}}">
+            <icon type="success_no_circle" size="16" color="#1d4ed8"/>
+          </view>
         </view>
-        <view class="mode-check" wx:if="{{appLanguage === 'AIChinese'}}">
-          <icon type="success_no_circle" size="16" color="#1d4ed8"/>
-        </view>
-      </view>
 
-      <view class="mode-card mode-card-vip {{appLanguage === 'AIEnglish' ? 'mode-card-active' : ''}}"
-            data-value="AIEnglish" bindtap="onLanguageSelect">
-        <view class="mode-card-icon">✨</view>
-        <view class="mode-card-main">
-          <text class="mode-name">{{ui.langAIEnglish}}</text>
-          <text class="mode-desc">{{ui.langAIEnglishDesc}}</text>
+        <!-- AI VIP Modes -->
+        <view class="mode-section-title mode-section-title-vip">
+          <text>{{ui.aiMode}}</text>
+          <text class="vip-tag-mini">{{ui.vipTag}}</text>
         </view>
-        <view class="mode-check" wx:if="{{appLanguage === 'AIEnglish'}}">
-          <icon type="success_no_circle" size="16" color="#1d4ed8"/>
+
+        <view class="mode-card mode-card-vip {{appLanguage === 'AIChinese' ? 'mode-card-active' : ''}}"
+              data-value="AIChinese" bindtap="onLanguageSelect">
+          <view class="mode-card-icon">✨</view>
+          <view class="mode-card-main">
+            <text class="mode-name">{{ui.langAIChinese}}</text>
+            <text class="mode-desc">{{ui.langAIChineseDesc}}</text>
+          </view>
+          <view class="mode-check" wx:if="{{appLanguage === 'AIChinese'}}">
+            <icon type="success_no_circle" size="16" color="#1d4ed8"/>
+          </view>
         </view>
-      </view>
-    </view>
-  </ui-drawer>
 
-  <ui-drawer title="邀请好友计划" show="{{showInviteSheet}}" bindclose="closeInviteSheet" showFooter="{{true}}">
-    <view slot="footer">
-      <ui-button bindtap="closeInviteSheet">{{ui.confirm}}</ui-button>
-    </view>
-    <view class="bottom-sheet-content invite-sheet-content-v2">
-      <!-- Hero Section -->
-      <view class="invite-hero">
-        <text class="invite-hero-sub">{{ui.inviteRewardDesc}}</text>
-      </view>
-
-      <!-- My Code Section -->
-      <view class="code-display-card" bindtap="onCopyInviteCode">
-        <text class="code-label">{{ui.myInviteCode}}</text>
-        <view class="code-main-row">
-          <text class="code-text">{{myInviteCode}}</text>
-        </view>
-        <text class="code-hint">{{ui.clickToCopy}}</text>
-      </view>
-
-      <!-- Redemption Input -->
-      <view class="redeem-container">
-        <text class="redeem-title">{{ui.iHaveInviteCode}}</text>
-        <view class="redeem-input-group {{inputInviteCode.length > 0 ? 'has-value' : ''}}">
-          <input class="redeem-input" 
-                 type="text" 
-                 placeholder="{{ui.inputInviteCodePlaceholder}}" 
-                 placeholder-class="redeem-placeholder"
-                 value="{{inputInviteCode}}" 
-                 bindinput="onInviteCodeInput"
-                 maxlength="8" />
-          <view class="redeem-action-btn" bindtap="onApplyInviteCode">
-            <text class="redeem-btn-text">{{ui.redeem}}</text>
+        <view class="mode-card mode-card-vip {{appLanguage === 'AIEnglish' ? 'mode-card-active' : ''}}"
+              data-value="AIEnglish" bindtap="onLanguageSelect">
+          <view class="mode-card-icon">✨</view>
+          <view class="mode-card-main">
+            <text class="mode-name">{{ui.langAIEnglish}}</text>
+            <text class="mode-desc">{{ui.langAIEnglishDesc}}</text>
+          </view>
+          <view class="mode-check" wx:if="{{appLanguage === 'AIEnglish'}}">
+            <icon type="success_no_circle" size="16" color="#1d4ed8"/>
           </view>
         </view>
       </view>
     </view>
-  </ui-drawer>
+  </block>
+
+  <block wx:if="{{showInviteSheet}}">
+    <view class="bottom-sheet-mask {{inviteSheetOpen ? 'bottom-sheet-mask-open' : ''}}"
+          bindtap="closeInviteSheet"></view>
+    <view class="bottom-sheet {{inviteSheetOpen ? 'bottom-sheet-open' : ''}}">
+      <view class="bottom-sheet-header">
+        <view class="bottom-sheet-header-left"></view>
+        <text class="bottom-sheet-title">邀请好友计划</text>
+        <view class="bottom-sheet-header-right">
+          <view class="bottom-sheet-header-btn" bindtap="closeInviteSheet">{{ui.confirm}}</view>
+        </view>
+      </view>
+      <view class="bottom-sheet-content invite-sheet-content-v2">
+        <!-- Hero Section -->
+        <view class="invite-hero">
+          <text class="invite-hero-sub">{{ui.inviteRewardDesc}}</text>
+        </view>
+
+        <!-- My Code Section -->
+        <view class="code-display-card" bindtap="onCopyInviteCode">
+          <text class="code-label">{{ui.myInviteCode}}</text>
+          <view class="code-main-row">
+            <text class="code-text">{{myInviteCode}}</text>
+          </view>
+          <text class="code-hint">{{ui.clickToCopy}}</text>
+        </view>
+
+        <!-- Redemption Input -->
+        <view class="redeem-container">
+          <text class="redeem-title">{{ui.iHaveInviteCode}}</text>
+          <view class="redeem-input-group {{inputInviteCode.length > 0 ? 'has-value' : ''}}">
+            <input class="redeem-input" 
+                   type="text" 
+                   placeholder="{{ui.inputInviteCodePlaceholder}}" 
+                   placeholder-class="redeem-placeholder"
+                   value="{{inputInviteCode}}" 
+                   bindinput="onInviteCodeInput"
+                   maxlength="8" />
+            <view class="redeem-action-btn" bindtap="onApplyInviteCode">
+              <text class="redeem-btn-text">{{ui.redeem}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
 
   <include src="./profile-sheet.wxml"/>
 
   <!-- 会员权益 center 弹窗 Member Hub Sheet (Redesigned) -->
-  <ui-drawer title="{{ui.memberCenter}}" show="{{showMemberHub}}" bindclose="closeMemberHub" showFooter="{{true}}" custom-class="sheet-v3">
-    <view slot="footer">
-      <!-- Sticky Footer: Pay Action -->
-      <view class="sheet-footer-v3">
-         <view class="footer-left">
-            <text class="total-label">{{ui.totalLabel}}</text>
-            <view class="total-price-box">
-                <block wx:if="{{isCalculatingPrice}}">
-                    <view class="price-loading-spinner"></view>
-                </block>
-                <block wx:else>
-                    <text class="total-curr">¥</text>
-                    <text class="old-amt" wx:if="{{isUpgradeOrder}}">{{originalPrice / 100}}</text>
-                    <text class="total-amt">{{finalPrice / 100}}</text>
-                </block>
-            </view>
-         </view>
-         <ui-button type="primary" custom-class="pay-btn-v3" bindtap="onPurchase">
-            {{ui.payNow}}
-         </ui-button>
+  <block wx:if="{{showMemberHub}}">
+    <view class="bottom-sheet-mask {{memberHubOpen ? 'bottom-sheet-mask-open' : ''}}" bindtap="closeMemberHub"></view>
+    <view class="bottom-sheet {{memberHubOpen ? 'bottom-sheet-open' : ''}} sheet-v3">
+      
+      <!-- Header (Common Style) -->
+      <view class="bottom-sheet-header">
+        <view class="bottom-sheet-header-left"></view>
+        <text class="bottom-sheet-title">{{ui.memberCenter}}</text>
+        <view class="bottom-sheet-header-right">
+          <view class="bottom-sheet-header-btn" bindtap="closeMemberHub">{{ui.confirm}}</view>
+        </view>
       </view>
-    </view>
-    
-    <view class="sheet-body-v3">
-      <!-- 1. Dashboard: Points & Identity (Clean version without user info) -->
+
+      <scroll-view scroll-y class="sheet-body-v3" enhanced="{{true}}" show-scrollbar="{{false}}">
+        <!-- 1. Dashboard: Points & Identity (Clean version without user info) -->
         <view class="dashboard-card tier-{{memberLevel}}">
           <view class="dash-row-top">
              <view class="dash-identity-box">
@@ -275,7 +295,7 @@
            </view>
            
            <!-- Product List (Horizontal) -->
-           <ui-scroll-view scrollX="{{true}}" class="product-scroll-v3" enableFlex="{{true}}">
+           <scroll-view scroll-x class="product-scroll-v3" enable-flex enhanced="{{true}}" show-scrollbar="{{false}}">
               <block wx:for="{{ schemsList || [] }}" wx:key="scheme_id">
                  <view class="prod-card-v3 {{selectedSchemeId === item.scheme_id ? 'selected' : ''}} {{item.type === 'topup' ? 'type-topup' : 'type-plan'}}"
                        bindtap="onSelectScheme" 
@@ -298,7 +318,7 @@
                     <view class="selection-check"></view>
                  </view>
               </block>
-           </ui-scroll-view>
+           </scroll-view>
            
            <!-- Selected Product Details -->
            <view class="selection-detail-box" wx:if="{{selectedScheme}}">
@@ -323,23 +343,53 @@
            </view>
         </view>
         <view class="bottom-spacer"></view>
+      </scroll-view>
+
+      <!-- Sticky Footer: Pay Action -->
+      <view class="sheet-footer-v3">
+         <view class="footer-left">
+            <text class="total-label">{{ui.totalLabel}}</text>
+            <view class="total-price-box">
+                <block wx:if="{{isCalculatingPrice}}">
+                    <view class="price-loading-spinner"></view>
+                </block>
+                <block wx:else>
+                    <text class="total-curr">¥</text>
+                    <text class="old-amt" wx:if="{{isUpgradeOrder}}">{{originalPrice / 100}}</text>
+                    <text class="total-amt">{{finalPrice / 100}}</text>
+                </block>
+            </view>
+         </view>
+         <view class="pay-btn-v3" bindtap="onPurchase">
+            {{ui.payNow}}
+         </view>
+      </view>
+
     </view>
-  </ui-drawer>
+  </block>
 
   <!-- 联系作者弹窗 Contact Author Sheet -->
-  <ui-drawer title="{{ui.contactAuthor}}" show="{{showContactSheet}}" bindclose="closeContactSheet" showFooter="{{true}}">
-    <view slot="footer">
-      <ui-button bindtap="closeContactSheet">{{ui.confirm}}</ui-button>
-    </view>
-    <view class="bottom-sheet-content author-sheet-content">
-      <view class="author-sheet-body">
-        <text class="author-slogan">{{ui.authorWechatSlogan}}</text>
-        <view class="qr-code-container-sheet">
-          <image class="qr-code-image-sheet" src="/assets/contact-info.JPG" mode="widthFix" show-menu-by-longpress="{{true}}" />
+  <block wx:if="{{showContactSheet}}">
+    <view class="bottom-sheet-mask {{contactSheetOpen ? 'bottom-sheet-mask-open' : ''}}"
+          bindtap="closeContactSheet"></view>
+    <view class="bottom-sheet {{contactSheetOpen ? 'bottom-sheet-open' : ''}}">
+      <view class="bottom-sheet-header">
+        <view class="bottom-sheet-header-left"></view>
+        <text class="bottom-sheet-title">{{ui.contactAuthor}}</text>
+        <view class="bottom-sheet-header-right">
+          <view class="bottom-sheet-header-btn" bindtap="closeContactSheet">{{ui.confirm}}</view>
         </view>
-        <text class="qr-hint">{{ui.qrHint}}</text>
+      </view>
+      <view class="bottom-sheet-content author-sheet-content">
+        <view class="author-sheet-body">
+          <text class="author-slogan">{{ui.authorWechatSlogan}}</text>
+          <view class="qr-code-container-sheet">
+            <image class="qr-code-image-sheet" src="/assets/contact-info.JPG" mode="widthFix" show-menu-by-longpress="{{true}}" />
+          </view>
+          <text class="qr-hint">{{ui.qrHint}}</text>
+        </view>
       </view>
     </view>
-  </ui-drawer>
-</block>
+  </block>
+  </block>
 </view>

@@ -130,6 +130,11 @@
     gap: 4rpx;
 }
 
+.user-subtext-wrapper .ui-arrow {
+    font-size: 20rpx;
+    margin-left: 4rpx;
+    color: #cbd5e1;
+}
 
 .user-subtext {
     font-size: 26rpx;
@@ -192,261 +197,163 @@
     align-items: flex-start;
 }
 
-.vip-expiry-date {
-    font-size: 22rpx;
-    color: var(--text-holder);
-    margin-top: 8rpx;
-    opacity: 0.8;
-}
-
-.vip-card-body {
-    margin-top: 20rpx;
-    flex: 1;
-}
-
-.vip-status-display {
-    display: flex;
-    flex-direction: column;
-    gap: 16rpx;
-}
-
-.vip-info-row {
-    display: flex;
-    align-items: center;
-    background: rgb(255 255 255 / 15%);
-    padding: 10rpx 20rpx;
-    border-radius: 12rpx;
-    width: fit-content;
-    border: 1rpx solid rgb(255 255 255 / 10%);
-}
-
-/* 适配普通用户或低等级会员 */
-.vip-benefit-card.vip-level-0 .vip-info-row,
-.vip-benefit-card.vip-level-1 .vip-info-row {
-    background: rgb(46 95 233 / 5%);
-    border-color: rgb(46 95 233 / 10%);
-}
-
-.info-item {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.info-sep {
-    width: 1rpx;
-    height: 32rpx;
-    background: rgb(255 255 255 / 30%);
-    margin: 0 20rpx;
-}
-
-.vip-benefit-card.vip-level-0 .info-sep,
-.vip-benefit-card.vip-level-1 .info-sep {
-    background: rgb(46 95 233 / 20%);
-}
-
-.info-label {
-    font-size: 18rpx;
-    color: rgb(255 255 255 / 70%);
-    font-weight: 500;
-    margin-bottom: 2rpx;
-}
-
-.vip-benefit-card.vip-level-0 .info-label,
-.vip-benefit-card.vip-level-1 .info-label {
-    color: var(--text-sub);
-}
-
-.info-value {
-    font-size: 24rpx;
-    color: #fff;
-    font-weight: 800;
-}
-
-.vip-benefit-card.vip-level-0 .info-value,
-.vip-benefit-card.vip-level-1 .info-value {
-    color: var(--primary);
-}
-
-.status-info-box {
-    display: flex;
-    gap: 48rpx;
-    margin-top: 12rpx;
-    padding-top: 24rpx;
-    border-top: 1rpx solid #f1f5f9;
+/* --- 2. VIP Card V3 (Redesigned) --- */
+.vip-card-v3 {
+    margin: 32rpx 0;
+    height: 280rpx;
+    border-radius: 32rpx;
     position: relative;
-    z-index: 1;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 10rpx 30rpx rgb(46 95 233 / 6%);
+    border: 1rpx solid rgb(226 232 240 / 80%);
+    transition: all 0.2s ease;
 }
 
-.status-data-item {
+.vip-card-v3:active {
+    transform: scale(0.985);
+}
+
+.vip-card-v3.level-1,
+.vip-card-v3.level-2,
+.vip-card-v3.level-3,
+.vip-card-v3.level-4 { 
+    background: linear-gradient(135deg, #fff 0%, #f8fbff 100%);
+    border-color: rgb(46 95 233 / 12%);
+}
+
+.card-glow {
+    position: absolute;
+    top: -40%;
+    right: -10%;
+    width: 350rpx;
+    height: 350rpx;
+    background: radial-gradient(circle, rgb(46 95 233 / 6%) 0%, transparent 70%); 
+    pointer-events: none;
+    filter: blur(40rpx);
+}
+
+.card-content {
+    position: relative;
+    z-index: 2;
+    padding: 36rpx;
+    height: 100%;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
 }
 
-.data-label {
-    font-size: 20rpx;
-    color: var(--text-holder);
-    margin-bottom: 4rpx;
-    font-weight: 500;
-}
-
-.data-value {
-    font-size: 30rpx;
-    font-weight: 800;
-    color: var(--text-main);
-}
-
-/* 允许根据背景色微调（如果以后背景变深） */
-.tier-3 .data-value { color: var(--text-main); }
-.tier-2 .data-value { color: var(--text-main); }
-.tier-1 .data-value { color: var(--primary); }
-
-.vip-card-footer {
+.card-top {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-top: 28rpx;
+    align-items: flex-start;
 }
 
-.upgrade-guide-box {
-    background: rgb(46 95 233 / 6%);
-    padding: 12rpx 20rpx;
-    border-radius: 12rpx;
-    border: 1rpx dashed rgb(46 95 233 / 30%);
-}
-
-.upgrade-text {
-    font-size: 22rpx;
-    color: var(--primary);
-    font-weight: 600;
-}
-
-.vip-title-row {
+.card-badge-wrap {
     display: flex;
     align-items: center;
     gap: 12rpx;
+    background: #f1f5f9;
+    padding: 10rpx 28rpx;
+    border-radius: 100rpx;
+    border: 1rpx solid #e2e8f0;
 }
 
-.vip-identity-title {
-    font-size: 36rpx;
-    font-weight: 800;
-    color: var(--text-main);
-}
-
-.vip-badge-icon {
-    width: 36rpx;
-    height: 36rpx;
-    margin-left: 12rpx;
-    display: block;
-    mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z' fill='currentColor'/%3E%3C/svg%3E");
-    mask-size: contain;
-    mask-repeat: no-repeat;
-    mask-position: center;
-}
-
-/* 1. Trial Star: Solid Theme Blue */
-.badge-level-1 {
-    background: var(--primary);
-}
-
-/* 2. Member Star: Theme Blue Gradient */
-.badge-level-2 {
-    background: var(--grad-primary);
-}
-
-/* 3. Premium Star: Dazzling Blue Gradient + Glow */
-.badge-level-3 {
-    background: var(--grad-premium);
-    box-shadow: 0 0 12rpx rgb(46 95 233 / 40%);
-}
-
-.vip-status-tag {
-    font-size: 18rpx;
-    font-weight: 800;
-    color: #fff;
-    padding: 4rpx 12rpx;
-    border-radius: 8rpx;
+.vip-name {
+    font-size: 24rpx;
+    font-weight: 700;
+    color: #475569;
     letter-spacing: 1rpx;
 }
 
-.tag-level-1 { background: var(--primary); }
-.tag-level-2 { background: var(--primary-dark); }
-.tag-level-3 { background: linear-gradient(to right, var(--primary), var(--primary-dark)); }
-
-.vip-desc {
-    font-size: 24rpx;
-    color: var(--text-sub);
-    margin-top: 8rpx;
-    display: block;
+.card-points {
+    display: flex;
+    flex-direction: column;
+    width: 260rpx;
 }
 
-.vip-btn {
-    font-size: 24rpx;
-    font-weight: 600;
-    color: #fff;
-    background: var(--primary);
-    padding: 16rpx 32rpx;
+.points-upper {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    margin-bottom: 12rpx;
+    gap: 4rpx;
+}
+
+.points-label {
+    font-size: 22rpx;
+    color: var(--text-sub);
+    font-weight: 500;
+}
+
+.points-current {
+    font-size: 32rpx;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.points-total {
+    font-size: 22rpx;
+    color: var(--text-holder);
+}
+
+.points-progress-wrap {
+    width: 100%;
+    height: 8rpx;
+    background: #f1f5f9;
     border-radius: 100rpx;
-    box-shadow: 0 4rpx 12rpx rgb(46 95 233 / 20%);
+    overflow: hidden;
 }
 
-.btn-level-1 { background: var(--primary); box-shadow: 0 4rpx 10rpx rgb(46 95 233 / 15%); }
-.btn-level-2 { background: var(--grad-primary); box-shadow: 0 4rpx 12rpx rgb(46 95 233 / 20%); }
-.btn-level-3 { background: var(--grad-premium); box-shadow: 0 4rpx 15rpx rgb(29 78 216 / 30%); }
-
-.vip-active .vip-btn {
-    background: rgb(0 0 0 / 5%);
-    color: var(--text-sub);
-    box-shadow: none;
-}
-
-/* Shimmer for Premium */
-.shimmer-effect {
-    position: absolute;
-    top: 0; left: -100%;
-    width: 150rpx; /* Narrower for more elegance */
+.points-progress-inner {
     height: 100%;
-    background: linear-gradient(
-        to right, 
-        transparent 0%, 
-        rgb(46 95 233 / 3%) 40%, 
-        rgb(46 95 233 / 12%) 50%, 
-        rgb(46 95 233 / 3%) 60%, 
-        transparent 100%
-    );
-    transform: skewX(-25deg);
-    animation: shimmer 19s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-    z-index: 1;
+    background: var(--grad-primary);
+    border-radius: 100rpx;
+    transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-@keyframes shimmer {
-    0% { left: -100%; }
-    21.05% { left: 200%; }
-    100% { left: 200%; }
+.card-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
 }
 
-.vip-card-bg-icon {
-    position: absolute;
-    right: -40rpx;
-    bottom: -40rpx;
-    width: 240rpx;
-    height: 240rpx;
-    opacity: 0.05;
-    background: #5182f6;
-    mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z' fill='currentColor'/%3E%3C/svg%3E");
-    mask-size: contain;
-    mask-repeat: no-repeat;
-    mask-position: center;
-    transform: rotate(-15deg);
+.card-validity {
+    display: flex;
+    flex-direction: column;
 }
 
-.member-color-3.vip-card-bg-icon {
-    background: var(--primary-dark);
-    opacity: 0.08;
+.val-label {
+    font-size: 22rpx;
+    color: var(--text-sub);
+    margin-bottom: 4rpx;
+}
+
+.val-date {
+    font-size: 26rpx;
+    font-weight: 600;
+    color: var(--text-main);
 }
 
 /* --- 3. Action List Group --- */
+.action-list-group {
+    background: #fff;
+    border-radius: 28rpx;
+    padding: 8rpx 0;
+    margin-bottom: 24rpx;
+    box-shadow: 0 8rpx 20rpx rgb(0 0 0 / 3%);
+    border: 1rpx solid rgb(226 232 240 / 60%);
+}
 
+.action-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 32rpx;
+    position: relative;
+    transition: background 0.2s ease;
+}
 
 .action-row:not(:last-child)::after {
     content: '';
@@ -461,28 +368,47 @@
 .action-row .row-left {
     display: flex;
     align-items: center;
+    flex: 1;
 }
 
+.icon-circle {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36rpx;
+    margin-right: 28rpx;
+    flex-shrink: 0;
+}
 
 /* Unified Brand Blue tint for all list icons */
-.blue-bg, .green-bg, .purple-bg { background: #f0f7ff; }
+.blue-bg { background: #f0f7ff; }
+.green-bg { background: #f0fdf4; }
+.purple-bg { background: #faf5ff; }
 
 .action-row .row-text {
     display: flex;
     flex-direction: column;
 }
 
+.action-row .row-title {
+    font-size: 30rpx;
+    font-weight: 700;
+    color: var(--text-main);
+}
 
+.action-row .row-subtitle {
+    font-size: 22rpx;
+    color: var(--text-sub);
+    margin-top: 4rpx;
+}
 
 .action-row .row-right {
     display: flex;
     align-items: center;
-    gap: 16rpx;
-}
-
-
-.row-hover {
-    background: var(--bg-main);
+    gap: 12rpx;
 }
 
 /* --- 4. Settings List --- */
@@ -490,34 +416,65 @@
     background: #fff;
     border-radius: 28rpx;
     padding: 8rpx 0;
+    margin-bottom: 24rpx;
     box-shadow: 0 8rpx 20rpx rgb(0 0 0 / 3%);
     border: 1rpx solid rgb(226 232 240 / 60%);
 }
 
+.setting-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 32rpx;
+    position: relative;
+    transition: background 0.2s ease;
+}
 
 .setting-row:not(:last-child)::after {
     content: '';
     position: absolute;
     bottom: 0;
-    left: 100rpx;
+    left: 112rpx;
     right: 32rpx;
     height: 1rpx;
     background: #f1f5f9;
 }
 
-.row-left {
+.setting-row .row-left {
     display: flex;
     align-items: center;
+    flex: 1;
 }
 
+.setting-row .row-icon-box {
+    width: 56rpx;
+    height: 56rpx;
+    background: var(--bg-main);
+    border-radius: 14rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 24rpx;
+    font-size: 28rpx;
+}
 
+.setting-row .row-label {
+    font-size: 29rpx;
+    font-weight: 600;
+    color: var(--text-main);
+}
 
-.row-right {
+.setting-row .row-right {
     display: flex;
     align-items: center;
     gap: 12rpx;
 }
 
+.setting-row .row-value {
+    font-size: 26rpx;
+    color: var(--text-sub);
+    font-weight: 500;
+}
 
 .row-hover {
     background: var(--bg-main);
@@ -1536,41 +1493,7 @@
     height: 5rpx;
     background: var(--border);
     border-radius: 100rpx;
-    overflow: hidden;
-    position: relative;
 }
-.points-progress-inner {
-    height: 100%;
-    background: linear-gradient(90deg, var(--primary), #3b82f6);
-    border-radius: 100rpx;
-    box-shadow: 0 0 12rpx rgb(46 95 233 / 30%);
-    transition: width 0.8s ease-out;
-}
-
-.card-bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-}
-
-.card-validity {
-    display: flex;
-    flex-direction: column;
-    margin-left: 10rpx;
-}
-
-.val-label {
-    font-size: 24rpx;
-    color: #8896aa;
-    font-weight: 500;
-    margin-bottom: 6rpx;
-}
-.val-date {
-    font-size: 26rpx;
-    font-weight: 500;
-    color: #475569;
-}
-
 /* --- Sheet V3 (Full Redesign) --- */
 .sheet-v3 {
     background: var(--bg-main); /* Light gray base */

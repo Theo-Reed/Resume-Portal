@@ -57,9 +57,7 @@
         <view class="empty-icon">📄</view>
         <text class="empty-title">{{ui.emptyTitle}}</text>
         <text class="empty-subtitle">{{ui.emptySubtitle}}</text>
-        <ui-button type="primary" size="md" bindtap="goJobsList" custom-class="go-jobs-btn">
-          {{ui.goJobs}}
-        </ui-button>
+        <button class="go-jobs-btn" bindtap="goJobsList">{{ui.goJobs}}</button>
       </view>
     </block>
   </view>
