@@ -15,7 +15,9 @@ Component({
     },
     confirmActive: { type: Boolean, value: true },
     showClose: { type: Boolean, value: false },
-    maskClosable: { type: Boolean, value: true }
+    maskClosable: { type: Boolean, value: true },
+    closeOnConfirm: { type: Boolean, value: true },
+    closeOnFail: { type: Boolean, value: false }
   },
   data: {
     loading: false
@@ -43,22 +45,31 @@ Component({
       this.setData({ loading: true });
       const startTime = Date.now();
       
+      const finish = async (shouldClose: boolean) => {
+        const elapsed = Date.now() - startTime;
+        const remaining = Math.max(0, 500 - elapsed); // Reduced minimum artificial delay for better feel
+        
+        if (remaining > 0) {
+          await new Promise(resolve => setTimeout(resolve, remaining));
+        }
+        
+        this.setData({ loading: false });
+        if (shouldClose) {
+          this.onClose();
+        }
+      };
+
       // Emit confirm event. The parent can prevent closure if it performs async work.
       this.triggerEvent('confirm', {
         // Provide a callback for the parent to signal completion
-        complete: async () => {
-          const elapsed = Date.now() - startTime;
-          const remaining = Math.max(0, 2000 - elapsed);
-          
-          if (remaining > 0) {
-            await new Promise(resolve => setTimeout(resolve, remaining));
-          }
-          
-          this.setData({ loading: false });
-          this.onClose();
+        complete: (customShouldClose?: boolean) => {
+          const finalClose = customShouldClose !== undefined ? customShouldClose : this.properties.closeOnConfirm;
+          finish(finalClose);
         },
-        fail: () => {
-          this.setData({ loading: false });
+        // Provide a callback for the parent to signal failure
+        fail: (customShouldClose?: boolean) => {
+          const finalClose = customShouldClose !== undefined ? customShouldClose : this.properties.closeOnFail;
+          finish(finalClose);
         }
       });
 

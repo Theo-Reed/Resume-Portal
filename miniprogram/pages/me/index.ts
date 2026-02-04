@@ -506,9 +506,9 @@ Page({
     },
 
     onInviteConfirm(e: any) {
-        const { complete } = e.detail;
+        const { complete, fail } = e.detail;
         if (this.data.isInviteCodeValid) {
-            this.onApplyInviteCode(complete);
+            this.onApplyInviteCode(complete, fail);
         } else {
             complete();
         }
@@ -578,11 +578,11 @@ Page({
         })
     },
 
-    async onApplyInviteCode(complete?: Function) {
+    async onApplyInviteCode(complete?: Function, fail?: Function) {
         const { inputInviteCode, ui: uiStrings } = this.data
         if (!inputInviteCode || inputInviteCode.length !== 6) {
             ui.showToast(uiStrings.inviteCodeInvalid)
-            if (complete) complete()
+            if (fail) fail()
             return
         }
 
@@ -596,13 +596,12 @@ Page({
                     isInviteCodeValid: false
                 })
                 if (complete) complete()
-                this.closeInviteSheet()
                 // 兑换成功后刷新界面数据
                 this.onLoad()
             }
             else {
                 ui.showToast(result?.message || uiStrings.applyFailed)
-                if (complete) complete()
+                if (fail) fail()
             }
         }
         catch (err: any) {
@@ -610,7 +609,7 @@ Page({
             // 处理后端返回的错误信息（如 400/404/500 等）
             const errorMessage = err?.data?.message || uiStrings.applyFailed
             ui.showToast(errorMessage)
-            if (complete) complete()
+            if (fail) fail()
         }
     },
 

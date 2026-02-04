@@ -1190,8 +1190,8 @@ Page({
     const success = await this.saveResumeProfile(payload, false)
     if (success) {
       ui.showSuccess(this.data.ui.saveSuccess)
-      this.closeSkillsDrawer()
     }
+    return success
   },
 
   async onDeleteEducation() {
@@ -1263,8 +1263,8 @@ Page({
     const success = await this.saveResumeProfile(payload, false)
     if (success) {
       ui.showSuccess(this.data.ui.saveSuccess)
-      this.closeCertificatesDrawer()
     }
+    return success
   },
 
   onEditAiMessage() {
@@ -1283,8 +1283,10 @@ Page({
   },
 
   onAiMessageConfirm(e: any) {
-    const { complete } = e.detail;
-    this.onSaveAiMessageSheet().finally(() => complete());
+    const { complete, fail } = e.detail;
+    this.onSaveAiMessageSheet()
+        .then(success => success ? complete() : fail())
+        .catch(() => fail());
   },
 
   onGenderConfirm(e: any) {
@@ -1293,13 +1295,17 @@ Page({
   },
 
   onSkillsConfirm(e: any) {
-    const { complete } = e.detail;
-    this.onSaveSkills().finally(() => complete());
+    const { complete, fail } = e.detail;
+    this.onSaveSkills()
+        .then(success => success ? complete() : fail())
+        .catch(() => fail());
   },
 
   onCertificatesConfirm(e: any) {
-    const { complete } = e.detail;
-    this.onSaveCertificates().finally(() => complete());
+    const { complete, fail } = e.detail;
+    this.onSaveCertificates()
+        .then(success => success ? complete() : fail())
+        .catch(() => fail());
   },
 
   onDateConfirm(e: any) {
@@ -1319,8 +1325,8 @@ Page({
     const success = await this.saveResumeProfile(payload, false)
     if (success) {
       ui.showSuccess(this.data.ui.saveSuccess)
-      this.closeAiMessageSheet()
     }
+    return success
   },
 })
 
