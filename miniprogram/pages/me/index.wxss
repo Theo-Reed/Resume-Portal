@@ -1488,8 +1488,7 @@ page {
 
 .sheet-body-v3 {
     flex: 1;
-    overflow: hidden;
-    display: block;
+    height: 0;
 }
 
 /* 1. Dashboard Block */
@@ -1693,6 +1692,17 @@ page {
     color: var(--primary);
     margin-right: 8rpx;
     font-size: 24rpx;
+}
+.note-dash {
+    color: var(--text-desc);
+    margin-right: 12rpx;
+    margin-left: 4rpx;
+    font-size: 24rpx;
+    font-weight: bold;
+}
+.note-gray {
+    color: var(--text-desc);
+    font-weight: normal;
 }
 
 /* Footer */

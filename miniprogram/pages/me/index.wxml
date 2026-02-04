@@ -7,7 +7,7 @@
   </view>
 
   <block wx:else>
-    <ui-scroll-view scrollY="{{true}}" custom-class="me-scroll-container">
+    <ui-scroll-view scrollY="{{true}}" enableFlex="{{true}}" custom-class="me-scroll-container">
       <!-- 1. 沉浸式头部 Hero Section -->
     <view class="hero-section">
       <view class="hero-bg"></view>
@@ -240,7 +240,7 @@
   <ui-drawer 
     title="{{ui.memberCenter}}" 
     show="{{showMemberHub}}" 
-    confirmText="{{ui.confirm}}"
+    confirmActive="{{false}}"
     useScroll="{{false}}"
     bind:close="closeMemberHub"
     bind:confirm="onMemberHubConfirm"
@@ -308,14 +308,16 @@
             <view class="privileges-notes">
                <block wx:if="{{(appLanguage === 'Chinese' || appLanguage === 'AIChinese') && selectedScheme.features_chinese}}">
                   <view class="note-item" wx:for="{{selectedScheme.features_chinese}}" wx:key="*this">
-                       <text class="note-check">✓</text>
-                       <text>{{item}}</text>
+                       <text class="note-dash" wx:if="{{selectedScheme.features_is_dash[index]}}">-</text>
+                       <text class="note-check" wx:else>✓</text>
+                       <text class="{{selectedScheme.features_is_dash[index] ? 'note-gray' : ''}}">{{item}}</text>
                   </view>
                </block>
                <block wx:elif="{{selectedScheme.features_english}}">
                   <view class="note-item" wx:for="{{selectedScheme.features_english}}" wx:key="*this">
-                       <text class="note-check">✓</text>
-                       <text>{{item}}</text>
+                       <text class="note-dash" wx:if="{{selectedScheme.features_is_dash[index]}}">-</text>
+                       <text class="note-check" wx:else>✓</text>
+                       <text class="{{selectedScheme.features_is_dash[index] ? 'note-gray' : ''}}">{{item}}</text>
                   </view>
                </block>
             </view>

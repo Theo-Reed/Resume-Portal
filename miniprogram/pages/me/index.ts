@@ -787,25 +787,8 @@ Page({
             memberHubOpen: false
         })
         
-        // Fetch schemes if empty or force refresh needed?
-        // Since loadMemberBadgeText might have loaded it, we check again.
-        if (!this.data.schemsList || this.data.schemsList.length === 0) {
-            await this.fetchSchemes()
-        } else {
-            // Already have schemes (e.g. from loadMemberBadgeText), ensure default selection
-            const schemes = this.data.schemsList
-            let selectedId = this.data.selectedSchemeId
-            const exists = schemes.find((s:any) => s.scheme_id === selectedId)
-            
-            if (!exists && schemes.length > 0) {
-                selectedId = schemes[0].scheme_id
-                this.setData({ 
-                    selectedSchemeId: selectedId,
-                    selectedScheme: schemes[0]
-                })
-                this.calculateFinalPrice(selectedId)
-            }
-        }
+        // Always fetch to ensure we have the latest scheme benefits and layout stabilizers
+        await this.fetchSchemes()
 
         setTimeout(() => {
             this.setData({ memberHubOpen: true })

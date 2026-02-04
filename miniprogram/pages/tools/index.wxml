@@ -1,7 +1,7 @@
 <view class="page">
   <ui-feedback id="ui-feedback" />
   
-  <ui-scroll-view scrollY="{{true}}" custom-class="tools-scroll">
+  <ui-scroll-view scrollY="{{true}}" enableFlex="{{true}}" custom-class="tools-scroll">
     <view class="header">
       <text class="title">求职助手</text>
       <text class="subtitle">让 AI 帮你搞定简历与面试</text>
