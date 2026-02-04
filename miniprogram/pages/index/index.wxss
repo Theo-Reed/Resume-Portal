@@ -560,7 +560,7 @@ job-list {
 }
 
 .restore-header-btn:active {
-  background: #f1f5f9;
+  background: var(--border);
 }
 
 .restore-header-btn-text {
@@ -590,7 +590,7 @@ job-list {
   padding: 32rpx;
   margin-bottom: 2rpx;
   background: #fff;
-  border-bottom: 1rpx solid #f1f5f9;
+  border-bottom: 1rpx solid var(--border);
   border-radius: 0;
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;

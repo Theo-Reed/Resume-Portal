@@ -24,6 +24,6 @@
 
 .disabled {
   opacity: 0.6;
-  background: #f1f5f9;
-  color: #94a3b8;
+  background: var(--border);
+  color: var(--text-holder);
 }

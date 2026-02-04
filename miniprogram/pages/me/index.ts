@@ -589,23 +589,27 @@ Page({
         try {
             const result = await callApi('applyInviteCode', { targetInviteCode: inputInviteCode })
 
-            const resultData = result?.result as any
-            if (resultData?.success) {
-                ui.showToast(uiStrings.inviteCodeApplied)
+            if (result?.success) {
+                ui.showToast(result.message || uiStrings.inviteCodeApplied)
                 this.setData({ 
                     inputInviteCode: '',
                     isInviteCodeValid: false
                 })
                 if (complete) complete()
                 this.closeInviteSheet()
+                // 兑换成功后刷新界面数据
+                this.onLoad()
             }
             else {
-                ui.showToast(resultData?.message || uiStrings.applyFailed)
+                ui.showToast(result?.message || uiStrings.applyFailed)
                 if (complete) complete()
             }
         }
-        catch (err) {
-            ui.showToast(uiStrings.applyFailed)
+        catch (err: any) {
+            console.error('Apply invite code error:', err)
+            // 处理后端返回的错误信息（如 400/404/500 等）
+            const errorMessage = err?.data?.message || uiStrings.applyFailed
+            ui.showToast(errorMessage)
             if (complete) complete()
         }
     },

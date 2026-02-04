@@ -39,7 +39,7 @@
   justify-content: space-between;
   padding: 0 32rpx;
   position: relative;
-  border-bottom: 2rpx solid #f1f5f9;
+  border-bottom: 2rpx solid var(--border, var(--border));
 }
 
 .ui-drawer-title {
@@ -48,7 +48,7 @@
   transform: translateX(-50%);
   font-size: 32rpx;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--text-main, var(--text-main));
 }
 
 .ui-drawer-header-left, .ui-drawer-header-right {
@@ -64,7 +64,7 @@
 
 .ui-drawer-close {
   font-size: 36rpx;
-  color: #64748b; /* text-sub */
+  color: var(--text-sub, var(--text-sub)); /* text-sub */
   padding: 10rpx;
   margin-left: -10rpx;
   display: flex;
@@ -90,7 +90,7 @@
 }
 
 .ui-drawer-confirm-btn.disabled {
-  color: #94a3b8; /* text-holder */
+  color: var(--text-holder, var(--text-holder)); /* text-holder */
 }
 
 .ui-drawer-confirm-btn.loading {

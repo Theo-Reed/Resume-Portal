@@ -1,7 +1,7 @@
 Component({
   properties: {
     title: { 
-      type: String, 
+      type: null, 
       value: ''
     },
     type: { type: String, value: 'loading' }, // 'loading', 'success', 'error', 'none'

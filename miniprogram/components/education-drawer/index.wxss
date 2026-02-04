@@ -66,13 +66,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1rpx solid #f1f5f9;
+  border-bottom: 1rpx solid var(--border);
 }
 
 .drawer-title {
   font-size: 36rpx;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--text-main);
 }
 
 .close-btn {
@@ -96,7 +96,7 @@
   left: 0;
   width: 100%;
   height: 4rpx;
-  background-color: #94a3b8;
+  background-color: var(--text-holder);
   border-radius: 2rpx;
 }
 
@@ -120,7 +120,7 @@
 .form-label {
   font-size: 28rpx;
   font-weight: 600;
-  color: #64748b;
+  color: var(--text-sub);
   margin-bottom: 16rpx;
 }
 
@@ -131,7 +131,7 @@
   border-radius: 16rpx;
   padding: 0 24rpx;
   font-size: 30rpx;
-  color: #1e293b;
+  color: var(--text-main);
   box-sizing: border-box;
 }
 
@@ -142,14 +142,14 @@
   border-radius: 16rpx;
   padding: 0 24rpx;
   font-size: 30rpx;
-  color: #1e293b;
+  color: var(--text-main);
   display: flex;
   align-items: center;
   box-sizing: border-box;
 }
 
 .placeholder {
-  color: #94a3b8;
+  color: var(--text-holder);
 }
 
 .date-range-container {
@@ -165,7 +165,7 @@
   border-radius: 16rpx;
   padding: 0 24rpx;
   font-size: 30rpx;
-  color: #1e293b;
+  color: var(--text-main);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -173,7 +173,7 @@
 }
 
 .date-sep {
-  color: #94a3b8;
+  color: var(--text-holder);
   font-weight: 600;
 }
 
@@ -181,13 +181,13 @@
   padding: 40rpx;
   display: flex;
   gap: 24rpx;
-  border-top: 1rpx solid #f1f5f9;
+  border-top: 1rpx solid var(--border);
 }
 
 .btn-save {
   flex: 1;
   height: 96rpx;
-  background: #3B82F6;
+  background: var(--primary-mid);
   color: #fff;
   border-radius: 20rpx;
   display: flex;

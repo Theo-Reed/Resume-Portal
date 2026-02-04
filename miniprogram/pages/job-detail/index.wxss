@@ -233,7 +233,7 @@
 }
 
 .apply-menu-item:active {
-  background: #f1f5f9;
+  background: var(--border);
   transform: scale(0.99);
 }
 
@@ -262,7 +262,7 @@
 
 /* AI 样式 */
 .ai-section {
-  background: #f1f5f9; /* 更中性的背景色 */
+  background: var(--border); /* 更中性的背景色 */
   padding: 24rpx;
   border-radius: 32rpx;
   border: 1rpx solid rgb(15 23 42 / 5%);

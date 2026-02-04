@@ -22,7 +22,7 @@
 
 .count-text {
   font-size: 24rpx;
-  color: #94a3b8;
+  color: var(--text-holder);
   font-weight: 500;
 }
 
@@ -32,14 +32,14 @@
   align-items: center;
   justify-content: center;
   padding: 100rpx 0;
-  color: #94a3b8;
+  color: var(--text-holder);
   font-size: 26rpx;
 }
 
 .spinner {
   width: 40rpx;
   height: 40rpx;
-  border: 4rpx solid #e2e8f0;
+  border: 4rpx solid var(--divider);
   border-top: 4rpx solid #2e5fe9;
   border-radius: 50%;
   margin-bottom: 20rpx;
@@ -118,7 +118,7 @@
 .job-title {
   font-size: 32rpx;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--text-main);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -152,7 +152,7 @@
 
 .company-name {
   font-size: 26rpx;
-  color: #64748b;
+  color: var(--text-sub);
   margin-bottom: 8rpx;
 }
 
@@ -168,7 +168,7 @@
 .mini-spinner {
   width: 32rpx;
   height: 32rpx;
-  border: 3rpx solid #e2e8f0;
+  border: 3rpx solid var(--divider);
   border-top: 3rpx solid #2e5fe9;
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -207,11 +207,11 @@
 
 /* 状态相关颜色 */
 .pdf-icon-processing {
-  background: #f1f5f9;
+  background: var(--border);
 }
 
 .pdf-icon-processing .pdf-text {
-  color: #94a3b8;
+  color: var(--text-holder);
 }
 
 .pdf-icon-failed {
@@ -248,13 +248,13 @@
 .empty-title {
   font-size: 34rpx;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--text-main);
   margin-bottom: 16rpx;
 }
 
 .empty-subtitle {
   font-size: 26rpx;
-  color: #94a3b8;
+  color: var(--text-holder);
   margin-bottom: 60rpx;
 }
 

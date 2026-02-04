@@ -41,7 +41,7 @@
               <text>{{ui.photo}}</text>
             </view>
             <view class="item-value">
-              <view class="avatar-progress-container" style="background-image: conic-gradient(#3b82f6 {{currentPercent}}%, #e2e8f0 0)">
+              <view class="avatar-progress-container" style="background-image: conic-gradient(var(--primary-mid) {{currentPercent}}%, var(--divider) 0)">
                 <block wx:if="{{photo}}">
                   <image class="avatar-img shadow-none" src="{{photo}}" mode="aspectFill"></image>
                 </block>

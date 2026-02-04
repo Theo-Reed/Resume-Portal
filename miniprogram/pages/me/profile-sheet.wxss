@@ -19,7 +19,7 @@
     border-radius: 0;
     padding: 32rpx 40rpx;
     box-shadow: none;
-    border-bottom: 1rpx solid #f1f5f9;
+    border-bottom: 1rpx solid var(--border);
 }
 
 /* Title 基础样式 */
@@ -225,7 +225,7 @@
     width: 100%;
     height: 80rpx;
     background: #fff;
-    border: 2rpx solid #e2e8f0;
+    border: 2rpx solid var(--divider);
     border-radius: 20rpx;
     padding: 0 25rpx;
     font-size: 30rpx;
@@ -248,7 +248,7 @@
 }
 
 .nickname-modal-cancel {
-    background: #f1f5f9;
+    background: var(--border);
 }
 
 .nickname-modal-cancel .nickname-modal-btn-text {

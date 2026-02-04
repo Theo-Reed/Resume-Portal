@@ -45,19 +45,19 @@ page {
 
 .maintenance-desc {
   font-size: 28rpx;
-  color: #64748b;
+  color: var(--text-sub);
   line-height: 1.6;
   margin-bottom: 80rpx;
 }
 
 .refresh-hint {
   font-size: 24rpx;
-  color: #94a3b8;
+  color: var(--text-holder);
   padding: 20rpx 40rpx;
-  border: 1rpx solid #e2e8f0;
+  border: 1rpx solid var(--divider);
   border-radius: 100rpx;
 }
 
 .empty-view {
-  color: #94a3b8;
+  color: var(--text-holder);
 }
