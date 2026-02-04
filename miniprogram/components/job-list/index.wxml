@@ -1,6 +1,6 @@
 <!-- miniprogram/components/job-list/index.wxml -->
 <ui-scroll-view
-  class="job-list {{className}}"
+  custom-class="job-list {{className}}"
   scrollY="{{scrollY}}"
   scrollTop="{{scrollTop}}"
   scrollWithAnimation="{{scrollWithAnimation}}"
@@ -28,7 +28,7 @@
             <text wx:if="{{((isAIEnglish && (item.source_name_english || item.source_name)) || (!isAIEnglish && item.team && item.team !== ui.unknownCompany)) && item.salary}}" class="job-meta-dot">·</text>
             <text wx:if="{{item.salary}}" class="job-meta-item">{{item.salary}}</text>
           </view>
-          <ui-scroll-view class="job-tags" scrollX="{{true}}">
+          <ui-scroll-view custom-class="job-tags" scrollX="{{true}}">
             <view class="job-tag" wx:for="{{item.displayTags || item.tags}}" wx:key="*this">
               <text class="job-tag-text">{{item}}</text>
             </view>

@@ -4,6 +4,7 @@ import { attachLanguageAware } from '../../utils/languageAware'
 import { toDateMs } from '../../utils/time'
 import { isAiChineseUnlocked } from '../../utils/subscription'
 import { request, callApi } from '../../utils/request'
+import { ui } from '../../utils/ui'
 
 Page({
   data: {
@@ -92,7 +93,7 @@ Page({
           doneLabel: t('jobs.doneLabel', lang),
           clearAllLabel: t('jobs.clearAllLabel', lang),
           noSavedSearchConditions: t('jobs.noSavedSearchConditions', lang),
-          restoreMenuLabel: t('jobs.restoreSearchLabel', lang),
+          restoreSearchLabel: t('jobs.restoreSearchLabel', lang),
         },
       })
     },

@@ -61,7 +61,7 @@
 
 
   <!-- Restore Search Condition Bottom Sheet -->
-  <ui-drawer title="{{ui.restoreSearchLabel}}" show="{{showRestoreSheet}}" bindclose="closeRestoreSheet">
+  <ui-drawer title="{{ui.restoreSearchLabel || ''}}" show="{{showRestoreSheet}}" bindclose="closeRestoreSheet">
     <view slot="title-extra">
       <view class="restore-header-actions">
         <text wx:if="{{isRestoreEditing}}" class="restore-header-btn" bindtap="onClearAllRestoreConditions">{{ui.clearAllLabel}}</text>
