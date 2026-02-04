@@ -1,9 +1,11 @@
 <!-- 个人资料底部弹窗 -->
-<ui-drawer title="{{ui.userProfileTitle || ''}}" show="{{showProfileSheet}}" bindclose="closeProfileSheet" showFooter="{{true}}">
-  <view slot="footer">
-    <ui-button bindtap="closeProfileSheet">{{ui.confirm}}</ui-button>
-  </view>
-
+<ui-drawer 
+  title="{{ui.userProfileTitle || ''}}" 
+  show="{{showProfileSheet}}" 
+  bind:close="closeProfileSheet" 
+  bind:confirm="onProfileConfirm"
+  confirmText="{{ui.confirm}}"
+>
   <view class="bottom-sheet-content profile-sheet-content">
     <!-- Upload Avatar - 独立一栏，左右布局 -->
     <view class="profile-avatar-section" catchtap="onUploadAvatar">

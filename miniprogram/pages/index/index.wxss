@@ -529,6 +529,25 @@ job-list {
   /* 使用公共样式 bottom-sheet-header-right */
 }
 
+.restore-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding-left: 32rpx;
+}
+
+.restore-header-btn-left {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #2e5fe9;
+  padding: 8rpx 0;
+  line-height: 1;
+}
+
+.restore-header-btn-left:active {
+  opacity: 0.6;
+}
+
 .restore-header-btn {
   /* 使用公共样式 bottom-sheet-header-btn */
   font-size: 28rpx;

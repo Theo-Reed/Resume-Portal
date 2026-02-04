@@ -57,46 +57,36 @@
     </view>
   </view>
 
-  <!-- 功能抽屉 (Bottom Sheet) -->
-  <block wx:if="{{showApplyMenu}}">
-    <view class="bottom-sheet-mask {{applyMenuOpen ? 'bottom-sheet-mask-open' : ''}}" bindtap="closeApplyMenu"></view>
-    <view class="bottom-sheet {{applyMenuOpen ? 'bottom-sheet-open' : ''}}">
-      
-      <view class="bottom-sheet-header">
-        <view class="bottom-sheet-header-left"></view>
-        <text class="bottom-sheet-title">{{applyMenuTitle}}</text>
-        <view class="bottom-sheet-header-right">
-          <view class="bottom-sheet-header-btn" bindtap="closeApplyMenu">{{ui.cancel}}</view>
+  <!-- 功能抽屉 (Bottom Sheet) Redesigned -->
+  <ui-drawer 
+    show="{{showApplyMenu}}" 
+    title="{{applyMenuTitle}}" 
+    bind:close="closeApplyMenu"
+    bind:confirm="onApplyMenuConfirm"
+  >
+    <ui-scroll-view class="apply-menu-scroll" scrollY="{{true}}">
+      <view class="apply-menu-content-padding">
+        <!-- AI 增强功能区 -->
+        <view class="apply-menu-section ai-section">
+          <view class="apply-menu-item ai-item" bindtap="onGenerateResume">
+            <view class="apply-menu-item-left">
+              <image class="apply-menu-item-icon ai-icon" src="/assets/icons/four-point-star-twin.png" mode="aspectFit"></image>
+              <text class="apply-menu-item-text ai-text">{{aiResumeGenerateText}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 常规功能区 -->
+        <view class="apply-menu-section">
+          <view class="apply-menu-item" bindtap="onViewSource">
+            <view class="apply-menu-item-left">
+              <view class="apply-menu-icon-placeholder">🔗</view>
+              <text class="apply-menu-item-text">{{copySourceLinkText}}</text>
+            </view>
+          </view>
         </view>
       </view>
-      
-      <ui-scroll-view class="apply-menu-scroll" scrollY="{{true}}">
-        <view class="apply-menu-content-padding">
-          <!-- AI 增强功能区 -->
-          <view class="apply-menu-section ai-section">
-            <view class="apply-menu-item ai-item" bindtap="onGenerateResume">
-              <view class="apply-menu-item-left">
-                <image class="apply-menu-item-icon ai-icon" src="/assets/icons/four-point-star-twin.png" mode="aspectFit"></image>
-                <text class="apply-menu-item-text ai-text">{{aiResumeGenerateText}}</text>
-              </view>
-            </view>
-          </view>
-
-          <!-- 常规功能区 -->
-          <view class="apply-menu-section">
-            <view class="apply-menu-item" bindtap="onViewSource">
-              <view class="apply-menu-item-left">
-                <view class="apply-menu-icon-placeholder">🔗</view>
-                <text class="apply-menu-item-text">{{copySourceLinkText}}</text>
-              </view>
-            </view>
-          </view>
-        </view>
-      </ui-scroll-view>
-
-      <!-- 底部安全间距 -->
-      <view class="apply-menu-safe-bottom"></view>
-    </view>
-  </block>
+    </ui-scroll-view>
+  </ui-drawer>
 </view>
 

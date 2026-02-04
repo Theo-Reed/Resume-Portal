@@ -534,18 +534,14 @@
     </view>
   </view>
 
-  <!-- 对 AI 说的话编辑弹窗 (底部弹出) -->
-  <view class="bottom-sheet-mask {{showAiMessageSheet ? 'bottom-sheet-mask-open' : ''}}" bindtap="closeAiMessageSheet"></view>
-  <view class="bottom-sheet ai-message-picker {{showAiMessageSheet ? 'bottom-sheet-open' : ''}}">
-    <view class="bottom-sheet-header">
-      <view class="bottom-sheet-header-left">
-        <view class="bottom-sheet-header-btn" bindtap="closeAiMessageSheet">{{ui.cancel}}</view>
-      </view>
-      <text class="bottom-sheet-title">{{ui.aiMessageLabel}}</text>
-      <view class="bottom-sheet-header-right">
-        <view class="bottom-sheet-header-btn primary" bindtap="onSaveAiMessageSheet">{{ui.save}}</view>
-      </view>
-    </view>
+  <!-- 对 AI 说的话编辑弹窗 (底部弹出) Redesigned -->
+  <ui-drawer 
+    show="{{showAiMessageSheet}}" 
+    title="{{ui.aiMessageLabel}}" 
+    confirmText="{{ui.save}}"
+    bind:close="closeAiMessageSheet"
+    bind:confirm="onAiMessageConfirm"
+  >
     <view class="bottom-sheet-content ai-message-input-content">
       <textarea 
         class="ai-message-textarea" 
@@ -558,19 +554,15 @@
         disable-default-padding
       />
     </view>
-  </view>
+  </ui-drawer>
 
-  <!-- 自定义性别选择器 (底部弹出) -->
-  <view class="bottom-sheet-mask {{showGenderPicker ? 'bottom-sheet-mask-open' : ''}}" bindtap="closeGenderPicker"></view>
-  <view class="bottom-sheet {{showGenderPicker ? 'bottom-sheet-open' : ''}}">
-    <view class="bottom-sheet-header">
-      <view class="bottom-sheet-header-left">
-        <view class="bottom-sheet-header-btn" bindtap="closeGenderPicker">{{ui.cancel || '取消'}}</view>
-      </view>
-      <text class="bottom-sheet-title">{{ui.genderPlaceholder}}</text>
-      <view class="bottom-sheet-header-right">
-      </view>
-    </view>
+  <!-- 自定义性别选择器 (底部弹出) Redesigned -->
+  <ui-drawer 
+    show="{{showGenderPicker}}" 
+    title="{{ui.genderPlaceholder}}" 
+    bind:close="closeGenderPicker"
+    bind:confirm="onGenderConfirm"
+  >
     <ui-scroll-view class="bottom-sheet-content custom-picker-body" scrollY="{{true}}">
       <view 
         wx:for="{{genderOptions}}" 
@@ -583,14 +575,16 @@
         <view class="check-icon" wx:if="{{basicInfoForm.gender === item}}"></view>
       </view>
     </ui-scroll-view>
-  </view>
+  </ui-drawer>
 
-  <!-- 技能编辑弹窗 -->
-  <view class="drawer-mask {{showSkillsDrawer ? 'drawer-mask-show' : ''}}" bindtap="closeSkillsDrawer"></view>
-  <view class="drawer {{showSkillsDrawer ? 'drawer-show' : ''}}">
-    <view class="drawer-header">
-      <text class="drawer-title">{{ui.skills}}</text>
-    </view>
+  <!-- 技能编辑弹窗 Redesigned -->
+  <ui-drawer 
+    show="{{showSkillsDrawer}}" 
+    title="{{ui.skills}}" 
+    confirmText="{{ui.save}}"
+    bind:close="closeSkillsDrawer"
+    bind:confirm="onSkillsConfirm"
+  >
     <view class="drawer-content">
       <view class="form-item-list" wx:for="{{skillsForm}}" wx:key="index">
         <input class="form-input list-input" placeholder="{{ui.skillPlaceholder}}" value="{{item}}" data-index="{{index}}" bindinput="onSkillInput" />
@@ -600,22 +594,16 @@
         </view>
       </view>
     </view>
-    <view class="drawer-footer">
-      <view class="btn-secondary" bindtap="closeSkillsDrawer">
-        <text>{{ui.cancel}}</text>
-      </view>
-      <view class="btn-primary" bindtap="onSaveSkills">
-        <text>{{ui.save}}</text>
-      </view>
-    </view>
-  </view>
+  </ui-drawer>
 
-  <!-- 证书编辑弹窗 -->
-  <view class="drawer-mask {{showCertificatesDrawer ? 'drawer-mask-show' : ''}}" bindtap="closeCertificatesDrawer"></view>
-  <view class="drawer {{showCertificatesDrawer ? 'drawer-show' : ''}}">
-    <view class="drawer-header">
-      <text class="drawer-title">{{ui.certificates}}</text>
-    </view>
+  <!-- 证书编辑弹窗 Redesigned -->
+  <ui-drawer 
+    show="{{showCertificatesDrawer}}" 
+    title="{{ui.certificates}}" 
+    confirmText="{{ui.save}}"
+    bind:close="closeCertificatesDrawer"
+    bind:confirm="onCertificatesConfirm"
+  >
     <view class="drawer-content">
       <view class="form-item-list" wx:for="{{certificatesForm}}" wx:key="index">
         <input class="form-input list-input" placeholder="{{ui.certificatesPlaceholder}}" value="{{item}}" data-index="{{index}}" bindinput="onCertificateInput" />
@@ -625,28 +613,18 @@
         </view>
       </view>
     </view>
-    <view class="drawer-footer">
-      <view class="btn-secondary" bindtap="closeCertificatesDrawer">
-        <text>{{ui.cancel}}</text>
-      </view>
-      <view class="btn-primary" bindtap="onSaveCertificates">
-        <text>{{ui.save}}</text>
-      </view>
-    </view>
-  </view>
+  </ui-drawer>
 
-  <!-- 自定义年月选择器 (底部弹出) -->
-  <view class="bottom-sheet-mask {{showDatePicker ? 'bottom-sheet-mask-open' : ''}}" bindtap="closeDatePicker"></view>
-  <view class="bottom-sheet {{showDatePicker ? 'bottom-sheet-open' : ''}}">
-    <view class="bottom-sheet-header">
-      <view class="bottom-sheet-header-left">
-        <view class="bottom-sheet-header-btn" bindtap="closeDatePicker">{{ui.cancel}}</view>
-      </view>
-      <text class="bottom-sheet-title">{{(currentDatePickingField === 'startDate' || currentDatePickingField === 'work_startDate') ? ui.startDate : ((currentDatePickingField === 'endDate' || currentDatePickingField === 'work_endDate') ? ui.endDate : ui.birthday)}}</text>
-      <view class="bottom-sheet-header-right">
-        <view wx:if="{{currentDatePickingField === 'work_endDate' || currentDatePickingField === 'endDate'}}" class="bottom-sheet-header-btn" style="color: #64748b; background: #f1f5f9; margin-right: 12rpx;" bindtap="onSetToPresent">{{ui.toPresent}}</view>
-        <view class="bottom-sheet-header-btn primary" bindtap="onConfirmDate">{{ui.save}}</view>
-      </view>
+  <!-- 自定义年月选择器 (底部弹出) Redesigned -->
+  <ui-drawer 
+    show="{{showDatePicker}}" 
+    title="{{(currentDatePickingField === 'startDate' || currentDatePickingField === 'work_startDate') ? ui.startDate : ((currentDatePickingField === 'endDate' || currentDatePickingField === 'work_endDate') ? ui.endDate : ui.birthday)}}" 
+    confirmText="{{ui.save}}"
+    bind:close="closeDatePicker"
+    bind:confirm="onDateConfirm"
+  >
+    <view slot="header-right-extra">
+        <view wx:if="{{currentDatePickingField === 'work_endDate' || currentDatePickingField === 'endDate'}}" class="bottom-sheet-header-btn-extra" bindtap="onSetToPresent">{{ui.toPresent}}</view>
     </view>
     <view class="bottom-sheet-content picker-view-container">
       <picker-view 
@@ -663,20 +641,16 @@
         </picker-view-column>
       </picker-view>
     </view>
-  </view>
+  </ui-drawer>
 
-  <!-- 自定义学历选择器 (双滚轮，底部弹出) -->
-  <view class="bottom-sheet-mask {{showDegreePicker ? 'bottom-sheet-mask-open' : ''}}" bindtap="closeDegreePicker"></view>
-  <view class="bottom-sheet {{showDegreePicker ? 'bottom-sheet-open' : ''}}">
-    <view class="bottom-sheet-header">
-      <view class="bottom-sheet-header-left">
-        <view class="bottom-sheet-header-btn" bindtap="closeDegreePicker">{{ui.cancel || '取消'}}</view>
-      </view>
-      <text class="bottom-sheet-title">{{ui.degreePlaceholder}}</text>
-      <view class="bottom-sheet-header-right">
-        <view class="bottom-sheet-header-btn primary" bindtap="onConfirmDegree">{{ui.save || '确定'}}</view>
-      </view>
-    </view>
+  <!-- 自定义学历选择器 (双滚轮，底部弹出) Redesigned -->
+  <ui-drawer 
+    show="{{showDegreePicker}}" 
+    title="{{ui.degreePlaceholder}}" 
+    confirmText="{{ui.save || '确定'}}"
+    bind:close="closeDegreePicker"
+    bind:confirm="onDegreePickConfirm"
+  >
     <view class="bottom-sheet-content picker-view-container">
       <picker-view 
         indicator-style="height: 160rpx;" 
@@ -692,6 +666,6 @@
         </picker-view-column>
       </picker-view>
     </view>
-  </view>
+  </ui-drawer>
 </view>
 

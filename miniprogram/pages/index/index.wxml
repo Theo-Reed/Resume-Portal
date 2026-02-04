@@ -60,13 +60,16 @@
   </swiper>
 
 
-  <!-- Restore Search Condition Bottom Sheet -->
-  <ui-drawer title="{{ui.restoreSearchLabel || ''}}" show="{{showRestoreSheet}}" bindclose="closeRestoreSheet">
-    <view slot="title-extra">
-      <view class="restore-header-actions">
-        <text wx:if="{{isRestoreEditing}}" class="restore-header-btn" bindtap="onClearAllRestoreConditions">{{ui.clearAllLabel}}</text>
-        <text class="restore-header-btn" bindtap="toggleRestoreEdit">{{isRestoreEditing ? ui.doneLabel : ui.editLabel}}</text>
-      </view>
+  <!-- Restore Search Condition Bottom Sheet (Upgraded) -->
+  <ui-drawer 
+    title="{{ui.restoreSearchLabel || ''}}" 
+    show="{{showRestoreSheet}}" 
+    bind:close="closeRestoreSheet"
+    bind:confirm="onRestoreConfirm"
+  >
+    <view slot="header-left" class="restore-header-actions">
+        <text wx:if="{{isRestoreEditing}}" class="restore-header-btn-left" bindtap="onClearAllRestoreConditions">{{ui.clearAllLabel}}</text>
+        <text class="restore-header-btn-left" bindtap="toggleRestoreEdit">{{isRestoreEditing ? ui.doneLabel : ui.editLabel}}</text>
     </view>
     
     <view class="restore-sheet-content">

@@ -127,88 +127,78 @@
 
   </view>
 
-  <!-- Bottom Sheets & Modals (Rest of the original code) -->
-  <block wx:if="{{showLanguageSheet}}">
-    <view class="bottom-sheet-mask {{languageSheetOpen ? 'bottom-sheet-mask-open' : ''}}"
-          bindtap="closeLanguageSheet"></view>
-    <view class="bottom-sheet {{languageSheetOpen ? 'bottom-sheet-open' : ''}}">
-      <view class="bottom-sheet-header">
-        <view class="bottom-sheet-header-left"></view>
-        <text class="bottom-sheet-title">{{ui.languageEntry}}</text>
-        <view class="bottom-sheet-header-right">
-          <view class="bottom-sheet-header-btn" bindtap="closeLanguageSheet">{{ui.confirm}}</view>
+  <!-- Language Sheet (Redesigned) -->
+  <ui-drawer 
+    show="{{showLanguageSheet}}" 
+    title="{{ui.languageEntry}}" 
+    bind:close="closeLanguageSheet"
+    bind:confirm="onLanguageConfirm"
+  >
+    <view class="bottom-sheet-content">
+      <!-- Standard Modes -->
+      <view class="mode-section-title">{{ui.basicMode}}</view>
+      <view class="mode-card {{appLanguage === 'Chinese' ? 'mode-card-active' : ''}}"
+            data-value="Chinese" bindtap="onLanguageSelect">
+        <view class="mode-card-main">
+          <text class="mode-name">{{ui.langChinese}}</text>
+          <text class="mode-desc">{{ui.langChineseDesc}}</text>
+        </view>
+        <view class="mode-check" wx:if="{{appLanguage === 'Chinese'}}">
+          <icon type="success_no_circle" size="16" color="#1d4ed8"/>
         </view>
       </view>
-      <view class="bottom-sheet-content">
-        <!-- Standard Modes -->
-        <view class="mode-section-title">{{ui.basicMode}}</view>
-        <view class="mode-card {{appLanguage === 'Chinese' ? 'mode-card-active' : ''}}"
-              data-value="Chinese" bindtap="onLanguageSelect">
-          <view class="mode-card-main">
-            <text class="mode-name">{{ui.langChinese}}</text>
-            <text class="mode-desc">{{ui.langChineseDesc}}</text>
-          </view>
-          <view class="mode-check" wx:if="{{appLanguage === 'Chinese'}}">
-            <icon type="success_no_circle" size="16" color="#1d4ed8"/>
-          </view>
-        </view>
 
-        <view class="mode-card {{appLanguage === 'English' ? 'mode-card-active' : ''}}"
-              data-value="English" bindtap="onLanguageSelect">
-          <view class="mode-card-main">
-            <text class="mode-name">{{ui.langEnglish}}</text>
-            <text class="mode-desc">{{ui.langEnglishDesc}}</text>
-          </view>
-          <view class="mode-check" wx:if="{{appLanguage === 'English'}}">
-            <icon type="success_no_circle" size="16" color="#1d4ed8"/>
-          </view>
+      <view class="mode-card {{appLanguage === 'English' ? 'mode-card-active' : ''}}"
+            data-value="English" bindtap="onLanguageSelect">
+        <view class="mode-card-main">
+          <text class="mode-name">{{ui.langEnglish}}</text>
+          <text class="mode-desc">{{ui.langEnglishDesc}}</text>
         </view>
-
-        <!-- AI VIP Modes -->
-        <view class="mode-section-title mode-section-title-vip">
-          <text>{{ui.aiMode}}</text>
-          <text class="vip-tag-mini">{{ui.vipTag}}</text>
+        <view class="mode-check" wx:if="{{appLanguage === 'English'}}">
+          <icon type="success_no_circle" size="16" color="#1d4ed8"/>
         </view>
+      </view>
 
-        <view class="mode-card mode-card-vip {{appLanguage === 'AIChinese' ? 'mode-card-active' : ''}}"
-              data-value="AIChinese" bindtap="onLanguageSelect">
-          <view class="mode-card-icon">✨</view>
-          <view class="mode-card-main">
-            <text class="mode-name">{{ui.langAIChinese}}</text>
-            <text class="mode-desc">{{ui.langAIChineseDesc}}</text>
-          </view>
-          <view class="mode-check" wx:if="{{appLanguage === 'AIChinese'}}">
-            <icon type="success_no_circle" size="16" color="#1d4ed8"/>
-          </view>
+      <!-- AI VIP Modes -->
+      <view class="mode-section-title mode-section-title-vip">
+        <text>{{ui.aiMode}}</text>
+        <text class="vip-tag-mini">{{ui.vipTag}}</text>
+      </view>
+
+      <view class="mode-card mode-card-vip {{appLanguage === 'AIChinese' ? 'mode-card-active' : ''}}"
+            data-value="AIChinese" bindtap="onLanguageSelect">
+        <view class="mode-card-icon">✨</view>
+        <view class="mode-card-main">
+          <text class="mode-name">{{ui.langAIChinese}}</text>
+          <text class="mode-desc">{{ui.langAIChineseDesc}}</text>
         </view>
+        <view class="mode-check" wx:if="{{appLanguage === 'AIChinese'}}">
+          <icon type="success_no_circle" size="16" color="#1d4ed8"/>
+        </view>
+      </view>
 
-        <view class="mode-card mode-card-vip {{appLanguage === 'AIEnglish' ? 'mode-card-active' : ''}}"
-              data-value="AIEnglish" bindtap="onLanguageSelect">
-          <view class="mode-card-icon">✨</view>
-          <view class="mode-card-main">
-            <text class="mode-name">{{ui.langAIEnglish}}</text>
-            <text class="mode-desc">{{ui.langAIEnglishDesc}}</text>
-          </view>
-          <view class="mode-check" wx:if="{{appLanguage === 'AIEnglish'}}">
-            <icon type="success_no_circle" size="16" color="#1d4ed8"/>
-          </view>
+      <view class="mode-card mode-card-vip {{appLanguage === 'AIEnglish' ? 'mode-card-active' : ''}}"
+            data-value="AIEnglish" bindtap="onLanguageSelect">
+        <view class="mode-card-icon">✨</view>
+        <view class="mode-card-main">
+          <text class="mode-name">{{ui.langAIEnglish}}</text>
+          <text class="mode-desc">{{ui.langAIEnglishDesc}}</text>
+        </view>
+        <view class="mode-check" wx:if="{{appLanguage === 'AIEnglish'}}">
+          <icon type="success_no_circle" size="16" color="#1d4ed8"/>
         </view>
       </view>
     </view>
-  </block>
+  </ui-drawer>
 
-  <block wx:if="{{showInviteSheet}}">
-    <view class="bottom-sheet-mask {{inviteSheetOpen ? 'bottom-sheet-mask-open' : ''}}"
-          bindtap="closeInviteSheet"></view>
-    <view class="bottom-sheet {{inviteSheetOpen ? 'bottom-sheet-open' : ''}}">
-      <view class="bottom-sheet-header">
-        <view class="bottom-sheet-header-left"></view>
-        <text class="bottom-sheet-title">邀请好友计划</text>
-        <view class="bottom-sheet-header-right">
-          <view class="bottom-sheet-header-btn" bindtap="closeInviteSheet">{{ui.confirm}}</view>
-        </view>
-      </view>
-      <view class="bottom-sheet-content invite-sheet-content-v2">
+  <!-- 邀请好友计划 Drawer -->
+  <ui-drawer 
+    show="{{showInviteSheet}}" 
+    title="{{ui.inviteFriends}}" 
+    bind:close="closeInviteSheet"
+    bind:confirm="onInviteConfirm"
+  >
+    <view class="invite-sheet-content-v2">
         <!-- Hero Section -->
         <view class="invite-hero">
           <text class="invite-hero-sub">{{ui.inviteRewardDesc}}</text>
@@ -239,153 +229,134 @@
             </view>
           </view>
         </view>
-      </view>
     </view>
-  </block>
+  </ui-drawer>
 
   <include src="./profile-sheet.wxml"/>
 
   <!-- 会员权益 center 弹窗 Member Hub Sheet (Redesigned) -->
-  <block wx:if="{{showMemberHub}}">
-    <view class="bottom-sheet-mask {{memberHubOpen ? 'bottom-sheet-mask-open' : ''}}" bindtap="closeMemberHub"></view>
-    <view class="bottom-sheet {{memberHubOpen ? 'bottom-sheet-open' : ''}} sheet-v3">
-      
-      <!-- Header (Common Style) -->
-      <view class="bottom-sheet-header">
-        <view class="bottom-sheet-header-left"></view>
-        <text class="bottom-sheet-title">{{ui.memberCenter}}</text>
-        <view class="bottom-sheet-header-right">
-          <view class="bottom-sheet-header-btn" bindtap="closeMemberHub">{{ui.confirm}}</view>
+  <ui-drawer 
+    title="{{ui.memberCenter}}" 
+    show="{{showMemberHub}}" 
+    confirmText="{{ui.confirm}}"
+    bind:close="closeMemberHub"
+    bind:confirm="onMemberHubConfirm"
+  >
+    <ui-scroll-view scrollY="{{true}}" custom-class="sheet-body-v3">
+      <!-- 1. Dashboard: Points & Identity (Clean version without user info) -->
+      <view class="dashboard-card tier-{{memberLevel}}">
+        <view class="dash-row-top">
+           <view class="dash-identity-box">
+              <text class="dash-badge-v3">{{memberBadgeText || ui.regularUser}}</text>
+           </view>
+           <view class="dash-status-pill {{isMember ? 'active' : ''}}">
+              {{isMember ? ui.active : ui.inactive}}
+           </view>
+        </view>
+        
+        <view class="dash-balance-row">
+           <view class="balance-item">
+              <text class="bal-label">{{ui.available}}</text>
+              <text class="bal-value">{{totalBalance}} / {{displayLimit}}</text>
+           </view>
+           <view class="balance-sep"></view>
+           <view class="balance-item align-right">
+              <text class="bal-label">{{ui.memberExpiredDate}}</text>
+              <text class="bal-value small">{{expiredDateText || ui.notActivated}}</text>
+           </view>
         </view>
       </view>
 
-      <ui-scroll-view scrollY="{{true}}" custom-class="sheet-body-v3">
-        <!-- 1. Dashboard: Points & Identity (Clean version without user info) -->
-        <view class="dashboard-card tier-{{memberLevel}}">
-          <view class="dash-row-top">
-             <view class="dash-identity-box">
-                <text class="dash-badge-v3">{{memberBadgeText || ui.regularUser}}</text>
-             </view>
-             <view class="dash-status-pill {{isMember ? 'active' : ''}}">
-                {{isMember ? ui.active : ui.inactive}}
-             </view>
-          </view>
-          
-          <view class="dash-balance-row">
-             <view class="balance-item">
-                <text class="bal-label">{{ui.available}}</text>
-                <text class="bal-value">{{totalBalance}} / {{displayLimit}}</text>
-             </view>
-             <view class="balance-sep"></view>
-             <view class="balance-item align-right">
-                <text class="bal-label">{{ui.memberExpiredDate}}</text>
-                <text class="bal-value small">{{expiredDateText || ui.notActivated}}</text>
-             </view>
-          </view>
-        </view>
+      <!-- 2. Shop Section -->
+      <view class="shop-section">
+         <view class="section-head">
+            <text class="sec-title">{{ui.rechargeUpgrade}}</text>
+         </view>
+         
+         <!-- Product List (Horizontal) -->
+         <ui-scroll-view scrollX="{{true}}" custom-class="product-scroll-v3">
+            <block wx:for="{{ schemsList || [] }}" wx:key="scheme_id">
+               <view class="prod-card-v3 {{selectedSchemeId === item.scheme_id ? 'selected' : ''}} {{item.type === 'topup' ? 'type-topup' : 'type-plan'}}"
+                     bindtap="onSelectScheme" 
+                     data-id="{{item.scheme_id}}">
+                  
+                  <view class="prod-upper">
+                     <text class="prod-name">{{appLanguage === 'Chinese' || appLanguage === 'AIChinese' ? item.name_chinese : item.name_english}}</text>
+                     <text class="prod-price"><text class="curr">¥</text>{{item.price / 100}}</text>
+                  </view>
+                  
+                  <view class="prod-lower">
+                     <view class="prod-points">
+                        <text class="pts-val">+{{item.points}}</text>
+                        <text class="pts-unit">{{ui.unitPoints}}</text>
+                     </view>
+                     <view class="prod-days" wx:if="{{item.days > 0}}">{{item.days}}{{ui.unitDays}}</view>
+                     <view class="prod-days" wx:else>{{ui.forever}}</view>
+                  </view>
 
-        <!-- 2. Shop Section -->
-        <view class="shop-section">
-           <view class="section-head">
-              <text class="sec-title">{{ui.rechargeUpgrade}}</text>
-           </view>
-           
-           <!-- Product List (Horizontal) -->
-           <ui-scroll-view scrollX="{{true}}" custom-class="product-scroll-v3">
-              <block wx:for="{{ schemsList || [] }}" wx:key="scheme_id">
-                 <view class="prod-card-v3 {{selectedSchemeId === item.scheme_id ? 'selected' : ''}} {{item.type === 'topup' ? 'type-topup' : 'type-plan'}}"
-                       bindtap="onSelectScheme" 
-                       data-id="{{item.scheme_id}}">
-                    
-                    <view class="prod-upper">
-                       <text class="prod-name">{{appLanguage === 'Chinese' || appLanguage === 'AIChinese' ? item.name_chinese : item.name_english}}</text>
-                       <text class="prod-price"><text class="curr">¥</text>{{item.price / 100}}</text>
-                    </view>
-                    
-                    <view class="prod-lower">
-                       <view class="prod-points">
-                          <text class="pts-val">+{{item.points}}</text>
-                          <text class="pts-unit">{{ui.unitPoints}}</text>
-                       </view>
-                       <view class="prod-days" wx:if="{{item.days > 0}}">{{item.days}}{{ui.unitDays}}</view>
-                       <view class="prod-days" wx:else>{{ui.forever}}</view>
-                    </view>
-
-                    <view class="selection-check"></view>
-                 </view>
-              </block>
-           </ui-scroll-view>
-           
-           <!-- Selected Product Details -->
-           <view class="selection-detail-box" wx:if="{{selectedScheme}}">
-              
-              <!-- Tagline / Description (Always visible) -->
-              <text class="detail-desc">{{(appLanguage === 'Chinese' || appLanguage === 'AIChinese') ? (selectedScheme.description_chinese || selectedScheme.description) : (selectedScheme.description_english || selectedScheme.description)}}</text>
-              
-              <view class="privileges-notes">
-                 <block wx:if="{{(appLanguage === 'Chinese' || appLanguage === 'AIChinese') && selectedScheme.features_chinese}}">
-                    <view class="note-item" wx:for="{{selectedScheme.features_chinese}}" wx:key="*this">
-                         <text class="note-check">✓</text>
-                         <text>{{item}}</text>
-                    </view>
-                 </block>
-                 <block wx:elif="{{selectedScheme.features_english}}">
-                    <view class="note-item" wx:for="{{selectedScheme.features_english}}" wx:key="*this">
-                         <text class="note-check">✓</text>
-                         <text>{{item}}</text>
-                    </view>
-                 </block>
-              </view>
-           </view>
-        </view>
-        <view class="bottom-spacer"></view>
-      </ui-scroll-view>
-
-      <!-- Sticky Footer: Pay Action -->
-      <view class="sheet-footer-v3">
-         <view class="footer-left">
-            <text class="total-label">{{ui.totalLabel}}</text>
-            <view class="total-price-box">
-                <block wx:if="{{isCalculatingPrice}}">
-                    <view class="price-loading-spinner"></view>
-                </block>
-                <block wx:else>
-                    <text class="total-curr">¥</text>
-                    <text class="old-amt" wx:if="{{isUpgradeOrder}}">{{originalPrice / 100}}</text>
-                    <text class="total-amt">{{finalPrice / 100}}</text>
-                </block>
+                  <view class="selection-check"></view>
+               </view>
+            </block>
+         </ui-scroll-view>
+         
+         <!-- Selected Product Details -->
+         <view class="selection-detail-box" wx:if="{{selectedScheme}}">
+            <text class="detail-desc">{{(appLanguage === 'Chinese' || appLanguage === 'AIChinese') ? (selectedScheme.description_chinese || selectedScheme.description) : (selectedScheme.description_english || selectedScheme.description)}}</text>
+            <view class="privileges-notes">
+               <block wx:if="{{(appLanguage === 'Chinese' || appLanguage === 'AIChinese') && selectedScheme.features_chinese}}">
+                  <view class="note-item" wx:for="{{selectedScheme.features_chinese}}" wx:key="*this">
+                       <text class="note-check">✓</text>
+                       <text>{{item}}</text>
+                  </view>
+               </block>
+               <block wx:elif="{{selectedScheme.features_english}}">
+                  <view class="note-item" wx:for="{{selectedScheme.features_english}}" wx:key="*this">
+                       <text class="note-check">✓</text>
+                       <text>{{item}}</text>
+                  </view>
+               </block>
             </view>
          </view>
-         <view class="pay-btn-v3" bindtap="onPurchase">
-            {{ui.payNow}}
-         </view>
       </view>
+      <view class="bottom-spacer"></view>
+    </ui-scroll-view>
 
+    <!-- Sticky Footer: Pay Action -->
+    <view class="sheet-footer-v3">
+       <view class="footer-left">
+          <text class="total-label">{{ui.totalLabel}}</text>
+          <view class="total-price-box">
+              <block wx:if="{{isCalculatingPrice}}">
+                  <view class="price-loading-spinner"></view>
+              </block>
+              <block wx:else>
+                  <text class="total-curr">¥</text>
+                  <text class="old-amt" wx:if="{{isUpgradeOrder}}">{{originalPrice / 100}}</text>
+                  <text class="total-amt">{{finalPrice / 100}}</text>
+              </block>
+          </view>
+       </view>
+       <view class="pay-btn-v3" bindtap="onPurchase">
+          {{ui.payNow}}
+       </view>
     </view>
-  </block>
+  </ui-drawer>
 
   <!-- 联系作者弹窗 Contact Author Sheet -->
-  <block wx:if="{{showContactSheet}}">
-    <view class="bottom-sheet-mask {{contactSheetOpen ? 'bottom-sheet-mask-open' : ''}}"
-          bindtap="closeContactSheet"></view>
-    <view class="bottom-sheet {{contactSheetOpen ? 'bottom-sheet-open' : ''}}">
-      <view class="bottom-sheet-header">
-        <view class="bottom-sheet-header-left"></view>
-        <text class="bottom-sheet-title">{{ui.contactAuthor}}</text>
-        <view class="bottom-sheet-header-right">
-          <view class="bottom-sheet-header-btn" bindtap="closeContactSheet">{{ui.confirm}}</view>
-        </view>
+  <ui-drawer 
+    title="{{ui.contactAuthor}}" 
+    show="{{showContactSheet}}" 
+    confirmText="{{ui.confirm}}"
+    bind:close="closeContactSheet"
+    bind:confirm="closeContactSheet"
+  >
+    <view class="author-sheet-body">
+      <text class="author-slogan">{{ui.authorWechatSlogan}}</text>
+      <view class="qr-code-container-sheet">
+        <image class="qr-code-image-sheet" src="/assets/contact-info.JPG" mode="widthFix" show-menu-by-longpress="{{true}}" />
       </view>
-      <view class="bottom-sheet-content author-sheet-content">
-        <view class="author-sheet-body">
-          <text class="author-slogan">{{ui.authorWechatSlogan}}</text>
-          <view class="qr-code-container-sheet">
-            <image class="qr-code-image-sheet" src="/assets/contact-info.JPG" mode="widthFix" show-menu-by-longpress="{{true}}" />
-          </view>
-          <text class="qr-hint">{{ui.qrHint}}</text>
-        </view>
-      </view>
+      <text class="qr-hint">{{ui.qrHint}}</text>
     </view>
-  </block>
+  </ui-drawer>
   </block>
 </view>

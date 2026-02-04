@@ -5,7 +5,7 @@
   z-index: 1000;
   opacity: 0;
   visibility: hidden;
-  transition: all 0.3s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .ui-drawer-mask.show {
@@ -19,10 +19,10 @@
   left: 0;
   right: 0;
   background: #fff;
-  border-radius: 32rpx 32rpx 0 0;
+  border-radius: 40rpx 40rpx 0 0;
   z-index: 1001;
   transform: translateY(100%);
-  transition: all 0.3s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   max-height: 85vh;
   display: flex;
   flex-direction: column;
@@ -36,32 +36,67 @@
   height: 110rpx;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  padding: 0 32rpx;
   position: relative;
   border-bottom: 2rpx solid #f1f5f9;
 }
 
 .ui-drawer-title {
-  font-size: 34rpx;
-  font-weight: 700;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 32rpx;
+  font-weight: 600;
   color: #1e293b;
 }
 
+.ui-drawer-header-left, .ui-drawer-header-right {
+  min-width: 100rpx;
+  display: flex;
+  align-items: center;
+}
+
+.ui-drawer-header-right {
+  justify-content: flex-end;
+}
+
 .ui-drawer-close {
-  position: absolute;
-  right: 32rpx;
-  font-size: 36rpx;
+  font-size: 32rpx;
   color: #94a3b8;
   padding: 10rpx;
+}
+
+.ui-drawer-confirm-btn {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #2e5fe9;
+  padding: 12rpx 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ui-drawer-confirm-btn.loading {
+  opacity: 0.6;
+}
+
+.ui-drawer-loading-icon {
+  width: 32rpx;
+  height: 32rpx;
+  border: 4rpx solid #2e5fe9;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: ui-drawer-spin 0.8s linear infinite;
+}
+
+@keyframes ui-drawer-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .ui-drawer-content {
   flex: 1;
   overflow-y: auto;
-}
-
-.ui-drawer-footer {
-  padding: 32rpx;
-  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
-  border-top: 2rpx solid #f1f5f9;
+  -webkit-overflow-scrolling: touch;
 }

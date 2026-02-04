@@ -1,13 +1,24 @@
-<view class="ui-drawer-mask {{show ? 'show' : ''}}" bindtap="onClose"></view>
+<view class="ui-drawer-mask {{show ? 'show' : ''}}" bindtap="onMaskTap"></view>
 <view class="ui-drawer-container {{show ? 'show' : ''}}">
   <view class="ui-drawer-header">
+    <view class="ui-drawer-header-left">
+      <slot name="header-left"></slot>
+      <view wx:if="{{showClose}}" class="ui-drawer-close" bindtap="onClose">✕</view>
+    </view>
     <text class="ui-drawer-title">{{title}}</text>
-    <view class="ui-drawer-close" bindtap="onClose">✕</view>
+    <view class="ui-drawer-header-right">
+      <slot name="header-right-extra"></slot>
+      <view 
+        wx:if="{{showConfirm}}" 
+        class="ui-drawer-confirm-btn {{loading ? 'loading' : ''}}" 
+        bindtap="onConfirm"
+      >
+        <view wx:if="{{loading}}" class="ui-drawer-loading-icon"></view>
+        <text wx:else>{{confirmText}}</text>
+      </view>
+    </view>
   </view>
   <view class="ui-drawer-content">
     <slot></slot>
-  </view>
-  <view class="ui-drawer-footer" wx:if="{{showFooter}}">
-    <slot name="footer"></slot>
   </view>
 </view>

@@ -665,6 +665,16 @@
   padding: 20rpx;
 }
 
+.bottom-sheet-header-btn-extra {
+  font-size: 26rpx;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 10rpx 20rpx;
+  border-radius: 12rpx;
+  margin-right: 16rpx;
+  font-weight: 500;
+}
+
 .bottom-sheet-header-btn.primary {
   color: #1d4ed8;
   font-weight: 600;

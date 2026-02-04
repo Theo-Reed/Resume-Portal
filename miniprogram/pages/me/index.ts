@@ -422,17 +422,16 @@ Page({
     },
 
     openLanguageSheet() {
-        this.setData({ showLanguageSheet: true, languageSheetOpen: false })
-        setTimeout(() => {
-            this.setData({ languageSheetOpen: true })
-        }, 30)
+        this.setData({ showLanguageSheet: true })
     },
 
     closeLanguageSheet() {
-        this.setData({ languageSheetOpen: false })
-        setTimeout(() => {
-            this.setData({ showLanguageSheet: false })
-        }, 300)
+        this.setData({ showLanguageSheet: false })
+    },
+
+    onLanguageConfirm(e: any) {
+        const { complete } = e.detail;
+        complete();
     },
 
     async onLanguageSelect(e: WechatMiniprogram.TouchEvent) {
@@ -505,22 +504,18 @@ Page({
     },
 
     openInviteSheet() {
-        // Mount first, then open on next tick to trigger CSS transition.
-        this.setData({ showInviteSheet: true, inviteSheetOpen: false })
-
         // Load user's invite code
         this.loadInviteCode()
-
-        setTimeout(() => {
-            this.setData({ inviteSheetOpen: true })
-        }, 30)
+        this.setData({ showInviteSheet: true })
     },
 
     closeInviteSheet() {
-        this.setData({ inviteSheetOpen: false })
-        setTimeout(() => {
-            this.setData({ showInviteSheet: false })
-        }, 300)
+        this.setData({ showInviteSheet: false })
+    },
+
+    onInviteConfirm(e: any) {
+        const { complete } = e.detail;
+        complete();
     },
 
     async loadInviteCode() {
@@ -564,25 +559,19 @@ Page({
 
     onContactAuthor() {
         this.setData({
-            showContactSheet: true,
-            contactSheetOpen: false
+            showContactSheet: true
         })
-        setTimeout(() => {
-            this.setData({
-                contactSheetOpen: true
-            })
-        }, 30)
     },
 
     closeContactSheet() {
         this.setData({
-            contactSheetOpen: false
+            showContactSheet: false
         })
-        setTimeout(() => {
-            this.setData({
-                showContactSheet: false
-            })
-        }, 300)
+    },
+
+    onContactConfirm(e: any) {
+        const { complete } = e.detail;
+        complete();
     },
 
     onInviteCodeInput(e: any) {
@@ -625,20 +614,17 @@ Page({
 
         this.setData({
             showProfileSheet: true,
-            profileSheetOpen: false,
             newNickname: currentNickname,
         })
-
-        setTimeout(() => {
-            this.setData({ profileSheetOpen: true })
-        }, 30)
     },
 
     closeProfileSheet() {
-        this.setData({ profileSheetOpen: false })
-        setTimeout(() => {
-            this.setData({ showProfileSheet: false, newNickname: '' })
-        }, 300)
+        this.setData({ showProfileSheet: false, newNickname: '' })
+    },
+
+    onProfileConfirm(e: any) {
+        const { complete } = e.detail;
+        complete();
     },
 
     async onUploadAvatar() {
@@ -931,10 +917,12 @@ Page({
     },
 
     closeMemberHub() {
-        this.setData({ memberHubOpen: false })
-        setTimeout(() => {
-            this.setData({ showMemberHub: false })
-        }, 300)
+        this.setData({ showMemberHub: false })
+    },
+
+    onMemberHubConfirm(e: any) {
+        const { complete } = e.detail;
+        complete();
     },
 
     onRenew() {

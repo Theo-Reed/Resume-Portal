@@ -277,10 +277,6 @@ Page({
           savedSearchConditions: formattedConditions,
           showRestoreSheet: true,
           isRestoreEditing: false,
-        }, () => {
-          setTimeout(() => {
-            this.setData({ restoreSheetOpen: true })
-          }, 50)
         })
       } catch (err) {
         ui.showToast('加载失败')
@@ -288,15 +284,16 @@ Page({
     },
 
     closeRestoreSheet() {
-      this.setData({ restoreSheetOpen: false }, () => {
-        setTimeout(() => {
-          this.setData({ 
-            showRestoreSheet: false, 
-            savedSearchConditions: [],
-            isRestoreEditing: false,
-          })
-        }, 300)
+      this.setData({ 
+        showRestoreSheet: false, 
+        savedSearchConditions: [],
+        isRestoreEditing: false,
       })
+    },
+
+    onRestoreConfirm(e: any) {
+      const { complete } = e.detail;
+      complete();
     },
 
     goToMe() {

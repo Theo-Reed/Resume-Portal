@@ -262,16 +262,15 @@ Page({
     }
     // 否则打开弹窗
     this.setData({ showApplyMenu: true })
-    setTimeout(() => {
-      this.setData({ applyMenuOpen: true })
-    }, 50)
   },
 
   closeApplyMenu() {
-    this.setData({ applyMenuOpen: false })
-    setTimeout(() => {
-      this.setData({ showApplyMenu: false })
-    }, 300)
+    this.setData({ showApplyMenu: false })
+  },
+
+  onApplyMenuConfirm(e: any) {
+    const { complete } = e.detail;
+    complete();
   },
 
   onViewSource() {

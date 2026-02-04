@@ -1282,6 +1282,38 @@ Page({
     this.setData({ aiMessageForm: e.detail.value })
   },
 
+  onAiMessageConfirm(e: any) {
+    const { complete } = e.detail;
+    this.onSaveAiMessageSheet().finally(() => complete());
+  },
+
+  onGenderConfirm(e: any) {
+    const { complete } = e.detail;
+    complete();
+  },
+
+  onSkillsConfirm(e: any) {
+    const { complete } = e.detail;
+    this.onSaveSkills().finally(() => complete());
+  },
+
+  onCertificatesConfirm(e: any) {
+    const { complete } = e.detail;
+    this.onSaveCertificates().finally(() => complete());
+  },
+
+  onDateConfirm(e: any) {
+    const { complete } = e.detail;
+    this.onConfirmDate();
+    complete();
+  },
+
+  onDegreePickConfirm(e: any) {
+    const { complete } = e.detail;
+    this.onConfirmDegree();
+    complete();
+  },
+
   async onSaveAiMessageSheet() {
     const payload: any = { aiMessage: this.data.aiMessageForm || '' }
     const success = await this.saveResumeProfile(payload, false)
