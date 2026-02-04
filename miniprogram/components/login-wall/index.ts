@@ -1,6 +1,8 @@
 import { callApi } from '../../utils/request';
 const lottie = require('../../utils/lottie');
 
+import { StatusCode } from '../../utils/statusCodes';
+
 Component({
   properties: {
     visible: {
@@ -164,13 +166,13 @@ Component({
           app.globalData.user = res.data.user;
           
           wx.hideLoading();
-          wx.showToast({ title: '登录成功', icon: 'success' });
+          wx.showToast({ title: type === 'login' ? '登录成功' : '注册成功', icon: 'success' });
           
           // 触发父页面刷新或状态更新
           this.triggerEvent('loginSuccess', res.data.user);
           
           // 重置组件状态
-          this.setData({ visible: false, phone: '', password: '' });
+          this.setData({ internalPhase: 'hidden', phone: '', password: '' });
           
           // 全局刷新用户状态
           app.refreshUser().catch(() => {});
@@ -184,7 +186,18 @@ Component({
         }
       } catch (err: any) {
         wx.hideLoading();
-        wx.showToast({ title: err.message || '网络繁忙', icon: 'none' });
+        console.error('[LoginWall] Submit Error:', err);
+        
+        let msg = '服务器繁忙';
+        const resData = err.data;
+        
+        if (resData && resData.code === StatusCode.USER_EXISTS) {
+            msg = '该手机号已注册';
+        } else if (resData && (resData.code === StatusCode.UNAUTHORIZED || resData.code === StatusCode.INVALID_TOKEN)) {
+            msg = '账号或密码错误';
+        }
+
+        wx.showToast({ title: msg, icon: 'none' });
       }
     }
   }

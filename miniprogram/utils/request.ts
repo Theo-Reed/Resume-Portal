@@ -1,5 +1,7 @@
 // miniprogram/utils/request.ts
 
+import { StatusCode } from './statusCodes';
+
 const BASE_URL = 'https://feiwan.online/api';
 const HOST_URL = 'https://feiwan.online';
 
@@ -12,6 +14,7 @@ export const formatFileUrl = (url: string | undefined): string => {
 
 export interface ApiResponse<T = any> {
   success: boolean;
+  code?: StatusCode;
   data?: T;
   message?: string;
   result?: T; // To maintain compatibility with cloud function response structure

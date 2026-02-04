@@ -1,6 +1,7 @@
 // app.ts
 import { normalizeLanguage, type AppLanguage, t } from './utils/i18n'
 import { request, callApi } from './utils/request'
+import { StatusCode } from './utils/statusCodes'
 
 type LangListener = (lang: AppLanguage) => void
 
@@ -48,21 +49,21 @@ App<IAppOption>({
     this.globalData.userPromise = this.refreshUser().then(user => {
         if (user && user.phoneNumber) {
             this.globalData.bootStatus = 'success';
-            // 注意：这里不要 showTabBar，必须由 login-wall 组件内部根据状态决定何时 show
-            // 否则会发生竞态条件
         } else {
-            // 兜底逻辑：如果前面的 catch 漏网了，或者状态没变
-            // 只要没拿到 user，就绝对不能是 success
-            if (this.globalData.bootStatus === 'success' || this.globalData.bootStatus === 'loading') {
-                this.globalData.bootStatus = 'unauthorized';
-            }
+            this.globalData.bootStatus = 'unauthorized';
         }
         return user;
     }).catch(err => {
-        console.error('[Launch] Auth fatal error:', err);
-        // 任何未知错误都按照 server-down 处理，绝不放行
-        this.globalData.bootStatus = 'server-down';
-        return null; // 返回 null 确保 Promise 链结果准确
+        console.error('[Launch] Auth error:', err);
+        
+        // 关键修正：如果是 404 或 401，说明是用户没找到或没授权，属于正常逻辑，应显示登录墙
+        if (err.statusCode === 404 || err.statusCode === 401) {
+            this.globalData.bootStatus = 'unauthorized';
+        } else {
+            // 真正的网络故障或 500 错误
+            this.globalData.bootStatus = 'server-down';
+        }
+        return null;
     });
 
     await this.globalData.userPromise
@@ -210,7 +211,8 @@ App<IAppOption>({
     } catch (err: any) {
       console.log('[Auth] Error in refreshUser:', err);
       
-      const statusCode = err.statusCode || (err.response && err.response.statusCode);
+      const statusCode = err.statusCode || (err.response && err.response.statusCode) || (err.data && err.data.code);
+      const bizCode = err.data && err.data.code;
 
       // 1. 检查是否是微信底层报告的网络错误（无连接/超时）
       if (err.errMsg && (err.errMsg.includes('timeout') || err.errMsg.includes('fail'))) {
@@ -218,19 +220,22 @@ App<IAppOption>({
         if ((network as any).networkType === 'none') {
           this.globalData.bootStatus = 'no-network';
         } else {
-          // 有网但请求失败（可能是 DNS 错误或服务器彻底宕机连不上的 404/ECONNREFUSED）
+          // 有网但请求失败（可能是 DNS 错误或服务器彻底宕机连不上的）
           this.globalData.bootStatus = 'server-down';
         }
       } 
-      // 2. 检查具体的 HTTP 状态码
-      else if (statusCode === 404 || statusCode >= 500) {
-        // 404 在此场景下意味着后端接口路径不存在，通常是后端未部署或挂了
-        this.globalData.bootStatus = 'server-down';
-      } 
-      else if (statusCode === 401 || statusCode === 403 || err.message === 'AUTH_REQUIRED') {
+      // 2. 检查具体的商业状态码或 HTTP 状态码
+      else if (bizCode === StatusCode.USER_NOT_FOUND || statusCode === 404) {
+        // 用户不存在（新用户），在 Auth 系统中视为“未授权”状态以触发登录墙
+        this.globalData.bootStatus = 'unauthorized';
+      }
+      else if (bizCode === StatusCode.UNAUTHORIZED || bizCode === StatusCode.INVALID_TOKEN || statusCode === 401 || statusCode === 403 || err.message === 'AUTH_REQUIRED') {
         // 正常的“未登录”状态
         this.globalData.bootStatus = 'unauthorized';
       } 
+      else if (statusCode >= 500 || bizCode === StatusCode.INTERNAL_ERROR) {
+        this.globalData.bootStatus = 'server-down';
+      }
       else {
         // 其他未知错误，安全起见引导至登录页
         this.globalData.bootStatus = 'unauthorized';
