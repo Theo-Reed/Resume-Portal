@@ -11,5 +11,8 @@
     "stylelint": "^16.26.1",
     "stylelint-config-standard": "^40.0.0",
     "stylelint-declaration-strict-value": "^1.10.11"
+  },
+  "dependencies": {
+    "lottie-miniprogram": "^1.0.12"
   }
 }

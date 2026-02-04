@@ -2,11 +2,11 @@
   <!-- Shared Background: Starts White, Fades out on Success or Login -->
   <view class="glass-mask {{internalPhase === 'hidden' || internalPhase === 'login' ? 'fade-out' : ''}}"></view>
 
-  <!-- Shared Animated Globe -->
+  <!-- Shared Animated Globe (Custom SVG file for native MP support) -->
   <view class="shared-globe {{internalPhase}}">
-    <view class="globe-water"></view>
-    <view class="globe-land"></view>
-    <view class="globe-shine"></view>
+    <view class="ai-star-container">
+      <image class="ai-star" src="/assets/icons/ai-star.svg" mode="aspectFit" />
+    </view>
   </view>
   
   <!-- Phase 1: Splash Content (Visual Purity) -->

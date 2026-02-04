@@ -1,4 +1,5 @@
 import { callApi } from '../../utils/request';
+const lottie = require('../../utils/lottie');
 
 Component({
   properties: {
@@ -8,7 +9,7 @@ Component({
       observer(newVal) {
         console.log('[LoginWall] Visible property changed:', newVal);
         if (newVal) {
-          wx.hideTabBar({ animated: false }).catch(() => {});
+          wx.hideTabBar({ animated: false } as any).catch(() => {});
           this.startFlow();
         } else {
            const app = getApp<any>();
@@ -19,7 +20,7 @@ Component({
                return;
            }
           this.setData({ internalPhase: 'hidden', _flowStarted: false });
-          wx.showTabBar({ animated: true }).catch(() => {});
+          wx.showTabBar({ animated: true } as any).catch(() => {});
         }
       }
     }
@@ -28,11 +29,16 @@ Component({
   lifetimes: {
     attached() {
       // 只要组件挂载，第一件事就是隐藏 TabBar，防止闪烁
-      wx.hideTabBar({ animated: false }).catch(() => {});
+      wx.hideTabBar({ animated: false } as any).catch(() => {});
       
+      // Removed initLottie() since we switched to SVG for better reliability and fidelity
+
       if (this.data.visible) {
         this.startFlow();
       }
+    },
+    detached() {
+      // Cleanup
     }
   },
 
@@ -48,6 +54,8 @@ Component({
   },
 
   methods: {
+    _lottieAni: null as any,
+
     async startFlow() {
       if (this.data._flowStarted) return;
       this.setData({ _flowStarted: true });
