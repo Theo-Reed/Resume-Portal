@@ -78,7 +78,7 @@
 }
 
 .filter-nav-item-active {
-  color: #1d4ed8; /* 主题蓝色文字，与首页tab选中文字一致 */
+  color: var(--primary-dark); /* 主题蓝色文字，与首页tab选中文字一致 */
   font-weight: 600;
   background-color: transparent;
 }
@@ -165,11 +165,11 @@
 
 .filter-chip-active {
   background: #e5f0ff; 
-  border-color: #1d4ed8; /* 主题蓝色边框 */
+  border-color: var(--primary-dark); /* 主题蓝色边框 */
 }
 
 .filter-chip-active .filter-chip-text {
-  color: #1d4ed8; /* 主题蓝色文字 */
+  color: var(--primary-dark); /* 主题蓝色文字 */
   font-weight: 600;
 }
 

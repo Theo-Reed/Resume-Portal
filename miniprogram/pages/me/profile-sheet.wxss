@@ -63,7 +63,7 @@
 .profile-nickname-change-btn-text,
 .profile-phone-change-btn-text {
     font-size: 25rpx;
-    color: #1d4ed8;
+    color: var(--primary-dark);
     line-height: 1;
     display: block;
     padding: 0;
@@ -299,7 +299,7 @@
 }
 
 .profile-expired-value-active {
-    color: #1d4ed8;
+    color: var(--primary-dark);
     font-weight: 500;
 }
 

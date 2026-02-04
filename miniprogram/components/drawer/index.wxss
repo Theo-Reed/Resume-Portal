@@ -152,7 +152,7 @@
 }
 
 .drawer-nav-item-active {
-  color: #1d4ed8;
+  color: var(--primary-dark);
   font-weight: 600;
   background-color: transparent;
 }
@@ -281,11 +281,11 @@
 
 .drawer-chip-active {
   background: #e5f0ff;
-  border-color: #1d4ed8; /* 主题蓝色边框 */
+  border-color: var(--primary-dark); /* 主题蓝色边框 */
 }
 
 .drawer-chip-active .drawer-chip-text {
-  color: #1d4ed8; /* 主题蓝色字体 */
+  color: var(--primary-dark); /* 主题蓝色字体 */
   font-weight: 600;
 }
 

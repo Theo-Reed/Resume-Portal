@@ -3,18 +3,23 @@
   <view class="ui-drawer-header">
     <view class="ui-drawer-header-left">
       <slot name="header-left"></slot>
-      <view wx:if="{{showClose}}" class="ui-drawer-close" bindtap="onClose">✕</view>
+      <view 
+        class="ui-drawer-close {{!showClose ? 'hidden' : ''}}" 
+        bindtap="onClose"
+      >
+        <text>✕</text>
+      </view>
     </view>
     <text class="ui-drawer-title">{{title}}</text>
     <view class="ui-drawer-header-right">
       <slot name="header-right-extra"></slot>
       <view 
         wx:if="{{showConfirm}}" 
-        class="ui-drawer-confirm-btn {{loading ? 'loading' : ''}}" 
+        class="ui-drawer-confirm-btn {{loading ? 'loading' : ''}} {{!confirmActive ? 'disabled' : ''}}" 
         bindtap="onConfirm"
       >
         <view wx:if="{{loading}}" class="ui-drawer-loading-icon"></view>
-        <text wx:else>{{confirmText}}</text>
+        <text wx:else>{{confirmActive ? (confirmText || '完成') : '关闭'}}</text>
       </view>
     </view>
   </view>

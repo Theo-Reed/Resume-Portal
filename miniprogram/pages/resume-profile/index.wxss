@@ -37,7 +37,7 @@
 
 .tips-text {
   font-size: 24rpx;
-  color: #1d4ed8; /* Theme blue text */
+  color: var(--primary-dark); /* Theme blue text */
   line-height: 1.4;
   font-weight: 500;
 }
@@ -169,7 +169,7 @@
 
 .add-btn-text {
   font-size: 24rpx;
-  color: #1d4ed8;
+  color: var(--primary-dark);
   font-weight: 600;
 }
 
@@ -248,13 +248,13 @@
 
 .tag-text {
   font-size: 26rpx;
-  color: #1d4ed8;
+  color: var(--primary-dark);
   font-weight: 500;
 }
 
 .tag-del {
   font-size: 32rpx;
-  color: #1d4ed8;
+  color: var(--primary-dark);
   padding: 0 4rpx;
   line-height: 1;
   opacity: 0.6;
@@ -595,7 +595,7 @@
 }
 
 .picker-option-active .option-text {
-  color: #1d4ed8;
+  color: var(--primary-dark);
   font-weight: 600;
 }
 
@@ -607,8 +607,8 @@
 .check-icon {
   width: 12rpx;
   height: 24rpx;
-  border-right: 4rpx solid #1d4ed8;
-  border-bottom: 4rpx solid #1d4ed8;
+  border-right: 4rpx solid var(--primary-dark);
+  border-bottom: 4rpx solid var(--primary-dark);
   transform: rotate(45deg);
 }
 
@@ -676,7 +676,7 @@
 }
 
 .bottom-sheet-header-btn.primary {
-  color: #1d4ed8;
+  color: var(--primary-dark);
   font-weight: 600;
 }
 
@@ -809,7 +809,7 @@
 }
 .suggestion-main {
   font-size: 30rpx;
-  color: #1d4ed8; 
+  color: var(--primary-dark); 
   display: block;
   font-weight: 500;
 }

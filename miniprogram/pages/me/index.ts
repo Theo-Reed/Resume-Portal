@@ -21,10 +21,13 @@ Page({
         showLanguageSheet: false,
         languageSheetOpen: false,
         appLanguage: 'Chinese' as AppLanguage,
+        tempLanguage: 'Chinese' as AppLanguage,
+        isLanguageChanged: false,
         isAiChineseUnlocked: false,
 
         showInviteSheet: false,
         inviteSheetOpen: false,
+        isInviteCodeValid: false,
         myInviteCode: '',
         inputInviteCode: '',
 
@@ -422,35 +425,47 @@ Page({
     },
 
     openLanguageSheet() {
-        this.setData({ showLanguageSheet: true })
+        this.setData({ 
+            showLanguageSheet: true,
+            tempLanguage: this.data.appLanguage,
+            isLanguageChanged: false
+        })
     },
 
     closeLanguageSheet() {
         this.setData({ showLanguageSheet: false })
     },
 
-    onLanguageConfirm(e: any) {
+    async onLanguageConfirm(e: any) {
         const { complete } = e.detail;
-        complete();
-    },
-
-    async onLanguageSelect(e: WechatMiniprogram.TouchEvent) {
-        const { ui: uiStrings } = this.data
-        const lang = (e.currentTarget.dataset.value || '') as AppLanguage
-        if (!lang) return
-
-        const app = getApp<IAppOption>() as any
-
-        // 如果选择的语言和当前语言相同，只关闭弹窗，不做任何操作
-        const currentLang = normalizeLanguage(app?.globalData?.language)
-        if (currentLang === lang) {
-            this.closeLanguageSheet()
+        const { tempLanguage, appLanguage, ui: uiStrings } = this.data
+        
+        if (tempLanguage === appLanguage) {
+            complete()
             return
         }
 
+        const app = getApp<IAppOption>() as any
+        
+        try {
+            await app.setLanguage(tempLanguage)
+            this.syncUserFromApp()
+            this.syncLanguageFromApp()
+            complete()
+            ui.showSuccess(uiStrings.updateSuccess)
+        } catch (err) {
+            complete()
+            ui.showError(uiStrings.updateFailed)
+        }
+    },
+
+    async onLanguageSelect(e: WechatMiniprogram.TouchEvent) {
+        const { ui: uiStrings, appLanguage } = this.data
+        const lang = (e.currentTarget.dataset.value || '') as AppLanguage
+        if (!lang) return
+
         // Check if AI features are unlocked
         if (lang.startsWith('AI') && !this.data.isAiChineseUnlocked) {
-            this.closeLanguageSheet()
             wx.showModal({
                 title: uiStrings.aiUnlockTitle,
                 content: uiStrings.aiUnlockContent,
@@ -458,6 +473,7 @@ Page({
                 cancelText: uiStrings.cancel,
                 success: (res) => {
                     if (res.confirm) {
+                        this.closeLanguageSheet()
                         this.openMemberHub()
                     }
                 },
@@ -465,34 +481,10 @@ Page({
             return
         }
 
-        // 1) Close sheet immediately (no waiting)
-        this.closeLanguageSheet()
-
-        // 2) Show modal loading (blocks all touches)
-        ui.showLoading('')
-
-        const minDuration = new Promise<void>((resolve) => setTimeout(resolve, 1500))
-
-        // 3) Kick off language switch + persistence
-        const action = (async () => {
-            await app.setLanguage(lang)
-            this.syncUserFromApp()
-            this.syncLanguageFromApp()
-        })()
-
-        try {
-            await Promise.all([minDuration, action])
-            ui.hideLoading()
-            ui.showSuccess(uiStrings.settingsUpdated)
-        }
-        catch (err) {
-            try {
-                await action
-            }
-            finally {
-                ui.hideLoading()
-            }
-        }
+        this.setData({
+            tempLanguage: lang,
+            isLanguageChanged: lang !== appLanguage
+        })
     },
 
     onLanguageTap() {
@@ -515,7 +507,11 @@ Page({
 
     onInviteConfirm(e: any) {
         const { complete } = e.detail;
-        complete();
+        if (this.data.isInviteCodeValid) {
+            this.onApplyInviteCode(complete);
+        } else {
+            complete();
+        }
     },
 
     async loadInviteCode() {
@@ -575,13 +571,18 @@ Page({
     },
 
     onInviteCodeInput(e: any) {
-        this.setData({ inputInviteCode: e.detail.value })
+        const value = e.detail.value;
+        this.setData({ 
+            inputInviteCode: value,
+            isInviteCodeValid: value && value.length === 6
+        })
     },
 
-    async onApplyInviteCode() {
+    async onApplyInviteCode(complete?: Function) {
         const { inputInviteCode, ui: uiStrings } = this.data
-        if (!inputInviteCode || inputInviteCode.length !== 8) {
+        if (!inputInviteCode || inputInviteCode.length !== 6) {
             ui.showToast(uiStrings.inviteCodeInvalid)
+            if (complete) complete()
             return
         }
 
@@ -591,15 +592,21 @@ Page({
             const resultData = result?.result as any
             if (resultData?.success) {
                 ui.showToast(uiStrings.inviteCodeApplied)
-                this.setData({ inputInviteCode: '' })
+                this.setData({ 
+                    inputInviteCode: '',
+                    isInviteCodeValid: false
+                })
+                if (complete) complete()
                 this.closeInviteSheet()
             }
             else {
                 ui.showToast(resultData?.message || uiStrings.applyFailed)
+                if (complete) complete()
             }
         }
         catch (err) {
             ui.showToast(uiStrings.applyFailed)
+            if (complete) complete()
         }
     },
 

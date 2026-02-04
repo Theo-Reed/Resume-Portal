@@ -62,7 +62,7 @@
 
   <!-- Restore Search Condition Bottom Sheet (Upgraded) -->
   <ui-drawer 
-    title="{{ui.restoreSearchLabel || ''}}" 
+    title="{{ui.restoreSearchLabel}}" 
     show="{{showRestoreSheet}}" 
     bind:close="closeRestoreSheet"
     bind:confirm="onRestoreConfirm"

@@ -4,10 +4,17 @@ Component({
   },
   properties: {
     show: { type: Boolean, value: false },
-    title: { type: String, value: '' },
+    title: { 
+      type: null, 
+      value: '' 
+    },
     showConfirm: { type: Boolean, value: true },
-    confirmText: { type: String, value: '完成' },
-    showClose: { type: Boolean, value: true },
+    confirmText: { 
+      type: null, 
+      value: '' 
+    },
+    confirmActive: { type: Boolean, value: true },
+    showClose: { type: Boolean, value: false },
     maskClosable: { type: Boolean, value: true }
   },
   data: {
@@ -27,6 +34,11 @@ Component({
 
     async onConfirm() {
       if (this.data.loading) return;
+
+      if (!this.properties.confirmActive) {
+        this.triggerEvent('close');
+        return;
+      }
 
       this.setData({ loading: true });
       const startTime = Date.now();

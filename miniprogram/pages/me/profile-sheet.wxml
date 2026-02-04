@@ -1,6 +1,6 @@
 <!-- 个人资料底部弹窗 -->
 <ui-drawer 
-  title="{{ui.userProfileTitle || ''}}" 
+  title="{{ui.userProfileTitle}}" 
   show="{{showProfileSheet}}" 
   bind:close="closeProfileSheet" 
   bind:confirm="onProfileConfirm"

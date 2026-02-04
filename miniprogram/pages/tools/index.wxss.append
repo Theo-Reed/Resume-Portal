@@ -101,6 +101,6 @@
 }
 
 .submit-btn:active {
-  background: #1d4ed8;
+  background: var(--primary-dark);
   opacity: 0.9;
 }

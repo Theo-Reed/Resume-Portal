@@ -131,31 +131,32 @@
   <ui-drawer 
     show="{{showLanguageSheet}}" 
     title="{{ui.languageEntry}}" 
+    confirmActive="{{isLanguageChanged}}"
     bind:close="closeLanguageSheet"
     bind:confirm="onLanguageConfirm"
   >
     <view class="bottom-sheet-content">
       <!-- Standard Modes -->
       <view class="mode-section-title">{{ui.basicMode}}</view>
-      <view class="mode-card {{appLanguage === 'Chinese' ? 'mode-card-active' : ''}}"
+      <view class="mode-card {{tempLanguage === 'Chinese' ? 'mode-card-active' : ''}}"
             data-value="Chinese" bindtap="onLanguageSelect">
         <view class="mode-card-main">
           <text class="mode-name">{{ui.langChinese}}</text>
           <text class="mode-desc">{{ui.langChineseDesc}}</text>
         </view>
-        <view class="mode-check" wx:if="{{appLanguage === 'Chinese'}}">
-          <icon type="success_no_circle" size="16" color="#1d4ed8"/>
+        <view class="mode-check" wx:if="{{tempLanguage === 'Chinese'}}">
+          <icon type="success_no_circle" size="16" color="var(--primary-dark)"/>
         </view>
       </view>
 
-      <view class="mode-card {{appLanguage === 'English' ? 'mode-card-active' : ''}}"
+      <view class="mode-card {{tempLanguage === 'English' ? 'mode-card-active' : ''}}"
             data-value="English" bindtap="onLanguageSelect">
         <view class="mode-card-main">
           <text class="mode-name">{{ui.langEnglish}}</text>
           <text class="mode-desc">{{ui.langEnglishDesc}}</text>
         </view>
-        <view class="mode-check" wx:if="{{appLanguage === 'English'}}">
-          <icon type="success_no_circle" size="16" color="#1d4ed8"/>
+        <view class="mode-check" wx:if="{{tempLanguage === 'English'}}">
+          <icon type="success_no_circle" size="16" color="var(--primary-dark)"/>
         </view>
       </view>
 
@@ -165,27 +166,27 @@
         <text class="vip-tag-mini">{{ui.vipTag}}</text>
       </view>
 
-      <view class="mode-card mode-card-vip {{appLanguage === 'AIChinese' ? 'mode-card-active' : ''}}"
+      <view class="mode-card mode-card-vip {{tempLanguage === 'AIChinese' ? 'mode-card-active' : ''}}"
             data-value="AIChinese" bindtap="onLanguageSelect">
         <view class="mode-card-icon">✨</view>
         <view class="mode-card-main">
           <text class="mode-name">{{ui.langAIChinese}}</text>
           <text class="mode-desc">{{ui.langAIChineseDesc}}</text>
         </view>
-        <view class="mode-check" wx:if="{{appLanguage === 'AIChinese'}}">
-          <icon type="success_no_circle" size="16" color="#1d4ed8"/>
+        <view class="mode-check" wx:if="{{tempLanguage === 'AIChinese'}}">
+          <icon type="success_no_circle" size="16" color="var(--primary-dark)"/>
         </view>
       </view>
 
-      <view class="mode-card mode-card-vip {{appLanguage === 'AIEnglish' ? 'mode-card-active' : ''}}"
+      <view class="mode-card mode-card-vip {{tempLanguage === 'AIEnglish' ? 'mode-card-active' : ''}}"
             data-value="AIEnglish" bindtap="onLanguageSelect">
         <view class="mode-card-icon">✨</view>
         <view class="mode-card-main">
           <text class="mode-name">{{ui.langAIEnglish}}</text>
           <text class="mode-desc">{{ui.langAIEnglishDesc}}</text>
         </view>
-        <view class="mode-check" wx:if="{{appLanguage === 'AIEnglish'}}">
-          <icon type="success_no_circle" size="16" color="#1d4ed8"/>
+        <view class="mode-check" wx:if="{{tempLanguage === 'AIEnglish'}}">
+          <icon type="success_no_circle" size="16" color="var(--primary-dark)"/>
         </view>
       </view>
     </view>
@@ -194,7 +195,9 @@
   <!-- 邀请好友计划 Drawer -->
   <ui-drawer 
     show="{{showInviteSheet}}" 
-    title="{{ui.inviteFriends}}" 
+    title="{{ui.inviteFriendPlan}}" 
+    confirmText="{{ui.redeem}}"
+    confirmActive="{{isInviteCodeValid}}"
     bind:close="closeInviteSheet"
     bind:confirm="onInviteConfirm"
   >
@@ -219,14 +222,11 @@
           <view class="redeem-input-group {{inputInviteCode.length > 0 ? 'has-value' : ''}}">
             <input class="redeem-input" 
                    type="text" 
-                   placeholder="{{ui.inputInviteCodePlaceholder}}" 
+                   placeholder="请输入6位邀请码" 
                    placeholder-class="redeem-placeholder"
                    value="{{inputInviteCode}}" 
                    bindinput="onInviteCodeInput"
-                   maxlength="8" />
-            <view class="redeem-action-btn" bindtap="onApplyInviteCode">
-              <text class="redeem-btn-text">{{ui.redeem}}</text>
-            </view>
+                   maxlength="6" />
           </view>
         </view>
     </view>
@@ -346,9 +346,9 @@
   <ui-drawer 
     title="{{ui.contactAuthor}}" 
     show="{{showContactSheet}}" 
-    confirmText="{{ui.confirm}}"
+    confirmActive="{{false}}"
     bind:close="closeContactSheet"
-    bind:confirm="closeContactSheet"
+    bind:confirm="onContactConfirm"
   >
     <view class="author-sheet-body">
       <text class="author-slogan">{{ui.authorWechatSlogan}}</text>

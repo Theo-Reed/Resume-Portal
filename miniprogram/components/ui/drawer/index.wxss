@@ -33,7 +33,7 @@
 }
 
 .ui-drawer-header {
-  height: 110rpx;
+  height: 90rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -55,6 +55,7 @@
   min-width: 100rpx;
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .ui-drawer-header-right {
@@ -62,19 +63,34 @@
 }
 
 .ui-drawer-close {
-  font-size: 32rpx;
-  color: #94a3b8;
+  font-size: 36rpx;
+  color: #64748b; /* text-sub */
   padding: 10rpx;
+  margin-left: -10rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.ui-drawer-close.hidden {
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .ui-drawer-confirm-btn {
   font-size: 30rpx;
   font-weight: 600;
-  color: #2e5fe9;
+  color: var(--primary, #2e5fe9);
   padding: 12rpx 20rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.ui-drawer-confirm-btn.disabled {
+  color: #94a3b8; /* text-holder */
 }
 
 .ui-drawer-confirm-btn.loading {
@@ -84,7 +100,7 @@
 .ui-drawer-loading-icon {
   width: 32rpx;
   height: 32rpx;
-  border: 4rpx solid #2e5fe9;
+  border: 4rpx solid var(--primary, #2e5fe9);
   border-top-color: transparent;
   border-radius: 50%;
   animation: ui-drawer-spin 0.8s linear infinite;
