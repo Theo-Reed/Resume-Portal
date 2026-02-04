@@ -1,4 +1,8 @@
 /* miniprogram/components/job-list/index.wxss */
+:host {
+  display: block;
+  height: 100%;
+}
 
 .job-list {
   /* Works both inside flex containers and normal containers */

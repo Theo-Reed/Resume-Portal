@@ -241,6 +241,12 @@ Component({
       if (experience && experience !== '全部') {
         filterParams.experience = experience
       }
+
+      // 地区筛选
+      const region = this.data.drawerFilter?.region || '全部'
+      if (region && region !== '全部') {
+        filterParams.type = region
+      }
       
       // 语言设置
       const app = getApp<IAppOption>() as any

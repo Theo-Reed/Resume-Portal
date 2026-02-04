@@ -1,4 +1,8 @@
 /* miniprogram/components/job-tab/index.wxss */
+:host {
+  display: block;
+  height: 100%;
+}
 
 .tab-content-wrapper {
   position: relative;
