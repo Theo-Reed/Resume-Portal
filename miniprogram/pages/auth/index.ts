@@ -18,7 +18,10 @@ Page({
 
   switchType(e: any) {
     const type = e.currentTarget.dataset.type;
+    if (this.data.type === type) return;
+    
     this.setData({ type });
+    wx.vibrateShort({ type: 'light' });
   },
 
   async handleSubmit() {
@@ -29,7 +32,13 @@ Page({
       return;
     }
 
-    wx.showLoading({ title: type === 'login' ? '登录中...' : '注册中...' });
+    // Basic phone validation
+    if (!/^1[3-9]\d{9}$/.test(phone)) {
+      wx.showToast({ title: '手机号格式错误', icon: 'none' });
+      return;
+    }
+
+    wx.showLoading({ title: type === 'login' ? '正在登录' : '创建账号' });
 
     try {
       const endpoint = type === 'login' ? '/auth/login' : '/auth/register';
