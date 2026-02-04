@@ -12,13 +12,14 @@ Component({
     lowerThreshold: { type: Number, value: 50 },
     scrollTop: { type: Number, value: 0 },
     scrollLeft: { type: Number, value: 0 },
-    bounces: { type: Boolean, value: true },
+    bounces: { type: Boolean, value: false },
     enableBackToTop: { type: Boolean, value: false },
     refresherEnabled: { type: Boolean, value: false },
     refresherThreshold: { type: Number, value: 45 },
     refresherDefaultStyle: { type: String, value: 'black' },
     refresherBackground: { type: String, value: '#FFF' },
-    refresherTriggered: { type: Boolean, value: false }
+    refresherTriggered: { type: Boolean, value: false },
+    enableFlex: { type: Boolean, value: true }
   },
   methods: {
     onScroll(e: any) {

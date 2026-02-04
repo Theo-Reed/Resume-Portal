@@ -9,6 +9,7 @@
   scroll-top="{{scrollTop}}"
   scroll-left="{{scrollLeft}}"
   enable-back-to-top="{{enableBackToTop}}"
+  enable-flex="{{enableFlex}}"
   refresher-enabled="{{refresherEnabled}}"
   refresher-threshold="{{refresherThreshold}}"
   refresher-default-style="{{refresherDefaultStyle}}"

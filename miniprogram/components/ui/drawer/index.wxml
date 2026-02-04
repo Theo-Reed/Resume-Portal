@@ -23,7 +23,7 @@
       </view>
     </view>
   </view>
-  <view class="ui-drawer-content">
+  <ui-scroll-view custom-class="ui-drawer-content" scrollY="{{true}}">
     <slot></slot>
-  </view>
+  </ui-scroll-view>
 </view>

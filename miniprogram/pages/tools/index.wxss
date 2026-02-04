@@ -84,7 +84,6 @@
 
 .drawer-body {
   padding: 32rpx;
-  overflow-y: auto;
 }
 
 .form-item {

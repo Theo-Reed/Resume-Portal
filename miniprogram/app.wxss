@@ -37,6 +37,13 @@ page {
   --shadow-md: 0 10rpx 15rpx -3rpx rgb(0 0 0 / 10%);
 }
 
+::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+  color: transparent;
+}
+
 /**
  * 主题颜色定义（统一使用以下颜色）
  * Theme Colors:
@@ -217,7 +224,6 @@ page {
 /* 弹窗内容基础样式 */
 .bottom-sheet-content {
   flex: 1;
-  overflow-y: auto;
   padding: 0; /* 移除所有默认内边距 */
   margin: 0;
   box-sizing: border-box;

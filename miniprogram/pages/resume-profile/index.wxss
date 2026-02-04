@@ -457,7 +457,6 @@
 .drawer-content {
   flex: 1;
   padding: 40rpx;
-  overflow-y: auto;
 }
 
 .form-item {

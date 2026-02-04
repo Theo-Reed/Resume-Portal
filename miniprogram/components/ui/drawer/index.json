@@ -1,4 +1,6 @@
 {
   "component": true,
-  "usingComponents": {}
+  "usingComponents": {
+    "ui-scroll-view": "../scroll-view/index"
+  }
 }
