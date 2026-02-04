@@ -22,24 +22,67 @@ Page({
       tabFeatured: '',
       tabSaved: '',
       editLabel: '',
-      doneLabel: '',
-      clearAllLabel: '',
       noSavedSearchConditions: '',
     } as Record<string, string>,
-    isLoggedIn: true,
+    isLoggedIn: false,
   },
 
   onShow() {
     this.syncLoginState();
-    if (this.data.isFeaturedUnlocked) {
-      // ... existing code logic if needed
+    
+    // Safety check: force hide tabbar if not logged in
+    if (!this.data.isLoggedIn) {
+      wx.hideTabBar({ animated: false }).catch(() => {});
+    }
+
+    this.checkFeaturedSubscription();
+
+    const app = getApp<IAppOption>() as any;
+    const lang = normalizeLanguage(app?.globalData?.language);
+    wx.setNavigationBarTitle({ title: '' });
+    
+    // 检查是否有筛选结果需要应用
+    const pageData = app?.globalData?._pageData;
+    if (pageData?.filterResult && pageData?.filterAction) {
+      const filterResult = pageData.filterResult;
+      const tabIndex = pageData.filterTabIndex || 0;
+      const action = pageData.filterAction;
+      
+      // 清除临时数据
+      pageData.filterResult = null;
+      pageData.filterTabIndex = 0;
+      pageData.filterAction = null;
+      
+      // 应用筛选条件
+      setTimeout(() => {
+        const tabComponent = this.selectComponent(`#jobTab${tabIndex}`) as any;
+        if (tabComponent && typeof tabComponent.applyFilter === 'function') {
+          if (action === 'reset') {
+            tabComponent.applyFilter({ salary: '全部', experience: '全部', source_name: [], region: '全部' });
+          } else {
+            tabComponent.applyFilter(filterResult);
+          }
+        }
+      }, 100);
     }
   },
 
   syncLoginState() {
-    const user = getApp().globalData.user;
+    const app = getApp<IAppOption>();
+    const user = app.globalData.user;
+    const bootStatus = app.globalData.bootStatus;
+
+    const isLoggedIn = !!(user && user.phoneNumber && bootStatus === 'success');
+    
+    console.log('[Index] syncLoginState:', {
+      hasUser: !!user,
+      hasPhone: !!user?.phoneNumber,
+      bootStatus,
+      isLoggedIn
+    });
+
     this.setData({
-      isLoggedIn: !!(user && user.phoneNumber)
+      isLoggedIn
     });
   },
 
@@ -67,39 +110,7 @@ Page({
       ;(this as any)._langDetach = null
     },
 
-  onShow() {
-    const app = getApp<IAppOption>() as any
-    const lang = normalizeLanguage(app?.globalData?.language)
-    wx.setNavigationBarTitle({ title: '' })
-    this.checkFeaturedSubscription()
-    
-    // 检查是否有筛选结果需要应用
-    const pageData = app?.globalData?._pageData
-    if (pageData?.filterResult && pageData?.filterAction) {
-      const filterResult = pageData.filterResult
-      const tabIndex = pageData.filterTabIndex || 0
-      const action = pageData.filterAction
-      
-      // 清除临时数据
-      pageData.filterResult = null
-      pageData.filterTabIndex = 0
-      pageData.filterAction = null
-      
-      // 应用筛选条件
-      setTimeout(() => {
-        const tabComponent = this.selectComponent(`#jobTab${tabIndex}`) as any
-        if (tabComponent && typeof tabComponent.applyFilter === 'function') {
-          if (action === 'reset') {
-            tabComponent.applyFilter({ salary: '全部', experience: '全部', source_name: [], region: '全部' })
-          } else {
-            tabComponent.applyFilter(filterResult)
-          }
-        }
-      }, 100)
-    }
-  },
-
-    syncLanguageFromApp() {
+  syncLanguageFromApp() {
       const app = getApp<IAppOption>() as any
       const lang = normalizeLanguage(app?.globalData?.language)
 

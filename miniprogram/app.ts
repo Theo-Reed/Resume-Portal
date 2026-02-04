@@ -48,20 +48,21 @@ App<IAppOption>({
     this.globalData.userPromise = this.refreshUser().then(user => {
         if (user && user.phoneNumber) {
             this.globalData.bootStatus = 'success';
-            wx.showTabBar({ animated: true }).catch(() => {});
+            // 注意：这里不要 showTabBar，必须由 login-wall 组件内部根据状态决定何时 show
+            // 否则会发生竞态条件
         } else {
-            // 如果 refreshUser 返回了 null，说明是主动抛出的或是网络错误
-            // 这里我们根据 globalData.bootStatus 是否被网络监听器改写来判断
-            if (this.globalData.bootStatus !== 'no-network') {
-                // 如果不是明确的没网，可能是没登录或接口报错
+            // 兜底逻辑：如果前面的 catch 漏网了，或者状态没变
+            // 只要没拿到 user，就绝对不能是 success
+            if (this.globalData.bootStatus === 'success' || this.globalData.bootStatus === 'loading') {
                 this.globalData.bootStatus = 'unauthorized';
             }
         }
         return user;
     }).catch(err => {
         console.error('[Launch] Auth fatal error:', err);
-        this.globalData.bootStatus = 'error';
-        return null;
+        // 任何未知错误都按照 server-down 处理，绝不放行
+        this.globalData.bootStatus = 'server-down';
+        return null; // 返回 null 确保 Promise 链结果准确
     });
 
     await this.globalData.userPromise
@@ -175,10 +176,7 @@ App<IAppOption>({
 
       // 3. Try "Silent Login" with OpenID
       // New Auth System: Check if this openid is bound to a user
-      const authRes: any = await callApi('auth/loginByOpenid', { openid }).catch(err => {
-         // suppress 404/401 here to handle below
-         return { success: false };
-      });
+      const authRes: any = await callApi('auth/loginByOpenid', { openid });
 
       if (authRes && authRes.success && authRes.data && authRes.data.user) {
           // Logged In Successfully
@@ -210,22 +208,31 @@ App<IAppOption>({
       }
 
     } catch (err: any) {
-      console.log('[Auth] Error in refreshUser:', err.message || err);
+      console.log('[Auth] Error in refreshUser:', err);
       
-      // 1. 先检查是否是微信底层报告的网络错误
+      const statusCode = err.statusCode || (err.response && err.response.statusCode);
+
+      // 1. 检查是否是微信底层报告的网络错误（无连接/超时）
       if (err.errMsg && (err.errMsg.includes('timeout') || err.errMsg.includes('fail'))) {
-        // 进一步判断是完全没网，还是服务器炸了
         const network = await new Promise(r => wx.getNetworkType({ success: r }));
         if ((network as any).networkType === 'none') {
           this.globalData.bootStatus = 'no-network';
         } else {
+          // 有网但请求失败（可能是 DNS 错误或服务器彻底宕机连不上的 404/ECONNREFUSED）
           this.globalData.bootStatus = 'server-down';
         }
-      } else if (err.statusCode && err.statusCode >= 500) {
-        // 2. 服务器返回了 5xx 错误
+      } 
+      // 2. 检查具体的 HTTP 状态码
+      else if (statusCode === 404 || statusCode >= 500) {
+        // 404 在此场景下意味着后端接口路径不存在，通常是后端未部署或挂了
         this.globalData.bootStatus = 'server-down';
-      } else {
-        // 3. 其他错误（如 404/401 等）统一视为未授权/需登录
+      } 
+      else if (statusCode === 401 || statusCode === 403 || err.message === 'AUTH_REQUIRED') {
+        // 正常的“未登录”状态
+        this.globalData.bootStatus = 'unauthorized';
+      } 
+      else {
+        // 其他未知错误，安全起见引导至登录页
         this.globalData.bootStatus = 'unauthorized';
       }
 

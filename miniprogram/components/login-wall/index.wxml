@@ -1,30 +1,38 @@
 <view class="login-wall {{visible ? 'visible' : ''}}" catchtouchmove="preventTouch">
-  <view class="glass-mask"></view>
-  
-  <!-- Phase 1: Global Splash -->
-  <view class="splash-layer {{internalPhase === 'splash' ? 'active' : 'morph-to-login'}}">
-    <view class="logo-box-large">
-      <text class="logo-text">R</text>
-    </view>
-    <view class="app-info">
-      <text class="app-name">REMOTE</text>
-      <view class="loading-dots">
-        <view class="dot"></view>
-        <view class="dot"></view>
-        <view class="dot"></view>
-      </view>
-    </view>
+  <!-- Shared Background: Starts White, Fades out on Success or Login -->
+  <view class="glass-mask {{internalPhase === 'hidden' || internalPhase === 'login' ? 'fade-out' : ''}}"></view>
+
+  <!-- Shared Animated Globe -->
+  <view class="shared-globe {{internalPhase}}">
+    <view class="globe-water"></view>
+    <view class="globe-land"></view>
+    <view class="globe-shine"></view>
   </view>
+  
+  <!-- Phase 1: Splash Content (Visual Purity) -->
+  <view class="splash-content {{internalPhase !== 'splash' ? 'fade-out' : ''}}"></view>
 
   <!-- Phase 2: Login Card -->
+  <!-- Note: The logo here is a placeholder space to ensure alignment -->
   <view class="login-card {{internalPhase === 'login' ? 'show' : ''}}">
     <view class="card-header">
-      <view class="logo-box">R</view>
+      <!-- Empty space for the moving logo to land in -->
+      <view class="logo-placeholder"></view>
       <view class="title-group">
         <text class="main-title">{{ type === 'login' ? '欢迎回来' : '立即注册' }}</text>
         <text class="sub-title">精选全球远程机会</text>
       </view>
     </view>
+
+
+    <!-- 动态状态提示 Banner -->
+    <view class="status-banner {{bootStatus === 'no-network' || bootStatus === 'server-down' ? 'active' : ''}}">
+      <view class="banner-content">
+        <text class="banner-icon">{{ bootStatus === 'no-network' ? '📶' : '⚙️' }}</text>
+        <text class="banner-text">{{ bootStatus === 'no-network' ? '网络不可用，请检查设置' : '服务器维护中，正在尝试连接...' }}</text>
+      </view>
+    </view>
+
     <view class="tab-switcher">
       <view class="tab-item {{type === 'login' ? 'active' : ''}}" bindtap="switchType" data-type="login">登录</view>
       <view class="tab-item {{type === 'register' ? 'active' : ''}}" bindtap="switchType" data-type="register">注册</view>
@@ -45,16 +53,6 @@
 
     <view class="card-footer">
       <text class="protocol">登录即视为同意《用户协议》与《隐私政策》</text>
-    </view>
-  </view>
-
-  <!-- Phase 3: Error / No Network -->
-  <view class="error-layer {{internalPhase === 'error' ? 'active' : ''}}">
-    <view class="error-box">
-      <view class="error-icon">📶</view>
-      <text class="error-title">{{errorMsg}}</text>
-      <text class="error-desc">{{errorDesc}}</text>
-      <button class="retry-btn" bindtap="retry">重新连接</button>
     </view>
   </view>
 </view>

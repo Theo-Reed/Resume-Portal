@@ -4,13 +4,21 @@ Component({
   properties: {
     visible: {
       type: Boolean,
-      value: false,
+      value: true, 
       observer(newVal) {
+        console.log('[LoginWall] Visible property changed:', newVal);
         if (newVal) {
-          wx.hideTabBar({ animated: true }).catch(() => {});
+          wx.hideTabBar({ animated: false }).catch(() => {});
           this.startFlow();
         } else {
-          this.setData({ internalPhase: 'hidden' });
+           const app = getApp<any>();
+           // Security check: only allow hiding if bootStatus is success
+           if (app.globalData.bootStatus !== 'success') {
+               console.error('[LoginWall] BYPASS REJECTED. bootStatus is:', app.globalData.bootStatus);
+               this.setData({ visible: true });
+               return;
+           }
+          this.setData({ internalPhase: 'hidden', _flowStarted: false });
           wx.showTabBar({ animated: true }).catch(() => {});
         }
       }
@@ -19,71 +27,68 @@ Component({
 
   lifetimes: {
     attached() {
+      // 只要组件挂载，第一件事就是隐藏 TabBar，防止闪烁
+      wx.hideTabBar({ animated: false }).catch(() => {});
+      
       if (this.data.visible) {
-        wx.hideTabBar().catch(() => {});
         this.startFlow();
       }
     }
   },
 
   data: {
-    internalPhase: 'hidden', // 'splash' | 'login' | 'error' | 'hidden'
-    type: 'login', // 'login' | 'register'
+    internalPhase: 'hidden', // 'splash' | 'login' | 'hidden'
+    bootStatus: 'loading',
+    type: 'login', 
     phone: '',
     password: '',
     errorMsg: '',
-    errorDesc: '请检查您的网络设置后重试'
+    errorDesc: '',
+    _flowStarted: false
   },
 
   methods: {
     async startFlow() {
+      if (this.data._flowStarted) return;
+      this.setData({ _flowStarted: true });
+
       const app = getApp<any>();
+      console.log('[LoginWall] Flow started. Current bootStatus:', app.globalData.bootStatus);
       
-      // 1. Initial State: Splash ACTIVE
+      // Start in Splash Mode
       this.setData({ internalPhase: 'splash' });
       
-      // 我们需要根据 app 的初始化状态来决定下一步
       const checkState = () => {
         const { bootStatus } = app.globalData;
         
+        if (this.data.bootStatus !== bootStatus) {
+            this.setData({ bootStatus });
+        }
+
+        // If loading, keep checking
         if (bootStatus === 'loading') {
           setTimeout(checkState, 300);
           return;
         }
 
-        // 核心：处理网络恢复的自动平滑跳转
-        if (bootStatus === 'success') {
-          this.setData({ internalPhase: 'hidden' });
-          this.triggerEvent('loginSuccess', app.globalData.user);
-        } else if (bootStatus === 'no-network' || bootStatus === 'error' || bootStatus === 'server-down') {
-          // 如果当前不在 error 态，或者错误信息变了，更新 UI
-          let msg = '身份检查失败';
-          let desc = '请确保您的网络环境正常';
-          
-          if (bootStatus === 'no-network') {
-            msg = '网络连接已断开';
-            desc = '请检查您的网络设置后重试';
-          }
-          if (bootStatus === 'server-down') {
-            msg = '服务器连接失败';
-            desc = '技术人员正在抢修中，请稍后再试';
-          }
+        console.log('[LoginWall] Finalizing state. Status:', bootStatus);
 
-          if (this.data.internalPhase !== 'error' || this.data.errorMsg !== msg) {
-            this.setData({ 
-              internalPhase: 'error',
-              errorMsg: msg,
-              errorDesc: desc
-            });
-          }
-          // 即使在错误态，也要继续轮询是否有网络恢复（由 App.ts 触发 loading）
-          setTimeout(checkState, 2000); 
-        } else if (bootStatus === 'unauthorized') {
+        if (bootStatus === 'success') {
+          // Success: Fade out splash background -> Reveal App
+          setTimeout(() => {
+             this.setData({ internalPhase: 'hidden', _flowStarted: false });
+             this.triggerEvent('loginSuccess', app.globalData.user);
+          }, 600);
+        } 
+        else {
+          // Unauthorized, New User, Server Down, or No Network
+          // Transition to Login Card visual state
+          // The status-banner inside the card will handle error messages if any
           this.setData({ internalPhase: 'login' });
         }
       };
 
-      // 设定一个保底展示时间，防止动画太短太突兀
+      // Ensure splash shows for at least 1.5s to appreciate the globe animation
       setTimeout(checkState, 1500);
     },
 

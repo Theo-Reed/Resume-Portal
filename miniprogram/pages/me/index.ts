@@ -16,7 +16,7 @@ Page({
         isInitialLoading: true,
         phoneAuthBusy: false,
         isLogin: false, // 是否已登录
-        isLoggedIn: true, // 全局登录墙控制
+        isLoggedIn: false, // 全局登录墙控制
         isBeta: false, // 是否测试环境
 
         showLanguageSheet: false,
@@ -121,8 +121,18 @@ Page({
     },
 
     syncLoginState() {
-        const user = getApp().globalData.user;
-        const loggedIn = !!(user && user.phoneNumber);
+        const app = getApp<any>();
+        const user = app.globalData.user;
+        const bootStatus = app.globalData.bootStatus;
+        const loggedIn = !!(user && user.phoneNumber && bootStatus === 'success');
+        
+        console.log('[Me] syncLoginState:', {
+            hasUser: !!user,
+            hasPhone: !!user?.phoneNumber,
+            bootStatus,
+            loggedIn
+        });
+
         this.setData({
             isLoggedIn: loggedIn,
             isLogin: loggedIn
