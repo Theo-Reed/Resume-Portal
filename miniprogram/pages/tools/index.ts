@@ -274,7 +274,7 @@ Page({
         } else if (res.tapIndex === 1) {
           // 这里可以展示二维码或保存图片
           // wx.previewImage({ urls: [...] })
-          ui.showToast('请配置二维码', 'none')
+          ui.showToast('请配置二维码')
         }
       }
     })

@@ -8,7 +8,8 @@ export const ui = {
    * 显示加载中
    */
   showLoading(title: string = '加载中...', mask: boolean = true) {
-    const page = getCurrentPages().pop();
+    const pages = getCurrentPages();
+    const page = pages[pages.length - 1];
     const feedback = page?.selectComponent('#ui-feedback') as any;
     if (feedback) {
       feedback.setData({ title, type: 'loading', mask, visible: true });
@@ -22,7 +23,8 @@ export const ui = {
    * 隐藏加载
    */
   hideLoading() {
-    const page = getCurrentPages().pop();
+    const pages = getCurrentPages();
+    const page = pages[pages.length - 1];
     const feedback = page?.selectComponent('#ui-feedback') as any;
     if (feedback) {
       feedback.setData({ visible: false });
@@ -35,14 +37,17 @@ export const ui = {
    * 显示成功提示
    */
   showSuccess(title: string, duration: number = 2000) {
-    const page = getCurrentPages().pop();
+    // 自动隐藏任何可能存在的原生 Toast (如剪贴板提示)
+    wx.hideToast();
+    
+    const pages = getCurrentPages();
+    const page = pages[pages.length - 1];
     const feedback = page?.selectComponent('#ui-feedback') as any;
     if (feedback) {
       feedback.setData({ title, type: 'success', mask: false, visible: true });
       setTimeout(() => feedback.setData({ visible: false }), duration);
     } else {
-      /* eslint-disable-next-line no-restricted-globals */
-      wx.showToast({ title, icon: 'success', duration });
+      console.warn('UI feedback component not found on current page');
     }
   },
 
@@ -50,14 +55,16 @@ export const ui = {
    * 显示错误提示
    */
   showError(title: string, duration: number = 2500) {
-    const page = getCurrentPages().pop();
+    wx.hideToast();
+    
+    const pages = getCurrentPages();
+    const page = pages[pages.length - 1];
     const feedback = page?.selectComponent('#ui-feedback') as any;
     if (feedback) {
       feedback.setData({ title, type: 'error', mask: false, visible: true });
       setTimeout(() => feedback.setData({ visible: false }), duration);
     } else {
-      /* eslint-disable-next-line no-restricted-globals */
-      wx.showToast({ title, icon: 'none', duration });
+      console.warn('UI feedback component not found on current page');
     }
   },
 
@@ -65,15 +72,17 @@ export const ui = {
    * 显示轻量级提示 (替代原生 showToast)
    */
   showToast(title: string, duration: number = 2000) {
-    const page = getCurrentPages().pop();
+    wx.hideToast();
+    
+    const pages = getCurrentPages();
+    const page = pages[pages.length - 1];
     const feedback = page?.selectComponent('#ui-feedback') as any;
     if (feedback) {
       // type: 'info' 或者不传，在 ui-feedback 中实现为中性样式
       feedback.setData({ title, type: 'info', mask: false, visible: true });
       setTimeout(() => feedback.setData({ visible: false }), duration);
     } else {
-      /* eslint-disable-next-line no-restricted-globals */
-      wx.showToast({ title, icon: 'none', duration });
+      console.warn('UI feedback component not found on current page');
     }
   }
 };

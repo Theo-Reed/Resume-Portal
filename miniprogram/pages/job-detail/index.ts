@@ -284,8 +284,6 @@ Page({
     wx.setClipboardData({
       data: job.source_url,
       success: () => {
-        // UI feedback already shown by wx.setClipboardData toast usually, 
-        // but we can use our ui.showSuccess if we want to override or ensure consistency
         ui.showSuccess(this.data.linkCopiedText || 'Copied')
       },
     })
