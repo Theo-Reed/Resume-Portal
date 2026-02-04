@@ -1,6 +1,6 @@
 <view class="login-wall {{visible ? 'visible' : ''}}" catchtouchmove="preventTouch">
   <!-- Shared Background: Glass mask persists during login phase for depth -->
-  <view class="glass-mask {{internalPhase === 'hidden' ? 'fade-out' : ''}}"></view>
+  <view class="glass-mask {{internalPhase}}"></view>
 
   <!-- Shared Animated Globe (The Engine 🎨) -->
   <view class="shared-globe {{internalPhase}}">

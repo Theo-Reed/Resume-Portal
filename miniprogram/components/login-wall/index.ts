@@ -43,7 +43,7 @@ Component({
   },
 
   data: {
-    internalPhase: 'hidden', // 'splash' | 'login' | 'hidden'
+    internalPhase: 'splash', // 'splash' | 'login' | 'hidden'
     bootStatus: 'loading',
     type: 'login', 
     phone: '',
@@ -88,10 +88,28 @@ Component({
              this.triggerEvent('loginSuccess', app.globalData.user);
           }, 600);
         } 
+        else if (bootStatus === 'no-network' || bootStatus === 'server-down' || bootStatus === 'error') {
+          // ⚠️ Network/Server Error: Stay in splash phase and keep star centered
+          this.setData({ internalPhase: 'splash' });
+          console.log(`[LoginWall] ${bootStatus} detected. Retrying in 4s (animation cycle)...`);
+          
+          // Wait for one full animation cycle (4s) before retrying the request
+          setTimeout(() => {
+            // Only retry if we are still in a failure state
+            const currentStatus = getApp<any>().globalData.bootStatus;
+            if (currentStatus === 'no-network' || currentStatus === 'server-down' || currentStatus === 'error') {
+              app.refreshUser().then(() => {
+                checkState();
+              }).catch(() => {
+                checkState();
+              });
+            } else {
+              checkState();
+            }
+          }, 4000);
+        }
         else {
-          // Unauthorized, New User, Server Down, or No Network
-          // Transition to Login Card visual state
-          // The status-banner inside the card will handle error messages if any
+          // Unauthorized or New User: Star flies to Login Card
           this.setData({ internalPhase: 'login' });
         }
       };

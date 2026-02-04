@@ -8,10 +8,7 @@
   z-index: 10000;
   visibility: hidden;
   pointer-events: none;
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  background-color: transparent !important; /* 强制容器透明 */
+  background: transparent !important;
 }
 
 .login-wall.visible {
@@ -19,24 +16,34 @@
   pointer-events: auto;
 }
 
-/* Background Layer */
+/* Background Layer - 动态背景切换 🌓 */
 .glass-mask {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  /* 进一步降低 Alpha 值，增强通透感 */
-  background: rgba(255, 255, 255, 0.4) !important; 
-  /* 调整模糊逻辑，适配移动端渲染性能 */
-  backdrop-filter: blur(20px) saturate(180%) brightness(110%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(110%);
-  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1);
   z-index: 0;
   opacity: 1;
 }
 
-.glass-mask.fade-out {
+/* 初始 Splash 状态：纯白背景，遮挡主页面 */
+.glass-mask.splash {
+  background: #ffffff !important;
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+}
+
+/* 转换到 Login 状态：背景变为透明毛玻璃，透出主页面 */
+.glass-mask.login {
+  background: rgba(255, 255, 255, 0.03) !important; 
+  backdrop-filter: blur(5px) brightness(102%); 
+  -webkit-backdrop-filter: blur(5px) brightness(102%);
+}
+
+/* 隐藏/成功状态 */
+.glass-mask.hidden {
   opacity: 0;
   backdrop-filter: blur(0px);
   -webkit-backdrop-filter: blur(0px);
@@ -90,8 +97,12 @@
   height: 160rpx;
   top: 0;
   left: 0;
-  /* 平滑过渡到卡片左上角位置 */
-  transform: translate3d(calc(7vw + 48rpx), calc(25vh + 64rpx), 0);
+  /* 
+     计算校准：
+     X: 50vw - (78vw/2) + 48rpx padding = 11vw + 48rpx
+     Y: 20vh + 64rpx padding
+  */
+  transform: translate3d(calc(11vw + 48rpx), calc(20vh + 64rpx), 0);
 }
 
 /* State 3: Hidden (Success Fade Out) */
@@ -125,22 +136,19 @@
 
 /* --- Phase 2: Login Card --- */
 .login-card {
-  position: fixed; /* Fixed position to match logo calculation */
-  top: 25vh; /* Fixed top anchor */
+  position: fixed; 
   left: 50%;
-  transform: translateX(-50%) translateY(40rpx); /* Start slightly lower */
+  top: 20vh; /* 明确的顶部距离，解决“跑到最上面”的问题 */
+  transform: translateX(-50%) translateY(40rpx); 
   
-  width: 86vw; 
-  /* 卡片本身也用毛玻璃，增加层次感 */
-  background: rgba(255, 255, 255, 0.75); 
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  width: 78vw; 
+  background: rgba(255, 255, 255, 0.82); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   
-  border-radius: 60rpx;
+  border-radius: 64rpx;
   padding: 64rpx 48rpx;
-  /* 更柔和的投影 */
-  box-shadow: 0 40rpx 100rpx rgba(0, 0, 0, 0.08), 
-              inset 0 0 0 2rpx rgba(255, 255, 255, 0.5); /* 内部高光边缘 */
+  box-shadow: 0 40rpx 100rpx rgba(0, 0, 0, 0.15);
   
   opacity: 0;
   transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
