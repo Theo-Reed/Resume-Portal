@@ -25,7 +25,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: #ffffff; /* Revert to White as requested */
+  background: #ffffff; 
   transition: all 0.8s ease;
   z-index: 0;
   opacity: 1;
@@ -35,57 +35,56 @@
   opacity: 0;
 }
 
-/* --- Shared Animated Lottie (The Engine 🎨) --- */
+/* --- Shared Animated Globe (The Engine 🎨) --- */
 .shared-globe {
   position: fixed;
-  z-index: 20;
-  transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 1001;
+  /* 增加 GPU 预渲染提示 */
+  will-change: transform, opacity, width, height;
+  /* 更丝滑的弹性曲线 */
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  pointer-events: none;
+  overflow: visible !important;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.lottie-canvas {
-  width: 100%;
-  height: 100%;
-}
-
-.ai-star-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  /* 初始强制硬件加速 */
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
 }
 
 .ai-star {
-  width: 90%;
-  height: 90%;
-  animation: ai-breathe 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+  height: 100%;
+  /* 呼吸动画也改为 3D 变换以保持在同一渲染层 */
+  animation: ai-breathe 4s infinite ease-in-out;
   will-change: transform;
 }
 
 @keyframes ai-breathe {
-  0%, 100% { transform: scale(1) rotate(-2deg); filter: brightness(1); }
-  50% { transform: scale(1.1) rotate(2deg); filter: brightness(1.2) drop-shadow(0 0 15rpx rgba(168, 85, 247, 0.5)); }
+  0%, 100% { transform: translate3d(0,0,0) scale(0.85) rotate(-2deg); opacity: 0.9; }
+  50% { transform: translate3d(0,0,0) scale(1.05) rotate(2deg); opacity: 1; }
 }
 
 /* State 1: Splash (Centered, Large) */
 .shared-globe.splash {
   width: 500rpx;
   height: 500rpx;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 0; 
+  left: 0;
+  /* 使用 translate3d 进行绝对定位，避开 Layout 抖动 */
+  transform: translate3d(calc(50vw - 250rpx), calc(50vh - 250rpx), 0);
 }
 
 /* State 2: Login (Top-Left of Card, Small) */
 .shared-globe.login {
   width: 160rpx;
   height: 160rpx;
-  top: calc(25vh + 40rpx); 
-  left: calc(7vw + 30rpx); 
-  transform: translate(0, 0);
+  top: 0;
+  left: 0;
+  /* 平滑过渡到卡片左上角位置 */
+  transform: translate3d(calc(7vw + 48rpx), calc(25vh + 64rpx), 0);
 }
 
 /* State 3: Hidden (Success Fade Out) */
