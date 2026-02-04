@@ -3,9 +3,9 @@
   --anchor-y: 45.45vh;
   
   /* --- 新增：大厂级 Mascot 引擎变量 --- */
-  --star-x: calc(50vw - 5rpx);
+  --star-x: 50vw;
   --star-y: var(--anchor-y);
-  --star-size: 500rpx;
+  --star-size: 40vw; /* 初始值对齐开屏，防止初始跳变 */
   --star-opacity: 1;
   --star-scale: 1;
   
@@ -37,34 +37,35 @@
 .mascot-container {
   position: absolute;
   z-index: 1001;
-  left: 0;
-  top: 0;
   /* 坐标投射：基于变量精确控制位姿 */
+  left: var(--star-x);
+  top: var(--star-y);
   width: var(--star-size);
   height: var(--star-size);
   opacity: var(--star-opacity);
-  transform: translate3d(
-    calc(var(--star-x) - (var(--star-size) / 2)),
-    calc(var(--star-y) - (var(--star-size) / 2)),
-    0
-  ) scale(var(--star-scale));
+  /* 核心修复：使用百分比平移替代复杂的 calc 偏移，彻底消除尺寸变化时的位置跳变 */
+  transform: translate3d(-50%, -50%, 0) scale(var(--star-scale));
   
   /* 关键：所有物理属性共用同一套高精度过渡 */
   transition: 
     transform 0.8s cubic-bezier(0.23, 1, 0.32, 1),
+    left 0.8s cubic-bezier(0.23, 1, 0.32, 1),
+    top 0.8s cubic-bezier(0.23, 1, 0.32, 1),
     width 0.8s cubic-bezier(0.23, 1, 0.32, 1),
     height 0.8s cubic-bezier(0.23, 1, 0.32, 1),
     opacity 0.8s ease;
     
-  will-change: transform, opacity, width, height;
+  will-change: transform, left, top, opacity, width, height;
   pointer-events: none;
 }
 
 /* 针对最终淡出阶段，星星用 1.3 秒，加速曲线 */
 .login-wall.s-hidden .mascot-container {
   transition: 
+    opacity 1.3s cubic-bezier(0.55, 0.055, 0.675, 0.19),
     transform 1.3s cubic-bezier(0.55, 0.055, 0.675, 0.19),
-    opacity 1.3s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+    left 1.3s cubic-bezier(0.55, 0.055, 0.675, 0.19),
+    top 1.3s cubic-bezier(0.55, 0.055, 0.675, 0.19) !important;
 }
 
 .mascot-inner {
@@ -74,8 +75,13 @@
   animation: ai-breathe 4s infinite ease-in-out;
 }
 
-/* 停止呼吸：当进入消失阶段，停止呼吸 */
-.login-wall.s-hidden .mascot-inner {
+/* 老用户逻辑：强制星星在任何阶段（包括淡出阶段）都保持呼吸态 */
+.login-wall.sm-old .mascot-inner {
+  animation-play-state: running !important;
+}
+
+/* 停止呼吸：当进入消失阶段（只有新用户状态），停止呼吸以保持静态美 */
+.login-wall.s-hidden.sm-new .mascot-inner {
   animation-play-state: paused !important;
 }
 
@@ -97,70 +103,90 @@
 .login-wall.s-splash {
   --star-x: 50vw;
   --star-y: var(--anchor-y);
-  --star-size: 50vw; /* 屏幕宽度的50% */
+  --star-size: 40vw; 
   --star-opacity: 1;
 }
 
-/* Scene: Login Card (登录卡片) */
+/* Scene: Login Card (登录卡片 - 默认逻辑：缩小并移动到 Logo 位) */
 .login-wall.s-login {
-  --star-x: calc(11vw + 82rpx);
+  --star-x: calc(11vw + 72rpx + 10rpx);
   --star-y: calc(var(--anchor-y) - 130rpx); 
   --star-size: 160rpx;
   --star-opacity: 1;
 }
 
-/* Loading 状态：星星停留在中心偏上 */
+/* Loading 状态：默认保持在 Logo 位进行加载 */
 .login-wall.s-loading {
-  --star-x: calc(50vw - 5rpx);
-  --star-y: calc(var(--anchor-y) - 80rpx); 
+  --star-x: calc(11vw + 72rpx + 10rpx);
+  --star-y: calc(var(--anchor-y) - 130rpx); 
   --star-size: 160rpx;
   --star-opacity: 1;
 }
 
-/* Scene: Success (注册成功 - 新用户展示) */
+/* Scene: Success (注册成功 - 新用户展示 30vw 居中) */
 .login-wall.s-success {
-  --star-x: calc(50vw - 5rpx);
+  --star-x: 50vw;
   --star-y: var(--anchor-y);
-  --star-size: 30vw; /* 注册用户保持 30vw */
+  --star-size: 30vw;
   --star-opacity: 1;
 }
 
-/* Scene: Login Success (登录成功 - 老用户展示) */
+/* Scene: Login Success (登录成功 - 老用户逻辑由 sm-old 锁死) */
 .login-wall.s-login-success {
-  --star-x: calc(50vw - 5rpx);
-  --star-y: var(--anchor-y);
-  --star-size: 50vw; /* 登录用户 50vw */
+  --star-x: 50vw;
+  --star-y: var(--anchor-y); 
+  --star-size: 40vw; 
   --star-opacity: 1;
 }
 
-/* 落地持久化：确保在 s-hidden 阶段通过 sm- 类名锁死状态，防止闪跳 */
+/* --- 背景状态持久化锁 (彻底隔离新老用户逻辑) --- */
 
-/* 注册用户持久化状态 */
-.login-wall.sm-new {
-  --star-size: 30vw !important;
-}
-.login-wall.sm-new .glass-mask {
-  background: rgba(255, 255, 255, 0.4) !important;
-  backdrop-filter: blur(4px) !important;
+/* 1. 注册/新用户路径：强化仪式感 */
+.login-wall.sm-new .glass-mask,
+.login-wall.s-success .glass-mask {
+  background: rgba(255, 255, 255, 0) !important;
+  /* 优化：减弱模糊半径，从 30px 改为 12px，让底图更清晰，质感更通透 */
+  backdrop-filter: blur(12px) !important; 
   -webkit-backdrop-filter: blur(12px) !important;
 }
 
-/* 登录用户持久化状态 */
-.login-wall.sm-old {
-  --star-size: 50vw !important;
+/* 新用户在 s-success 阶段，确保大小居中 */
+.login-wall.sm-new.s-success .mascot-container,
+.login-wall.sm-new.s-hidden .mascot-container {
+  left: 50vw !important;
+  top: var(--anchor-y) !important;
+  width: 30vw !important;
+  height: 30vw !important;
 }
-.login-wall.sm-old .glass-mask {
+
+/* 2. 登录/老用户路径：全程“巨星”锁定 (40vw 居中不动) */
+.login-wall.sm-old .glass-mask,
+.login-wall.s-login-success .glass-mask {
   background: #ffffff !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
 
-/* Scene: Hidden (Exit - 成功淡出) */
-.login-wall.s-hidden {
-  --star-opacity: 1;
-  --star-x: calc(50vw - 5rpx);
-  --star-y: var(--anchor-y);
-  /* size 由 sm-new/old 锁死 */
+/* 老用户强锁定：彻底隔离，忽略所有 s-login/s-loading 的位移规则 */
+.login-wall.sm-old .mascot-container {
+  left: 50vw !important;
+  top: var(--anchor-y) !important;
+  width: 40vw !important;
+  height: 40vw !important;
+  transform: translate3d(-50%, -50%, 0) !important;
+}
+
+/* 登录用户淡出阶段：仅淡出，原位不动 */
+.login-wall.sm-old.s-hidden .mascot-container {
+  transition: opacity 1.3s cubic-bezier(0.55, 0.055, 0.675, 0.19) !important;
+}
+
+/* 登录输入 & Loading 阶段：半透明毛玻璃，增加卡片对比度 */
+.login-wall.s-login .glass-mask,
+.login-wall.s-loading .glass-mask {
+  background: rgba(255, 255, 255, 0.4) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
 }
 
 /* Background Layer */
@@ -171,10 +197,10 @@
   width: 100%;
   height: 100%;
   z-index: 0;
-  background: #ffffff; /* 大星星开屏阶段保持纯白背景 */
+  background: #ffffff; 
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  transition: all 1.2s ease;
+  transition: background 1.2s ease, backdrop-filter 1.2s ease;
 }
 
 /* 强制覆盖 Tabbar：确保淡出过程遮挡底部 */
