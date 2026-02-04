@@ -1,6 +1,9 @@
 {
+  "disableScroll": true,
   "usingComponents": {
-    "ui-feedback": "/components/ui-feedback/index"
+    "ui-feedback": "/components/ui-feedback/index",
+    "ui-scroll-view": "/components/ui/scroll-view/index",
+    "ui-drawer": "/components/ui/drawer/index"
   },
   "navigationBarTitleText": "岗位工具"
 }

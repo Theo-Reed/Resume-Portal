@@ -7,7 +7,8 @@
   </view>
 
   <block wx:else>
-    <!-- 1. 沉浸式头部 Hero Section -->
+    <ui-scroll-view scrollY="{{true}}" custom-class="me-scroll-container">
+      <!-- 1. 沉浸式头部 Hero Section -->
     <view class="hero-section">
       <view class="hero-bg"></view>
       <view class="user-container" bindtap="onAvatarTap">
@@ -126,6 +127,7 @@
     </view>
 
   </view>
+</ui-scroll-view>
 
   <!-- Language Sheet (Redesigned) -->
   <ui-drawer 
@@ -239,6 +241,7 @@
     title="{{ui.memberCenter}}" 
     show="{{showMemberHub}}" 
     confirmText="{{ui.confirm}}"
+    useScroll="{{false}}"
     bind:close="closeMemberHub"
     bind:confirm="onMemberHubConfirm"
   >
@@ -347,6 +350,7 @@
     title="{{ui.contactAuthor}}" 
     show="{{showContactSheet}}" 
     confirmActive="{{false}}"
+    useScroll="{{false}}"
     bind:close="closeContactSheet"
     bind:confirm="onContactConfirm"
   >

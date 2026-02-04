@@ -4,7 +4,7 @@ Component({
   },
   externalClasses: ['custom-class'],
   properties: {
-    scrollY: { type: Boolean, value: false },
+    scrollY: { type: Boolean, value: true },
     scrollX: { type: Boolean, value: false },
     scrollIntoView: { type: String, value: '' },
     scrollWithAnimation: { type: Boolean, value: false },

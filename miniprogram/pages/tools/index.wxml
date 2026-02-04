@@ -1,49 +1,50 @@
 <view class="page">
   <ui-feedback id="ui-feedback" />
   
-  <view class="header">
-    <text class="title">求职助手</text>
-    <text class="subtitle">让 AI 帮你搞定简历与面试</text>
-  </view>
-
-  <view class="tools-grid">
-    <!-- 1. 不用改 -->
-    <view class="tool-card" bindtap="onUploadScreenshot">
-      <view class="icon-box blue">
-        <text class="tool-emoji">📸</text>
-      </view>
-      <view class="tool-info">
-        <text class="tool-name">截图生成简历</text>
-        <text class="tool-desc">上传岗位截图，AI 自动生成匹配简历</text>
-      </view>
-      <text class="ui-arrow">❯</text>
+  <ui-scroll-view scrollY="{{true}}" custom-class="tools-scroll">
+    <view class="header">
+      <text class="title">求职助手</text>
+      <text class="subtitle">让 AI 帮你搞定简历与面试</text>
     </view>
 
-    <!-- 2. 文字生成简历 -->
-    <view class="tool-card" bindtap="openJdDrawer">
-      <view class="icon-box purple">
-        <text class="tool-emoji">✨</text>
+    <view class="tools-grid">
+      <!-- 1. 不用改 -->
+      <view class="tool-card" bindtap="onUploadScreenshot">
+        <view class="icon-box blue">
+          <text class="tool-emoji">📸</text>
+        </view>
+        <view class="tool-info">
+          <text class="tool-name">截图生成简历</text>
+          <text class="tool-desc">上传岗位截图，AI 自动生成匹配简历</text>
+        </view>
+        <text class="ui-arrow">❯</text>
       </view>
-      <view class="tool-info">
-        <text class="tool-name">文字生成简历</text>
-        <text class="tool-desc">粘贴文字，AI自动生成匹配简历</text>
-      </view>
-      <text class="ui-arrow">❯</text>
-    </view>
 
-    <!-- 3. 不用改 -->
-    <view class="tool-card" bindtap="onRefineOldResume">
-      <view class="icon-box green">
-        <text class="tool-emoji">📄</text>
+      <!-- 2. 文字生成简历 -->
+      <view class="tool-card" bindtap="openJdDrawer">
+        <view class="icon-box purple">
+          <text class="tool-emoji">✨</text>
+        </view>
+        <view class="tool-info">
+          <text class="tool-name">文字生成简历</text>
+          <text class="tool-desc">粘贴文字，AI自动生成匹配简历</text>
+        </view>
+        <text class="ui-arrow">❯</text>
       </view>
-      <view class="tool-info">
-        <text class="tool-name">简历润色</text>
-        <text class="tool-desc">上传旧简历，AI 帮你重写升级</text>
-      </view>
-      <text class="ui-arrow">❯</text>
-    </view>
 
-  </view>
+      <!-- 3. 不用改 -->
+      <view class="tool-card" bindtap="onRefineOldResume">
+        <view class="icon-box green">
+          <text class="tool-emoji">📄</text>
+        </view>
+        <view class="tool-info">
+          <text class="tool-name">简历润色</text>
+          <text class="tool-desc">上传旧简历，AI 帮你重写升级</text>
+        </view>
+        <text class="ui-arrow">❯</text>
+      </view>
+    </view>
+  </ui-scroll-view>
 
   <!-- Unified Drawer for Text/Screenshot Resume Generation -->
   <ui-drawer 
@@ -52,6 +53,7 @@
     title="{{drawerTitle}}" 
     confirmText="生成"
     confirmActive="{{canSubmit}}"
+    useScroll="{{false}}"
     bind:close="closeJdDrawer"
     bind:confirm="onOptimizeKeywords"
   >

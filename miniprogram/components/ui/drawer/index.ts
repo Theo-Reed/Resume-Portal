@@ -17,7 +17,8 @@ Component({
     showClose: { type: Boolean, value: false },
     maskClosable: { type: Boolean, value: true },
     closeOnConfirm: { type: Boolean, value: true },
-    closeOnFail: { type: Boolean, value: false }
+    closeOnFail: { type: Boolean, value: false },
+    useScroll: { type: Boolean, value: true }
   },
   data: {
     loading: false

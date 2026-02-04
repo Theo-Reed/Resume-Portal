@@ -23,7 +23,10 @@
       </view>
     </view>
   </view>
-  <ui-scroll-view custom-class="ui-drawer-content" scrollY="{{true}}">
+  <ui-scroll-view wx:if="{{useScroll}}" custom-class="ui-drawer-content" scrollY="{{true}}">
     <slot></slot>
   </ui-scroll-view>
+  <view wx:else class="ui-drawer-content">
+    <slot></slot>
+  </view>
 </view>
