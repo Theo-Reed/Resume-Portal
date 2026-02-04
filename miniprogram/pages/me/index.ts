@@ -16,6 +16,7 @@ Page({
         isInitialLoading: true,
         phoneAuthBusy: false,
         isLogin: false, // 是否已登录
+        isLoggedIn: true, // 全局登录墙控制
         isBeta: false, // 是否测试环境
 
         showLanguageSheet: false,
@@ -97,6 +98,7 @@ Page({
     },
 
     onShow() {
+        this.syncLoginState()
         this.initPage()
         
         const app = getApp<IAppOption>() as any
@@ -116,6 +118,20 @@ Page({
                 this.openProfileSheet()
             }, 300)
         }
+    },
+
+    syncLoginState() {
+        const user = getApp().globalData.user;
+        const loggedIn = !!(user && user.phoneNumber);
+        this.setData({
+            isLoggedIn: loggedIn,
+            isLogin: loggedIn
+        });
+    },
+
+    onLoginSuccess() {
+        this.syncLoginState();
+        this.initPage();
     },
 
     async initPage() {

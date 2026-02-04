@@ -11,6 +11,7 @@ interface IAppOption {
 
 Page({
   data: {
+    isLoggedIn: true, // 初始默认为 true 配合 splash 效果，稍后由 refreshUser 决定
     jdText: '', // Deprecated, keep for now if needed or remove
     showJdDrawer: false,
     drawerTitle: '文字生成简历',
@@ -21,6 +22,22 @@ Page({
       experience: ''
     },
     canSubmit: false
+  },
+
+  onShow() {
+    this.syncLoginState();
+  },
+
+  syncLoginState() {
+    const user = getApp().globalData.user;
+    this.setData({
+      isLoggedIn: !!(user && user.phoneNumber)
+    });
+  },
+
+  onLoginSuccess() {
+    this.syncLoginState();
+    // 登录成功后可以在这里执行一些页面刷新的逻辑
   },
 
   // Helper to ensure phone is bound before AI actions

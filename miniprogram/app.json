@@ -1,9 +1,9 @@
 {
-  "entryPagePath": "pages/tools/index",
+  "entryPagePath": "pages/splash/index",
   "pages": [
-    "pages/auth/index",
-    "pages/index/index",
     "pages/tools/index",
+    "pages/index/index",
+    "pages/splash/index",
     "pages/me/index",
     "pages/logs/logs",
     "pages/job-detail/index",
@@ -17,6 +17,7 @@
     "navigationBarBackgroundColor": "#ffffff"
   },
   "usingComponents": {
+    "login-wall": "/components/login-wall/index",
     "ui-feedback": "/components/ui-feedback/index",
     "ui-button": "/components/ui/button/index",
     "ui-card": "/components/ui/card/index",

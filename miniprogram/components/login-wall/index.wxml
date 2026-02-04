@@ -1,0 +1,51 @@
+<view class="login-wall {{visible ? 'visible' : ''}}" catchtouchmove="preventTouch">
+  <view class="glass-mask"></view>
+  
+  <!-- Phase 1: Global Splash -->
+  <view class="splash-layer {{internalPhase === 'splash' ? 'active' : 'morph-to-login'}}">
+    <view class="logo-box-large">
+      <text class="logo-text">R</text>
+    </view>
+    <view class="app-info">
+      <text class="app-name">REMOTE</text>
+      <view class="loading-dots">
+        <view class="dot"></view>
+        <view class="dot"></view>
+        <view class="dot"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- Phase 2: Login Card -->
+  <view class="login-card {{internalPhase === 'login' ? 'show' : ''}}">
+    <view class="card-header">
+      <view class="logo-box">R</view>
+      <view class="title-group">
+        <text class="main-title">{{ type === 'login' ? '欢迎回来' : '立即注册' }}</text>
+        <text class="sub-title">精选全球远程机会</text>
+      </view>
+    </view>
+
+    <view class="tab-switcher">
+      <view class="tab-item {{type === 'login' ? 'active' : ''}}" bindtap="switchType" data-type="login">登录</view>
+      <view class="tab-item {{type === 'register' ? 'active' : ''}}" bindtap="switchType" data-type="register">注册</view>
+    </view>
+
+    <view class="input-form">
+      <view class="input-row">
+        <input class="f-input" type="number" placeholder="手机号" model:value="{{phone}}" placeholder-style="color: #cbd5e1" />
+      </view>
+      <view class="input-row">
+        <input class="f-input" type="password" placeholder="密码" model:value="{{password}}" placeholder-style="color: #cbd5e1" />
+      </view>
+      
+      <button class="primary-btn" bindtap="handleSubmit" hover-class="btn-hover">
+        {{ type === 'login' ? '登 录' : '注 册' }}
+      </button>
+    </view>
+
+    <view class="card-footer">
+      <text class="protocol">登录即视为同意《用户协议》与《隐私政策》</text>
+    </view>
+  </view>
+</view>

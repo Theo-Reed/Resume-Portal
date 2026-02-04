@@ -367,4 +367,6 @@
     </view>
   </ui-drawer>
   </block>
+
+  <login-wall visible="{{!isLoggedIn}}" bind:loginSuccess="onLoginSuccess" />
 </view>

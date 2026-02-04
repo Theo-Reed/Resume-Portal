@@ -1,0 +1,360 @@
+.login-wall {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10000;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.login-wall.visible {
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.glass-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #ffffff; /* 初始为纯白，覆盖底层页面 */
+  transition: all 0.8s ease;
+}
+
+.visible .glass-mask {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(40rpx);
+  -webkit-backdrop-filter: blur(40rpx);
+}
+
+/* Phase 1: Splash Layer */
+.splash-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  pointer-events: none;
+}
+
+/* 向上移动 Splash 内容，模拟 Logo 归位到 Card Header */
+.splash-layer.morph-to-login {
+  opacity: 0;
+  transform: translateY(-80rpx); /* Move UP to match card header position visually if we wanted perfect morph, but fade out works well with card fade in */
+}
+
+/* Phase 2: Login Card Morphing */
+.login-card {
+  position: relative;
+  width: 86%;
+  background: #ffffff;
+  border-radius: 60rpx;
+  padding: 64rpx 48rpx;
+  box-shadow: 0 50rpx 150rpx rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: translateY(80rpx); /* Start slightly down */
+  transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  display: none;
+}
+
+.login-card.show {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.logo-box-large {
+  width: 160rpx; /* Unified Size */
+  height: 160rpx;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border-radius: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 40rpx 80rpx rgba(37, 99, 235, 0.3);
+  margin-bottom: 60rpx;
+  animation: breathe 2s ease-in-out infinite;
+  transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* 两个 Logo Box 大小一致，位置视觉对齐 */
+.logo-box {
+  width: 160rpx;
+  height: 160rpx;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border-radius: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30rpx;
+  box-shadow: 0 20rpx 40rpx rgba(37, 99, 235, 0.25);
+  color: #fff;
+  font-size: 56rpx;
+  font-weight: 800;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); box-shadow: 0 40rpx 80rpx rgba(37, 99, 235, 0.3); }
+  50% { transform: scale(1.05); box-shadow: 0 50rpx 100rpx rgba(37, 99, 235, 0.4); }
+}
+
+@keyframes wave {
+  0%, 80%, 100% { transform: scale(0.8); opacity: 0.3; }
+  40% { transform: scale(1.5); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Original Styles follows... */
+.card-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 50rpx;
+}
+
+.logo-box {
+  width: 140rpx;
+  height: 140rpx;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border-radius: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30rpx;
+  box-shadow: 0 20rpx 40rpx rgba(37, 99, 235, 0.25);
+  color: #fff;
+  font-size: 56rpx;
+  font-weight: 800;
+}
+
+.title-group {
+  text-align: center;
+}
+
+.main-title {
+  display: block;
+  font-size: 48rpx;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 12rpx;
+  letter-spacing: -1rpx;
+}
+
+.sub-title {
+  font-size: 28rpx;
+  color: #64748b;
+  letter-spacing: 2rpx;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* Tabs */
+.tab-switcher {
+  display: flex;
+  background: #f1f5f9;
+  padding: 8rpx;
+  border-radius: 28rpx;
+  margin-bottom: 48rpx;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 24rpx 0;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #94a3b8;
+  border-radius: 22rpx;
+  transition: all 0.3s ease;
+}
+
+.tab-item.active {
+  background: #ffffff;
+  color: #2563eb;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+/* Form */
+.input-form {
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+}
+
+.input-row {
+  background: #f8fafc;
+  border: 2rpx solid #e2e8f0;
+  border-radius: 32rpx;
+  padding: 0 40rpx;
+  height: 116rpx;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s;
+}
+
+.input-row:focus-within {
+  border-color: #3b82f6;
+  background: #fff;
+  box-shadow: 0 0 0 6rpx rgba(59, 130, 246, 0.1);
+}
+
+.f-input {
+  flex: 1;
+  height: 100%;
+  font-size: 32rpx;
+  color: #0f172a;
+  font-weight: 500;
+}
+
+.primary-btn {
+  width: 100% !important;
+  height: 116rpx;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #fff !important;
+  border-radius: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34rpx;
+  font-weight: 700;
+  margin-top: 24rpx;
+  box-shadow: 0 20rpx 40rpx rgba(37, 99, 235, 0.3);
+  transition: all 0.2s;
+}
+
+.primary-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 10rpx 20rpx rgba(37, 99, 235, 0.2);
+}
+
+.switch-tip {
+  text-align: center;
+  padding: 40rpx 0 10rpx;
+  font-size: 26rpx;
+  color: #94a3b8;
+}
+
+.switch-link {
+  color: #2563eb;
+  font-weight: 700;
+  padding-left: 10rpx;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 70rpx;
+}
+
+.logo-box {
+  width: 100rpx;
+  height: 100rpx;
+  background: #1e293b;
+  color: #fff;
+  border-radius: 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 40rpx;
+  margin-right: 32rpx;
+  box-shadow: 0 10rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.main-title {
+  display: block;
+  font-size: 42rpx;
+  font-weight: 800;
+  color: #1e293b;
+  letter-spacing: 2rpx;
+}
+
+.sub-title {
+  font-size: 24rpx;
+  color: #64748b;
+  margin-top: 4rpx;
+}
+
+.tab-switcher {
+  display: flex;
+  margin-bottom: 50rpx;
+  background: #f1f5f9;
+  padding: 8rpx;
+  border-radius: 24rpx;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 16rpx 0;
+  font-size: 30rpx;
+  color: #64748b;
+  border-radius: 18rpx;
+  transition: all 0.3s ease;
+}
+
+.tab-item.active {
+  background: #ffffff;
+  color: #1e293b;
+  font-weight: 700;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.input-row {
+  margin-bottom: 30rpx;
+}
+
+.f-input {
+  height: 110rpx;
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 0 40rpx;
+  font-size: 30rpx;
+  color: #1e293b;
+  border: 2rpx solid #e2e8f0;
+  box-sizing: border-box;
+}
+
+.primary-btn {
+  width: 100% !important;
+  height: 110rpx;
+  background: #1e293b;
+  color: #fff;
+  border-radius: 24rpx;
+  font-size: 32rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40rpx;
+  box-shadow: 0 20rpx 40rpx rgba(30, 41, 59, 0.2);
+}
+
+.btn-hover {
+  opacity: 0.9;
+  transform: translateY(2rpx);
+}
+
+.card-footer {
+  margin-top: 50rpx;
+  text-align: center;
+}
+
+.protocol {
+  font-size: 22rpx;
+  color: #94a3b8;
+}

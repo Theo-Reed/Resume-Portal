@@ -21,13 +21,21 @@ App<IAppOption>({
   } as any,
 
   async onLaunch() {
+    // 强制隐藏 TabBar 防止闪烁，只有成功登录后才显示
+    wx.hideTabBar({ animated: false }).catch(() => {});
+
     // Fetch remote configuration for Maintenance and Beta modes
     this.refreshSystemConfig()
 
     this.applyLanguage()
 
     // Login Wall: Attempt to login, if fail, Redirect will happen in refreshUser or here
-    this.globalData.userPromise = this.refreshUser().catch(() => null)
+    this.globalData.userPromise = this.refreshUser().then(user => {
+        if (user && user.phoneNumber) {
+            wx.showTabBar({ animated: true }).catch(() => {});
+        }
+        return user;
+    }).catch(() => null);
     await this.globalData.userPromise
 
     const lang = ((this as any).globalData.language || 'Chinese') as AppLanguage
@@ -171,18 +179,8 @@ App<IAppOption>({
       }
 
     } catch (err: any) {
-      const pages = getCurrentPages();
-      const currentRoute = pages[pages.length - 1]?.route;
-      
-      // If we are already on auth page, don't loop
-      if (currentRoute !== 'pages/auth/index') {
-          const openid = wx.getStorageSync('user_openid');
-          wx.reLaunch({
-              url: `/pages/auth/index?openid=${openid}`
-          });
-      }
-      // Return null or throw?
-      // userPromise checks might fail.
+      console.log('[Auth] Error in refreshUser:', err.message);
+      this.globalData.user = null;
       return null;
     }
   },

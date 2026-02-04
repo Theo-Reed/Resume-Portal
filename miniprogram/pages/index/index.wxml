@@ -89,4 +89,6 @@
   </ui-drawer>
 
   <ui-feedback id="ui-feedback" />
+
+  <login-wall visible="{{!isLoggedIn}}" bind:loginSuccess="onLoginSuccess" />
 </view>

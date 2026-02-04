@@ -1,14 +1,17 @@
 <view class="page">
-  <ui-feedback id="ui-feedback" />
-  
-  <ui-scroll-view scrollY="{{true}}" enableFlex="{{true}}" custom-class="tools-scroll">
-    <view class="header">
-      <text class="title">求职助手</text>
-      <text class="subtitle">让 AI 帮你搞定简历与面试</text>
-    </view>
 
-    <view class="tools-grid">
-      <!-- 1. 不用改 -->
+
+  <block wx:if="{{isLoggedIn}}">
+    <ui-feedback id="ui-feedback" />
+    
+    <ui-scroll-view scrollY="{{true}}" enableFlex="{{true}}" custom-class="tools-scroll">
+      <view class="header">
+        <text class="title">求职助手</text>
+        <text class="subtitle">让 AI 帮你搞定简历与面试</text>
+      </view>
+
+      <view class="tools-grid">
+        <!-- 1. 不用改 -->
       <view class="tool-card" bindtap="onUploadScreenshot">
         <view class="icon-box blue">
           <text class="tool-emoji">📸</text>
@@ -109,4 +112,5 @@
       </view>
     </view>
   </ui-drawer>
+  </block>
 </view>

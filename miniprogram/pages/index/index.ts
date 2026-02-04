@@ -26,6 +26,25 @@ Page({
       clearAllLabel: '',
       noSavedSearchConditions: '',
     } as Record<string, string>,
+    isLoggedIn: true,
+  },
+
+  onShow() {
+    this.syncLoginState();
+    if (this.data.isFeaturedUnlocked) {
+      // ... existing code logic if needed
+    }
+  },
+
+  syncLoginState() {
+    const user = getApp().globalData.user;
+    this.setData({
+      isLoggedIn: !!(user && user.phoneNumber)
+    });
+  },
+
+  onLoginSuccess() {
+    this.syncLoginState();
   },
 
   onLoad() {
