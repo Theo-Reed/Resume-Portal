@@ -1544,7 +1544,7 @@
 
 /* 2. Shop Section */
 .shop-section {
-    padding-top: 24rpx;
+    padding-top: 12rpx;
 }
 .section-head { padding: 0 32rpx 24rpx; }
 .sec-title { font-size: 28rpx; font-weight: 800; color: #334155; text-transform: uppercase; letter-spacing: 1rpx; }
@@ -1651,7 +1651,7 @@
 
 /* Detail Box */
 .selection-detail-box {
-    margin: 12rpx 32rpx 32rpx; /* Increased bottom margin: 12rpx -> 32rpx */
+    margin: 17rpx 32rpx 17rpx; /* Increased bottom margin: 12rpx -> 32rpx, reduced to 27rpx per user request */
     background: #f1f5f9; /* Slate 100 - cleaner than semi-transparent */
     padding: 24rpx;
     border-radius: 20rpx;
