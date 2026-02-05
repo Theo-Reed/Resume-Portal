@@ -19,8 +19,15 @@ App<IAppOption>({
       jobData: null as any,
       filterValue: null as any,
       filterTabIndex: 0,
-      filterResult: null as any, // 筛选结果
-      filterAction: null as string | null, // 'confirm' | 'reset' | null
+      filterResult: null as any, 
+      filterAction: null as string | null,
+    },
+    // 全局预取数据缓存
+    prefetchedData: {
+      publicJobs: null as any,
+      featuredJobs: null as any,
+      memberSchemes: null as any,
+      timestamp: 0,
     },
   } as any,
 
@@ -50,6 +57,7 @@ App<IAppOption>({
     const coreTasks = [
       this.refreshUser(), // 获取用户信息、Token 及 语言设置
       this.refreshSystemConfig(), // 获取系统配置（Beta/维护状态）
+      this.preFetchJobs(), // 并行预取首页岗位数据 (大厂级首屏优化)
     ];
 
     // 通过 BootManager 统一驱动生命周期
@@ -122,6 +130,32 @@ App<IAppOption>({
       }
     } catch (err) {
       this.globalData.systemConfig = { isBeta: true, isMaintenance: false }
+    }
+  },
+
+  /**
+   * 预取首页岗位数据
+   * 解决微信小程序由于页面懒加载导致的非首页 Tab 启动延迟问题
+   */
+  async preFetchJobs() {
+    try {
+      console.log('[App] Pre-fetching app data...');
+      // 并行请求公开列表、精选列表、会员方案 (大厂级首屏优化)
+      const [publicRes, featuredRes, schemesRes] = await Promise.all([
+        callApi('getPublicJobList', { page: 1, pageSize: 15 }),
+        callApi('getFeaturedJobList', { page: 1, pageSize: 15 }),
+        callApi('getMemberSchemes', {})
+      ]);
+
+      this.globalData.prefetchedData = {
+        publicJobs: publicRes?.result?.jobs || [],
+        featuredJobs: featuredRes?.result?.jobs || [],
+        memberSchemes: schemesRes?.result?.schemes || [],
+        timestamp: Date.now()
+      };
+      console.log('[App] Pre-fetch complete.');
+    } catch (err) {
+      console.error('[App] Pre-fetch failed:', err);
     }
   },
 

@@ -327,13 +327,22 @@ Page({
         }
 
         try {
-            // 优化：优先使用已缓存的 schemesList，避免频繁请求
+            // 优化：优先使用已缓存的 schemesList，或 App 级预取的数据
             let result: any = null;
             let schemes = this.data.schemsList || [];
             
+            const app = getApp<any>()
+            const prefetched = app.globalData.prefetchedData
+
             if (schemes.length > 0) {
-                 // 使用缓存
+                 // 使用组件内缓存
                  result = { success: true, schemes };
+            } else if (prefetched && prefetched.memberSchemes && prefetched.memberSchemes.length > 0) {
+                 // 使用 App 预取缓存
+                 console.log('[Me] Using prefetched member schemes')
+                 schemes = prefetched.memberSchemes
+                 result = { success: true, schemes };
+                 this.setData({ schemsList: schemes })
             } else {
                  // 缓存不存在，发起请求
                  const res = await callApi('getMemberSchemes', {})

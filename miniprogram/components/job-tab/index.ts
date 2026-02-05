@@ -270,43 +270,70 @@ Component({
       }
       
       // 语言设置
-      const app = getApp<IAppOption>() as any
+      const app = getApp<any>()
       const currentLang = normalizeLanguage(app?.globalData?.language || 'Chinese')
       filterParams.language = currentLang
       
       const functionName = tabType === 0 ? 'getPublicJobList' : 'getFeaturedJobList'
+
+      // --- 大厂级预取优化：优先使用 App 级预取的数据 ---
+      const prefetched = app.globalData.prefetchedData
+      const isInitialNoFilter = reset && !this.data.searchKeyword && !filterParams.salary && !filterParams.experience && (!filterParams.source_name || filterParams.source_name.length === 0)
       
-      const res = await callApi(functionName, {
-        pageSize: this.data.pageSize,
-        skip,
-        ...filterParams,
+      let jobs: any[] = []
+      let usePrefetched = false
+
+      if (isInitialNoFilter && prefetched && prefetched.timestamp > 0) {
+          const now = Date.now()
+          // 预取数据 5 分钟内有效
+          if (now - prefetched.timestamp < 5 * 60 * 1000) {
+              const prefetchedList = tabType === 0 ? prefetched.publicJobs : prefetched.featuredJobs
+              if (prefetchedList && prefetchedList.length > 0) {
+                  console.log(`[JobTab] Using prefetched data for ${functionName}`)
+                  jobs = prefetchedList
+                  usePrefetched = true
+                  
+                  // 使用后清理该 Tab 的预取标记，避免后续刷新还走这里 (可选)
+                  // tabType === 0 ? prefetched.publicJobs = null : prefetched.featuredJobs = null
+              }
+          }
+      }
+
+      if (!usePrefetched) {
+          const res = await callApi(functionName, {
+            pageSize: this.data.pageSize,
+            skip,
+            ...filterParams,
+          })
+          
+          const result = res.result || (res as any)
+          if (result && result.ok) {
+            jobs = result.jobs || []
+          } else {
+            console.error(`[JobTab] ${functionName} failed or ok=false:`, result)
+            this.setData({ loading: false, hasMore: true })
+            return
+          }
+      }
+      
+      const newJobs = mapJobs(jobs, currentLang) as JobItem[]
+      const merged = reset ? newJobs : [...existingJobs, ...newJobs]
+      const hasMore = newJobs.length >= this.data.pageSize
+      
+      this.setData({
+        jobs: merged,
+        loading: false,
+        hasMore,
+        hasLoaded: true,
+        lastLoadTime: Date.now(),
       })
       
-      const result = res.result || (res as any)
-      if (result && result.ok) {
-        const jobs = result.jobs || []
-        const newJobs = mapJobs(jobs, currentLang) as JobItem[]
-        const merged = reset ? newJobs : [...existingJobs, ...newJobs]
-        const hasMore = newJobs.length >= this.data.pageSize
-        
-        this.setData({
-          jobs: merged,
-          loading: false,
-          hasMore,
-          hasLoaded: true,
-          lastLoadTime: Date.now(),
-        })
-        
-        if (reset) {
-          this.setData({ scrollTop: 0 })
-        }
-        
-        // 通知父组件数据已更新
-        this.triggerEvent('dataupdate', { jobs: merged, hasMore })
-      } else {
-        console.error(`[JobTab] ${functionName} failed or ok=false:`, result)
-        this.setData({ loading: false, hasMore: true })
+      if (reset) {
+        this.setData({ scrollTop: 0 })
       }
+      
+      // 通知父组件数据已更新
+      this.triggerEvent('dataupdate', { jobs: merged, hasMore })
     },
 
     async loadSavedJobs(reset = false) {
