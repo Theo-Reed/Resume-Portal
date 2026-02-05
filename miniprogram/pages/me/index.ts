@@ -127,8 +127,6 @@ Page({
         this.syncLoginState()
         this.initPage()
         
-        const app = getApp<IAppOption>() as any
-        
         // --- Interceptors for Cross-Page Actions ---
         if (app.globalData && app.globalData.openMemberHubOnShow) {
              app.globalData.openMemberHubOnShow = false
