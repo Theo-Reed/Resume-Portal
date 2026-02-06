@@ -50,7 +50,7 @@
     id="jdDrawer" 
     show="{{showJdDrawer}}" 
     title="{{drawerTitle}}" 
-    confirmText="生成"
+    confirmText="{{ui.confirmGenerate}}"
     confirmActive="{{canSubmit}}"
     useScroll="{{false}}"
     bind:close="closeJdDrawer"
@@ -58,10 +58,10 @@
   >
     <view class="drawer-body">
       <view class="form-item">
-        <text class="label">岗位标题</text>
+        <text class="label">{{ui.jobTitle}}</text>
         <input 
           class="input" 
-          placeholder="例如：产品经理 / Java开发" 
+          placeholder="{{ui.jobTitlePlaceholder}}" 
           placeholder-class="placeholder"
           value="{{targetJob.title}}" 
           bindinput="onJdFieldChange" 
@@ -70,10 +70,10 @@
       </view>
 
       <view class="form-item">
-        <text class="label">公司名称</text>
+        <text class="label">{{ui.company}}</text>
         <input 
           class="input" 
-          placeholder="例如：腾讯 / 字节跳动" 
+          placeholder="{{ui.companyPlaceholder}}" 
           placeholder-class="placeholder"
           value="{{targetJob.company}}" 
           bindinput="onJdFieldChange" 
@@ -82,10 +82,10 @@
       </view>
 
       <view class="form-item">
-        <text class="label">经验要求</text>
+        <text class="label">{{ui.experience}}</text>
         <input 
           class="input" 
-          placeholder="例:1-3年 (填0则ai不会额外生成工作经历)" 
+          placeholder="{{ui.experiencePlaceholder}}" 
           placeholder-class="placeholder"
           value="{{targetJob.experience}}" 
           bindinput="onJdFieldChange" 
@@ -94,10 +94,10 @@
       </view>
       
       <view class="form-item">
-        <text class="label">岗位描述内容</text>
+        <text class="label">{{ui.jobDescription}}</text>
         <textarea 
           class="textarea" 
-          placeholder="请粘贴完整的职位描述（JD）..." 
+          placeholder="{{ui.jdPlaceholder}}" 
           placeholder-class="placeholder"
           style="min-height: 200rpx;"
           value="{{targetJob.content}}" 

@@ -134,6 +134,9 @@ const dict = {
         phoneUpdateSuccess: { Chinese: '手机号设置成功', English: 'Phone number updated' },
         phoneUpdateFailed: { Chinese: '手机号设置失败', English: 'Failed to update phone number' },
         authCancel: { Chinese: '未获取到手机号授权', English: 'Phone authorization cancelled' },
+        authRequiredTitle: { Chinese: '需要身份认证', English: 'Authentication required' },
+        authRequiredContent: { Chinese: '为了您的简历和会员权益能够永久同步，请先登录并验证手机号。', English: 'To keep your resumes and membership linked, please log in and verify your phone number.' },
+        authRequiredConfirm: { Chinese: '去登录', English: 'Log in' },
         publishSkillEntry: { Chinese: '发布技能', English: 'Publish Skill' },
         applyFailed: { Chinese: '应用失败', English: 'Apply failed' },
         orderCreateFailed: { Chinese: '订单创建失败', English: 'Order creation failed' },
@@ -182,6 +185,11 @@ const dict = {
         toolTextDesc: { Chinese: '粘贴文字，AI 自动生成匹配简历', English: 'Paste text for AI match' },
         toolRefineTitle: { Chinese: '简历润色', English: 'Resume Refinement' },
         toolRefineDesc: { Chinese: '上传旧简历，AI 帮你重写升级', English: 'Upload old resume for AI upgrade' },
+        confirmGenerate: { Chinese: '生成', English: 'Generate' },
+        jdPlaceholder: { Chinese: '请粘贴完整的职位描述（JD）...', English: 'Paste full job description (JD)...' },
+        experience: { Chinese: '经验要求', English: 'Experience' },
+        experiencePlaceholder: { Chinese: '例:1-3年 (填0则ai不会额外生成工作经历)', English: 'e.g. 1-3 years (fill 0 to disable AI-added experience)' },
+        jobDescription: { Chinese: '岗位描述内容', English: 'Job Description' },
         title: { Chinese: '简历资料', English: 'Resume Profile' },
         tabCn: { Chinese: '中文版', English: 'Chinese' },
         tabEn: { Chinese: '英文版', English: 'English' },
@@ -236,7 +244,7 @@ const dict = {
         addCertificate: { Chinese: '添加证书', English: 'Add Certificate' },
         certificatesPlaceholder: { Chinese: '请输入证书，如：CET-6', English: 'e.g. CET-6' },
         company: { Chinese: '公司名称', English: 'Company' },
-        companyPlaceholder: { Chinese: '请输入公司名称', English: 'Enter company name' },
+        companyPlaceholder: { Chinese: '可不填，用于生成简历名称', English: 'Optional, for resume naming' },
         jobTitle: { Chinese: '职位名称', English: 'Job Title' },
         jobTitlePlaceholder: { Chinese: '请输入职位名称', English: 'Enter job title' },
         businessDirection: { Chinese: '业务方向', English: 'Business Direction' },
@@ -503,6 +511,11 @@ export type I18nKey =
     | 'resume.toolTextDesc'
     | 'resume.toolRefineTitle'
     | 'resume.toolRefineDesc'
+    | 'resume.confirmGenerate'
+    | 'resume.jdPlaceholder'
+    | 'resume.experience'
+    | 'resume.experiencePlaceholder'
+    | 'resume.jobDescription'
     | 'resume.title'
     | 'resume.tabCn'
     | 'resume.tabEn'
@@ -733,6 +746,9 @@ export type I18nKey =
     | 'me.phoneUpdateSuccess'
     | 'me.phoneUpdateFailed'
     | 'me.authCancel'
+    | 'me.authRequiredTitle'
+    | 'me.authRequiredContent'
+    | 'me.authRequiredConfirm'
     | 'me.publishSkillEntry'
     | 'me.applyFailed'
     | 'me.orderCreateFailed'

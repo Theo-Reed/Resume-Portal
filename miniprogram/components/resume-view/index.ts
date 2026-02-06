@@ -33,6 +33,16 @@ Component({
       toolTextDesc: '粘贴文字，AI 自动生成匹配简历',
       toolRefineTitle: '简历润色',
       toolRefineDesc: '上传旧简历，AI 帮你重写升级'
+      ,
+      confirmGenerate: '生成',
+      jdPlaceholder: '请粘贴完整的职位描述（JD）...',
+      jobDescription: '岗位描述内容',
+      jobTitle: '岗位标题',
+      jobTitlePlaceholder: '例如：产品经理 / Java开发',
+      company: '公司名称',
+      companyPlaceholder: '可不填，用于生成简历名称',
+      experience: '经验要求',
+      experiencePlaceholder: '例:1-3年 (填0则ai不会额外生成工作经历)'
     },
     jdText: '', // Deprecated, keep for now if needed or remove
     showJdDrawer: false,
@@ -60,6 +70,16 @@ Component({
               toolTextDesc: t('resume.toolTextDesc', lang),
               toolRefineTitle: t('resume.toolRefineTitle', lang),
               toolRefineDesc: t('resume.toolRefineDesc', lang)
+              ,
+              confirmGenerate: t('resume.confirmGenerate', lang),
+              jdPlaceholder: t('resume.jdPlaceholder', lang),
+              jobDescription: t('resume.jobDescription', lang),
+              jobTitle: t('resume.jobTitle', lang),
+              jobTitlePlaceholder: t('resume.jobTitlePlaceholder', lang),
+              company: t('resume.company', lang),
+              companyPlaceholder: t('resume.companyPlaceholder', lang),
+              experience: t('resume.experience', lang),
+              experiencePlaceholder: t('resume.experiencePlaceholder', lang)
             },
             drawerTitle: t('resume.toolTextTitle', lang)
           });
@@ -118,19 +138,20 @@ Component({
     checkPhonePermission() {
         const app = getApp<any>()
         const user = app.globalData.user
+      const lang = normalizeLanguage()
         
         if (!checkIsAuthed(user)) {
-        ui.showModal({
-            title: '需要身份认证',
-            content: '为了您的简历和会员权益能够永久同步，请先登录并验证手机号。',
-            confirmText: '去登录',
-            showCancel: false,
-            success: (res) => {
-            if (res.confirm) {
-                this.setData({ isLoggedIn: false });
-            }
-            }
-        })
+      ui.showModal({
+        title: t('me.authRequiredTitle', lang),
+        content: t('me.authRequiredContent', lang),
+        confirmText: t('me.authRequiredConfirm', lang),
+        showCancel: false,
+        success: (res) => {
+        if (res.confirm) {
+          this.setData({ isLoggedIn: false });
+        }
+        }
+      })
         return false
         }
         return true
@@ -138,60 +159,43 @@ Component({
 
     openJdDrawer() {
         if (!this.checkPhonePermission()) return
-        
-        this.setData({ 
-        showJdDrawer: true,
-        drawerTitle: '文字生成简历',
-        targetJob: {
-            title: '',
-            company: '',
-            content: '',
-            experience: ''
-        }
-        })
+      const lang = normalizeLanguage()
+      this.setData({ 
+      showJdDrawer: true,
+      drawerTitle: t('resume.toolTextTitle', lang),
+      targetJob: {
+        title: '',
+        company: '',
+        content: '',
+        experience: ''
+      },
+      canSubmit: false
+      })
     },
 
     closeJdDrawer() {
         this.setData({ showJdDrawer: false })
     },
 
-    onTitleInput(e: any) {
+    onJdFieldChange(e: any) {
+        const { field } = e.currentTarget.dataset
+        const { value } = e.detail
         this.setData({
-        'targetJob.title': e.detail.value
-        }, () => this.validateForm())
-    },
-
-    onCompanyInput(e: any) {
-        this.setData({
-        'targetJob.company': e.detail.value
-        }, () => this.validateForm())
-    },
-
-    onExperienceInput(e: any) {
-        this.setData({
-        'targetJob.experience': e.detail.value
-        }, () => this.validateForm())
-    },
-
-    onJdInput(e: any) {
-        this.setData({
-        'targetJob.content': e.detail.value,
-        jdText: e.detail.value
+            [`targetJob.${field}`]: value
         }, () => this.validateForm())
     },
 
     validateForm() {
-        const { title, company, content, experience } = this.data.targetJob
-        // Must have JD content OR (Title + Company)
-        // Experience is optional but recommended
+        const { title, content } = this.data.targetJob
+        // Must have JD content OR Job Title
         const hasContent = content && content.trim().length > 10
-        const hasMeta = (title && title.trim()) && (company && company.trim())
+        const hasTitle = title && title.trim().length >= 2
         
-        const valid = hasContent || hasMeta
-        this.setData({ canSubmit: valid })
+        const valid = hasContent || hasTitle
+        this.setData({ canSubmit: !!valid })
     },
 
-    async onSubmitJd() {
+    async onOptimizeKeywords() {
         if (!this.data.canSubmit) return
 
         const { targetJob } = this.data
@@ -199,18 +203,18 @@ Component({
 
         // Store in globalData for resume generator to pick up
         app.globalData._generateParams = {
-        mode: 'jd',
-        jdText: targetJob.content,
-        targetJobTitle: targetJob.title,
-        targetCompany: targetJob.company,
-        experience: targetJob.experience
+            mode: 'jd',
+            jdText: targetJob.content || '',
+            targetJobTitle: targetJob.title || '',
+            targetCompany: targetJob.company.trim() || '匿名公司',
+            experience: targetJob.experience || ''
         }
 
         this.closeJdDrawer()
         
         // Navigate to generator page
         wx.navigateTo({
-        url: '/pages/resume-profile/index?mode=new'
+            url: '/pages/resume-profile/index?mode=new'
         })
     },
 
