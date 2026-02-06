@@ -710,8 +710,9 @@ Component({
                         isInviteCodeValid: false
                     })
                     if (complete) complete()
-                    // 兑换成功后刷新界面数据
-                    this.onLoadCompat()
+                    // 兑换成功后刷新全局用户数据，会自动触发各页面的 UI 刷新
+                    const app = getApp<any>()
+                    app.refreshUser()
                 }
                 else {
                     ui.showToast(result?.message || uiStrings.applyFailed)
