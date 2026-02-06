@@ -166,6 +166,11 @@ const dict = {
         oldFileUnavailable: { Chinese: '文件已过期且无法恢复', English: 'Old file unavailable' },
         cannotOpenDocument: { Chinese: '无法打开该文档', English: 'Unable to open the document' },
         downloadFailed: { Chinese: '下载失败', English: 'Download failed' },
+        // Date / sync validations
+        startAfterEnd: { Chinese: '开始时间不能晚于结束时间', English: 'Start date cannot be after end date' },
+        endBeforeStart: { Chinese: '结束时间不能早于开始时间', English: 'End date cannot be before start date' },
+        selectStartTime: { Chinese: '请选择开始时间', English: 'Please select start date' },
+        selectEndTime: { Chinese: '请选择结束时间', English: 'Please select end date' },
     },
     resume: {
         toolTitle: { Chinese: '求职助手', English: 'Career Assistant' },
@@ -180,6 +185,9 @@ const dict = {
         tabCn: { Chinese: '中文版', English: 'Chinese' },
         tabEn: { Chinese: '英文版', English: 'English' },
         syncFromCn: { Chinese: '与中文版同步', English: 'Sync from CN' },
+        syncConfirmTitle: { Chinese: '同步确认', English: 'Confirm' },
+        syncConfirmContent: { Chinese: '确定要从中文简历同步吗？这会覆盖当前的英文简历内容。', English: 'Sync from Chinese resume? Current English content will be overwritten.' },
+        synced: { Chinese: '同步成功', English: 'Synced' },
         universityPlaceholder: { Chinese: '选择或输入学校', English: 'Select or enter university' },
         whatsapp: { Chinese: 'WhatsApp', English: 'WhatsApp' },
         telegram: { Chinese: 'Telegram', English: 'Telegram' },
@@ -263,6 +271,9 @@ const dict = {
             Chinese: ['在校生', '职场人'],
             English: ['Student', 'Professional']
         },
+        // Confirmation dialogs
+        deleteWorkConfirm: { Chinese: '确定要删除这段工作经历吗？', English: 'Are you sure you want to delete this work experience?' },
+        deleteEducationConfirm: { Chinese: '确定要删除这段教育经历吗？', English: 'Are you sure you want to delete this education entry?' },
         assetCount: { Chinese: '份简历资产', English: 'Resume assets' },
         syncingAssets: { Chinese: '正在同步 AI 资产...', English: 'Syncing AI assets...' },
         statusFailed: { Chinese: '失败', English: 'Failed' },

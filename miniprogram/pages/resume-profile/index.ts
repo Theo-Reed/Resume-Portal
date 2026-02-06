@@ -190,10 +190,12 @@ Page({
   async onSyncFromChinese() {
     const { zh, ui: uiStrings, interfaceLang } = this.data
     if (!zh || Object.keys(zh).length === 0) return
+    const app = getApp() as any
+    const lang = normalizeLanguage(interfaceLang || app?.globalData?.language)
 
     ui.showModal({
-      title: uiStrings.syncFromCn || '同步确认',
-      content: interfaceLang === 'English' ? 'Sync from Chinese resume? Current English content will be overwritten.' : '确定要从中文简历同步吗？这会覆盖当前的英文简历内容。',
+      title: t('resume.syncConfirmTitle', lang) || uiStrings.syncFromCn || '同步确认',
+      content: t('resume.syncConfirmContent', lang),
       success: async (res) => {
         if (res.confirm) {
           // 将中文数据整体移动到英文侧进行保存
@@ -235,7 +237,7 @@ Page({
           }
 
           await this.saveResumeProfile(syncData)
-          ui.showSuccess(interfaceLang === 'English' ? 'Synced' : '同步成功')
+          ui.showSuccess(t('resume.synced', lang))
           
           // 重新加载数据
           await this.loadResumeData()
@@ -781,14 +783,17 @@ Page({
     const formPrefix = isWorkField ? 'workForm' : 'eduForm'
     const otherDate = (this.data[formPrefix] as any)[otherField]
 
+    const app = getApp() as any
+    const lang = normalizeLanguage(this.data.interfaceLang || app?.globalData?.language)
+
     // 校验：开始时间不能晚于结束时间
     if (otherDate && dateStr !== this.data.ui.toPresent && otherDate !== this.data.ui.toPresent) {
       if (actualField === 'startDate' && dateStr > otherDate) {
-        ui.showToast('开始时间不能晚于结束时间')
+        ui.showToast(t('me.startAfterEnd', lang))
         return
       }
       if (actualField === 'endDate' && dateStr < otherDate) {
-        ui.showToast('结束时间不能早于开始时间')
+        ui.showToast(t('me.endBeforeStart', lang))
         return
       }
     }
