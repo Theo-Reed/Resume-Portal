@@ -20,6 +20,32 @@ export interface IMemberScheme {
 }
 
 /**
+ * 用户会员信息
+ */
+export interface IMemberInfo {
+  level: number;
+  expire_at?: string;
+  points?: number;
+}
+
+/**
+ * 用户对象
+ */
+export interface IUser {
+  _id: string;
+  phone?: string;
+  phoneNumber?: string;
+  openids?: string[];
+  language?: string;
+  nickname?: string;
+  avatar?: string;
+  membership: IMemberInfo;
+  inviteCode?: string;
+  profile?: any;
+  isAuthed?: boolean;
+}
+
+/**
  * getMemberSchemes 接口返回结果
  */
 export interface IGetMemberSchemesResult {
@@ -38,9 +64,17 @@ export interface ICalculatePriceResult {
 }
 
 /**
- * login 接口返回结果
+ * login 接口返回结果 (微信小程序 native login)
  */
 export interface ILoginResult {
   openid: string;
-  user: any; // 可以后续细化用户类型
+  user: IUser;
+}
+
+/**
+ * loginByOpenid 接口返回结果
+ */
+export interface ILoginByOpenidResult {
+  token: string;
+  user: IUser;
 }
