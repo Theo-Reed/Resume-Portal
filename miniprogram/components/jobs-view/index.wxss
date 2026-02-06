@@ -302,7 +302,8 @@
   line-height: 64rpx;
   border-radius: 18rpx;
   padding: 0 18rpx;
-  background-color: #EDEDED;
+  background-color: var(--bg-main);
+  color: var(--text-main);
 }
 
 .search-placeholder {
