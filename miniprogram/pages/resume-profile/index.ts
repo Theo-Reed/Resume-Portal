@@ -1221,7 +1221,7 @@ Page({
           
           const payload: any = { educations: newEducations }
           
-          const success = await this.saveResumeProfile(updatePayload, false)
+          const success = await this.saveResumeProfile(payload, false)
           if (success) {
             ui.showSuccess(this.data.ui.saveSuccess)
             this.closeEduDrawer()
