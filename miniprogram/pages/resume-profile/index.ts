@@ -219,13 +219,11 @@ Page({
 
           // 特殊处理 2：性别翻译
           if (syncData.gender) {
-            const genderMap: Record<string, string> = {
-              '男': 'Male',
-              '女': 'Female',
-              '保密': 'Secret'
-            }
-            if (genderMap[syncData.gender]) {
-              syncData.gender = genderMap[syncData.gender]
+            const genderOptionsCn = t('resume.genderOptions', 'Chinese') as string[]
+            const genderOptionsEn = t('resume.genderOptions', 'English') as string[]
+            const idx = genderOptionsCn.indexOf(syncData.gender)
+            if (idx !== -1) {
+              syncData.gender = genderOptionsEn[idx]
             }
           }
 
@@ -1031,20 +1029,19 @@ Page({
 
   translateDegreeToEn(cnDegree: string) {
     if (!cnDegree) return ''
-    const degreeMap: Record<string, string> = {
-      '大专': 'Associate',
-      '本科': 'Bachelor',
-      '硕士': 'Master',
-      '博士': 'PhD',
-      '其他': 'Other'
-    }
+    const degreeOptionsCn = t('resume.degreeOptions', 'Chinese') as string[]
+    const degreeOptionsEn = t('resume.degreeOptions', 'English') as string[]
+    
     // Parse "Degree (Type)" such as "本科 (全日制)"
     const match = cnDegree.match(/^(.+?)\s*\((.+?)\)$/)
     if (match) {
       const pureCnDegree = match[1]
-      return degreeMap[pureCnDegree] || pureCnDegree
+      const idx = degreeOptionsCn.indexOf(pureCnDegree)
+      return idx !== -1 ? degreeOptionsEn[idx] : pureCnDegree
     }
-    return degreeMap[cnDegree] || cnDegree
+    
+    const idx = degreeOptionsCn.indexOf(cnDegree)
+    return idx !== -1 ? degreeOptionsEn[idx] : cnDegree
   },
 
   async onSaveEducation() {

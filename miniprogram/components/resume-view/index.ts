@@ -210,7 +210,7 @@ Component({
             title_english: targetJob.title,
             description: targetJob.content,
             experience: targetJob.experience,
-            source_name: targetJob.company || '匿名公司',
+            source_name: targetJob.company || t('jobs.unknownCompany'),
             createdAt: new Date().toISOString()
         }
 
@@ -240,7 +240,7 @@ Component({
     onImportTap() {
         if (!this.checkPhonePermission()) return
         
-        ui.showToast('功能开发中...')
+        ui.showToast(t('jobs.featureDeveloping'))
     }
   }
 })
