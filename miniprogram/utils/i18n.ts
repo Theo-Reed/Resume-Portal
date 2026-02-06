@@ -585,6 +585,8 @@ export type I18nKey =
     | 'jobs.cleared'
     | 'jobs.clearFailed'
     | 'jobs.deleteFailed'
+    | 'jobs.checkingStatus'
+    | 'jobs.checkFailed'
     | 'jobs.generatedResumeExistsTitle'
     | 'jobs.generatedResumeExistsContent'
     | 'jobs.generatedResumeExistsConfirm'
