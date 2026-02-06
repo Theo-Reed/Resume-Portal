@@ -11,6 +11,8 @@ const UI_MAP = {
     tabCn: 'resume.tabCn',
     /** 英文版 Tab */
     tabEn: 'resume.tabEn',
+    /** 中国 */
+    china: 'resume.china',
     /** 与中文版同步 */
     syncFromCn: 'resume.syncFromCn',
     

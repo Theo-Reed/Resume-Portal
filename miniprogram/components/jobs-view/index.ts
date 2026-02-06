@@ -243,7 +243,7 @@ Component({
         const user = app?.globalData?.user
         const isVerified = checkIsAuthed(user)
         if (!isVerified) {
-            ui.showToast('请先登录验证手机号')
+            ui.showToast(t('jobs.pleaseLogin'))
             return
         }
 
@@ -337,7 +337,7 @@ Component({
                 isRestoreEditing: false,
             })
         } catch (err) {
-            ui.showToast('加载失败')
+            ui.showToast(t('jobs.loadFailed'))
         }
     },
 
@@ -394,7 +394,7 @@ Component({
             const restoredConditions = [...this.data.savedSearchConditions]
             restoredConditions[index] = { ...restoredConditions[index], deleting: false, collapsing: false }
             this.setData({ savedSearchConditions: restoredConditions })
-            ui.showToast('删除失败')
+            ui.showToast(t('jobs.deleteFailed'))
         }
     },
 

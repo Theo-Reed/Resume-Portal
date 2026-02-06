@@ -1,3 +1,5 @@
+import { t } from './i18n'
+
 /**
  * UI 反馈工具类
  * 需要在 WXML 中引入 <ui-feedback id="ui-feedback" />
@@ -7,15 +9,16 @@ export const ui = {
   /**
    * 显示加载中
    */
-  showLoading(title: string = '加载中...', mask: boolean = true) {
+  showLoading(title?: string, mask: boolean = true) {
+    const finalTitle = title || t('app.loading')
     const pages = getCurrentPages();
     const page = pages[pages.length - 1];
     const feedback = page?.selectComponent('#ui-feedback') as any;
     if (feedback) {
-      feedback.setData({ title, type: 'loading', mask, visible: true });
+      feedback.setData({ title: finalTitle, type: 'loading', mask, visible: true });
     } else {
       // 降级使用原生
-      wx.showLoading({ title, mask });
+      wx.showLoading({ title: finalTitle, mask });
     }
   },
 
@@ -103,10 +106,10 @@ export const ui = {
 
     if (feedback) {
       feedback.setData({
-        title: options.title || '提示',
+        title: options.title || t('app.prompt'),
         modalContent: options.content || '',
-        confirmText: options.confirmText || '确定',
-        cancelText: options.cancelText || '取消',
+        confirmText: options.confirmText || t('app.confirm'),
+        cancelText: options.cancelText || t('app.cancel'),
         showCancel: options.showCancel !== false,
         type: 'modal',
         mask: true,

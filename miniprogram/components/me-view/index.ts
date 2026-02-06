@@ -1209,7 +1209,7 @@ Component({
                 
                 if (err.errMsg && (err.errMsg.includes('requestPayment:fail cancel') || err.errMsg.includes('cancel'))) {
                     // 温和提示用户再次重试，且不关闭弹窗
-                    ui.showToast(this.data.appLanguage.includes('Chinese') ? '支付已取消，如有需要请再次重试' : 'Payment cancelled. Please try again if needed.')
+                    ui.showToast(t('me.payCancelledToast'))
                     return
                 }
 

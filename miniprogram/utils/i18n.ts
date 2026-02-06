@@ -305,6 +305,7 @@ const dict = {
         year: { Chinese: '年', English: 'Year' },
         month: { Chinese: '月', English: 'Month' },
         totalPrefix: { Chinese: '共 ', English: 'Total ' },
+        china: { Chinese: '中国', English: 'China' },
     },
     jobs: {
         tabPublic: { Chinese: '公开', English: 'Public' },
@@ -421,6 +422,10 @@ const dict = {
     app: {
         navTitle: { Chinese: '🌍 远程工作机会', English: '🌍 Remote Jobs', AIChinese: '🌍 远程工作机会' },
         maintenanceMsg: { Chinese: '为了给您提供更好的服务，系统正在维护升级中，请稍后再试。', English: 'To provide better service, the system is under maintenance. Please try again later.' },
+        confirm: { Chinese: '确定', English: 'Confirm' },
+        cancel: { Chinese: '取消', English: 'Cancel' },
+        prompt: { Chinese: '提示', English: 'Prompt' },
+        loading: { Chinese: '加载中...', English: 'Loading...' },
     },
 } as const
 
@@ -645,6 +650,8 @@ export type I18nKey =
     | 'resume.downloadFailed'
     | 'resume.year'
     | 'resume.month'
+    | 'resume.totalPrefix'
+    | 'resume.china'
     | 'jobs.unknownCompany'
     | 'jobs.confirmClearTitle'
     | 'jobs.confirmClearContent'
@@ -791,6 +798,10 @@ export type I18nKey =
     | 'tab.me'
     | 'app.navTitle'
     | 'app.maintenanceMsg'
+    | 'app.confirm'
+    | 'app.cancel'
+    | 'app.prompt'
+    | 'app.loading'
 
 function getByPath(obj: any, path: string) {
     return path.split('.').reduce((acc, k) => (acc ? acc[k] : undefined), obj)
