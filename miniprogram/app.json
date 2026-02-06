@@ -2,14 +2,10 @@
   "entryPagePath": "pages/main/index",
   "pages": [
     "pages/main/index",
-    "pages/jobs/index",
     "pages/filter/index",
-    "pages/me/index",
     "pages/job-detail/index",
     "pages/resume-profile/index",
-    "pages/generated-resumes/index",
-    "pages/resume/index",
-    "pages/logs/logs"
+    "pages/generated-resumes/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",

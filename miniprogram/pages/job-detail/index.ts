@@ -465,13 +465,11 @@ Page({
                  cancelText: isChineseEnv ? '取消' : 'Cancel',
                  success: (res) => {
                      if (res.confirm) {
-                         wx.switchTab({
-                             url: '/pages/me/index',
-                             success: (e) => {
-                                 // Store a flag in app global data or storage to open hub
-                                 const app = getApp<IAppOption>() as any;
-                                 if (app.globalData) app.globalData.openMemberHubOnShow = true;
-                             }
+                         const app = getApp<IAppOption>();
+                         app.globalData.tabSelected = 2;
+                         app.globalData.openMemberHubOnShow = true;
+                         wx.reLaunch({
+                             url: '/pages/main/index'
                          })
                      }
                  }

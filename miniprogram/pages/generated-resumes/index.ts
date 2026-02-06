@@ -311,8 +311,9 @@ Page({
   },
 
   goJobsList() {
-    wx.switchTab({
-      url: '/pages/jobs/index'
+    getApp<IAppOption>().globalData.tabSelected = 0;
+    wx.reLaunch({
+      url: '/pages/main/index'
     })
   }
 })

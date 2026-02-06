@@ -113,6 +113,7 @@ interface IAppOption {
     _userListeners: Set<(user: any) => void>,
     _splashAnimated: boolean,
     tabSelected: number,
+    openMemberHubOnShow?: boolean,
     _pageData: {
       jobData: any,
       filterValue: any,

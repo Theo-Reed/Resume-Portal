@@ -365,9 +365,7 @@ Component({
     },
 
     goToMe() {
-        wx.switchTab({
-            url: '/pages/me/index'
-        })
+        this.triggerEvent('tabChange', { index: 2 });
     },
 
     toggleRestoreEdit() {
