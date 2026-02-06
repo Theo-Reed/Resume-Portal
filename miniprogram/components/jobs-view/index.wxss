@@ -8,12 +8,12 @@
   background-color: #f5f7fb;
 }
 
-.page {
+.jobs-view-container {
   position: relative; 
   display: flex;
   flex-direction: column;
   height: 100%; /* Changed from 100vh for component usage */
-  padding: calc(env(safe-area-inset-top) + 20rpx) 32rpx 0;
+  padding: 20rpx 32rpx 0;
   box-sizing: border-box;
   overflow: hidden;
   background-color: #f5f7fb;
@@ -285,11 +285,8 @@
   transform: translate3d(0, 0, 0);
 }
 
-swiper,
 .jobs-swiper,
-swiper-item,
-.job-list-wrapper,
-job-list {
+.jobs-swiper-item {
   height: 100%;
   min-height: 0;
   will-change: transform;

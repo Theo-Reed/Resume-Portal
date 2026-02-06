@@ -3,8 +3,8 @@
   height: 100%;
 }
 
-.page {
-  padding: calc(env(safe-area-inset-top) + 20rpx) 32rpx 32rpx;
+.resume-view-container {
+  padding: 20rpx 32rpx 32rpx;
   background-color: var(--bg-page);
   height: 100%;
   box-sizing: border-box;

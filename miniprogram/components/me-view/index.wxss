@@ -28,7 +28,7 @@
     height: 100%;
 }
 
-.page {
+.me-view-container {
     height: 100%;
     background: var(--bg-main); /* More neutral, professional slate tint */
     box-sizing: border-box;
@@ -43,7 +43,7 @@
 /* --- 1. Hero Section --- */
 .hero-section {
     position: relative;
-    padding: calc(env(safe-area-inset-top) + 20rpx) 40rpx 60rpx;
+    padding: 0 0 40rpx;
     background: #fff;
     overflow: hidden;
     flex-shrink: 0;
@@ -64,7 +64,9 @@
     align-items: center;
     position: relative;
     z-index: 1;
-    margin-bottom: -25rpx;
+    margin-bottom: -10rpx;
+    margin-top: 40rpx;
+    padding: 0 50rpx;
 }
 
 .avatar-wrapper {
@@ -143,7 +145,7 @@
 /* --- Content Body Padding --- */
 .content-body {
     padding: 0 32rpx;
-    margin-top: -30rpx;
+    margin-top: -20rpx;
     position: relative;
     z-index: 10;
     flex-shrink: 0;
@@ -200,7 +202,7 @@
 
 /* --- 2. VIP Card V3 (Redesigned) --- */
 .vip-card-v3 {
-    margin: 32rpx 0;
+    margin: 20rpx 0;
     height: 280rpx;
     border-radius: 32rpx;
     position: relative;
@@ -340,7 +342,7 @@
     background: #fff;
     border-radius: 28rpx;
     padding: 8rpx 0;
-    margin-bottom: 29rpx;
+    margin-bottom: 25rpx;
     box-shadow: 0 8rpx 20rpx rgb(0 0 0 / 3%);
     border: 1rpx solid rgb(226 232 240 / 60%);
 }
@@ -1373,7 +1375,7 @@
 }
 /* --- VIP Card V3 (Home) --- */
 .vip-card-v3 {
-    margin: 32rpx 0; /* Align with container padding */
+    margin: 20rpx 0; /* Align with container padding */
     height: 300rpx; /* Slightly more compact */
     border-radius: 32rpx; /* Closer to standard 28rpx */
     position: relative;

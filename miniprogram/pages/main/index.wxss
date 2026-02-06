@@ -13,16 +13,6 @@ page::-webkit-scrollbar {
   display: none;
 }
 
-.page {
-  position: relative; /* 为绝对定位的filter-dropdown provide location context */
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  padding: 40rpx 32rpx 0;
-  box-sizing: border-box;
-  overflow: hidden;
-}
-
 .main-content {
   flex: 1;
   display: flex;

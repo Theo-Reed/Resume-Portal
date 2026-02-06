@@ -1,4 +1,4 @@
-<view class="page">
+<view class="me-view-container">
   <ui-feedback id="ui-feedback" />
 
   <view wx:if="{{isInitialLoading && !isLoggedIn}}" class="loading-box">

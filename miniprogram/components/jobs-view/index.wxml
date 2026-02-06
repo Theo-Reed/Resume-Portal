@@ -1,5 +1,5 @@
 <!-- miniprogram/components/jobs-view/index.wxml -->
-<view class="page">
+<view class="jobs-view-container">
   <view class="main-content">
     <!-- Internal tabs for job list (公开 / 精选 / 收藏) -->
     <view class="jobs-tabs">
@@ -12,7 +12,7 @@
     <!-- Swiper for animated tab switch; enable touch for swipe -->
     <swiper current="{{currentTab}}" class="jobs-swiper" indicator-dots="{{false}}" autoplay="{{false}}" circular="{{false}}" duration="300" easing-function="easeOutCubic" disable-touch="{{false}}" bindchange="onSwiperChange">
       <!-- 公开 tab -->
-      <swiper-item>
+      <swiper-item class="jobs-swiper-item">
         <job-tab
           id="jobTab0"
           tab-type="{{0}}"
@@ -28,7 +28,7 @@
       </swiper-item>
       
       <!-- 精选 tab -->
-      <swiper-item>
+      <swiper-item class="jobs-swiper-item">
         <job-tab
           id="jobTab1"
           tab-type="{{1}}"
@@ -44,7 +44,7 @@
       </swiper-item>
       
       <!-- 收藏 tab -->
-      <swiper-item>
+      <swiper-item class="jobs-swiper-item">
         <job-tab
           id="jobTab2"
           tab-type="{{2}}"
