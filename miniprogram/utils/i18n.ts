@@ -321,6 +321,25 @@ const dict = {
         cleared: { Chinese: '已清空', English: 'Cleared' },
         clearFailed: { Chinese: '清空失败', English: 'Clear failed' },
         deleteFailed: { Chinese: '删除失败', English: 'Delete failed' },
+        generatedResumeExistsTitle: { Chinese: '已生成过简历', English: 'Already Generated Resume' },
+        generatedResumeExistsContent: { Chinese: '您已为该岗位生成过定制简历，是否需要重新生成？', English: 'You already generated a customized resume for this job. Regenerate?' },
+        generatedResumeExistsConfirm: { Chinese: '重新生成', English: 'Regenerate' },
+        generatedResumeExistsCancel: { Chinese: '查看简历', English: 'View Resumes' },
+        generateRequestSubmittedTitle: { Chinese: '生成请求已提交', English: 'Request Submitted' },
+        generateRequestSubmittedContent: { Chinese: 'AI 正在为你深度定制简历，大约需要 30 秒。完成后将在“我的简历”中展示，你可以继续浏览其他岗位。', English: 'AI is customizing your resume, usually takes 30s. Check "Generated Resumes" later.' },
+        generateRequestSubmittedConfirm: { Chinese: '去看看', English: 'Check' },
+        generateRequestSubmittedCancel: { Chinese: '留在本页', English: 'Stay' },
+        generatingTitle: { Chinese: '生成中', English: 'Processing' },
+        generatingContent: { Chinese: '该岗位的定制简历还在生成中，请耐心等待，无需重复提交。', English: 'Resume for this job is still being generated. Please wait.' },
+        generatingConfirm: { Chinese: '知道了', English: 'OK' },
+        quotaExhaustedTitle: { Chinese: '生成额度已用完', English: 'Quota Exhausted' },
+        quotaExhaustedContent: { Chinese: '您的简历生成额度已用完，请升级或补充算力。', English: 'Your resume generation quota has been used up. Please upgrade or top-up points.' },
+        quotaExhaustedConfirm: { Chinese: '去升级', English: 'Upgrade' },
+        quotaExhaustedCancel: { Chinese: '取消', English: 'Cancel' },
+        generateFailedTitle: { Chinese: '生成失败', English: 'Generate Failed' },
+        profileIncompleteTitle: { Chinese: '简历信息不完整', English: 'Profile Incomplete' },
+        profileIncompleteContent: { Chinese: '为了生成效果，请先补全当前语言简历的基础资料（姓名、联系方式、教育及工作经历）。', English: 'Please complete your current language profile (Name, Contact, Education and Work Experience) first.' },
+        profileIncompleteConfirm: { Chinese: '去完善', English: 'Edit Profile' },
     },
     drawer: {
         salary: { Chinese: '薪资', English: 'Salary' },
@@ -536,6 +555,25 @@ export type I18nKey =
     | 'jobs.cleared'
     | 'jobs.clearFailed'
     | 'jobs.deleteFailed'
+    | 'jobs.generatedResumeExistsTitle'
+    | 'jobs.generatedResumeExistsContent'
+    | 'jobs.generatedResumeExistsConfirm'
+    | 'jobs.generatedResumeExistsCancel'
+    | 'jobs.generateRequestSubmittedTitle'
+    | 'jobs.generateRequestSubmittedContent'
+    | 'jobs.generateRequestSubmittedConfirm'
+    | 'jobs.generateRequestSubmittedCancel'
+    | 'jobs.generatingTitle'
+    | 'jobs.generatingContent'
+    | 'jobs.generatingConfirm'
+    | 'jobs.quotaExhaustedTitle'
+    | 'jobs.quotaExhaustedContent'
+    | 'jobs.quotaExhaustedConfirm'
+    | 'jobs.quotaExhaustedCancel'
+    | 'jobs.generateFailedTitle'
+    | 'jobs.profileIncompleteTitle'
+    | 'jobs.profileIncompleteContent'
+    | 'jobs.profileIncompleteConfirm'
     | 'me.qrHint'
     | 'me.generatedResumesEntry'
     | 'me.loading'

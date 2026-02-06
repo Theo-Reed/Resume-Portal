@@ -291,6 +291,7 @@ Page({
     this.closeApplyMenu()
     
     const app = getApp<IAppOption>() as any
+    const lang = normalizeLanguage(app?.globalData?.language)
     const jobId = this.data.job?._id
     
     try {
@@ -307,10 +308,10 @@ Page({
       if (existingList.length > 0) {
         ui.hideLoading()
         ui.showModal({
-          title: '已生成过简历',
-          content: '您已为该岗位生成过定制简历，是否需要重新生成？',
-          confirmText: '重新生成',
-          cancelText: '查看简历',
+          title: t('jobs.generatedResumeExistsTitle', lang),
+          content: t('jobs.generatedResumeExistsContent', lang),
+          confirmText: t('jobs.generatedResumeExistsConfirm', lang),
+          cancelText: t('jobs.generatedResumeExistsCancel', lang),
           success: (res) => {
             if (res.confirm) {
               this.doGenerateResumeAction()
@@ -430,43 +431,39 @@ Page({
 
           // 1. 如果是正在生成中 (StatusCode.HTTP_CONFLICT)
           if (isProcessingError) {
-            ui.showModal({
-                title: isChineseEnv ? '生成中' : 'Processing',
-                content: isChineseEnv 
-                  ? '该岗位的定制简历还在生成中，请耐心等待，无需重复提交。' 
-                  : 'Resume for this job is still being generated. Please wait.',
-                showCancel: false,
-                confirmText: isChineseEnv ? '知道了' : 'OK'
-            });
+              ui.showModal({
+                  title: t('jobs.generatingTitle', lang),
+                  content: t('jobs.generatingContent', lang),
+                  showCancel: false,
+                  confirmText: t('jobs.generatingConfirm', lang)
+              });
             return;
           }
 
           // 2. 如果是配额不足 (StatusCode.HTTP_FORBIDDEN / QUOTA_EXHAUSTED)
           if (isQuotaError) {
              ui.showModal({
-                 title: isChineseEnv ? '生成额度已用完' : 'Quota Exhausted',
-                 content: isChineseEnv 
-                    ? (err?.data?.message || StatusMessage[StatusCode.QUOTA_EXHAUSTED])
-                    : 'Your resume generation quota has been used up. Please upgrade your plan or top-up points.',
-                 confirmText: isChineseEnv ? '去升级' : 'Upgrade',
-                 cancelText: isChineseEnv ? '取消' : 'Cancel',
-                 success: (res) => {
-                     if (res.confirm) {
-                         const app = getApp<IAppOption>();
-                         app.globalData.tabSelected = 2;
-                         app.globalData.openMemberHubOnShow = true;
-                         wx.reLaunch({
-                             url: '/pages/main/index'
-                         })
-                     }
+               title: t('jobs.quotaExhaustedTitle', lang),
+               content: err?.data?.message || t('jobs.quotaExhaustedContent', lang),
+               confirmText: t('jobs.quotaExhaustedConfirm', lang),
+               cancelText: t('jobs.quotaExhaustedCancel', lang),
+               success: (res) => {
+                 if (res.confirm) {
+                   const app = getApp<IAppOption>();
+                   app.globalData.tabSelected = 2;
+                   app.globalData.openMemberHubOnShow = true;
+                   wx.reLaunch({
+                     url: '/pages/main/index'
+                   })
                  }
+               }
              })
              return;
           }
 
           ui.showModal({
-            title: isChineseEnv ? '生成失败' : 'Generate Failed',
-            content: err?.data?.message || err?.message || (isChineseEnv ? '系统繁忙，请稍后再试' : 'System busy, please try again later.'),
+            title: t('jobs.generateFailedTitle', lang),
+            content: err?.data?.message || err?.message || t('jobs.generateFailedTitle', lang),
             showCancel: false
           })
         }
@@ -474,16 +471,12 @@ Page({
         ui.hideLoading()
         this.setData({ isGenerating: false })
         
-        const content = isChineseEnv 
-          ? '为了生成效果，请先补全当前语言简历的基础资料（姓名、联系方式、教育及工作经历）。' 
-          : 'Please complete your current language profile (Name, Contact, Education and Work Experience) first.'
-
         // 简历不完整，跳转到简历资料页
         ui.showModal({
-          title: isChineseEnv ? '简历信息不完整' : 'Profile Incomplete',
-          content: content,
-          confirmText: isChineseEnv ? '去完善' : 'Edit Profile',
-          cancelText: isChineseEnv ? '取消' : 'Cancel',
+          title: t('jobs.profileIncompleteTitle', lang),
+          content: t('jobs.profileIncompleteContent', lang),
+          confirmText: t('jobs.profileIncompleteConfirm', lang),
+          cancelText: t('resume.cancel', lang),
           success: (res) => {
             if (res.confirm) {
               wx.navigateTo({
