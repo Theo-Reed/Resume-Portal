@@ -226,7 +226,7 @@
 
 .jobs-tabs {
   display: flex;
-  background: #fff;
+  background: var(--bg-card);
   border-radius: 12rpx;
   padding: 8rpx;
   margin: 0 0 17rpx;
@@ -234,6 +234,7 @@
   position: relative;
   z-index: 10;
   box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.05);
+  border: 1rpx solid var(--border);
 }
 
 .tab-slider {
@@ -242,7 +243,7 @@
   left: 9.7rpx;
   width: calc((100% - 32rpx) / 3); 
   height: calc(100% - 16rpx);
-  background: #e5f0ff; 
+  background: var(--primary-light); 
   border-radius: 8rpx;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 0;
@@ -270,7 +271,7 @@
   font-weight: 600;
   position: relative;
   z-index: 1;
-  color: #6b7280;
+  color: var(--text-desc);
   transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
