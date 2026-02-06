@@ -1,4 +1,6 @@
 /* miniprogram/pages/resume-profile/index.wxss */
+@import "/components/ui/common.wxss";
+
 .page {
   height: 100vh;
   background-color: #f8fafc; /* Softer background */
@@ -108,12 +110,6 @@
   display: flex;
   align-items: center;
   gap: 5rpx;
-}
-
-.ui-arrow {
-  font-size: 24rpx;
-  color: var(--text-holder);
-  margin-left: 8rpx;
 }
 
 .title-row {

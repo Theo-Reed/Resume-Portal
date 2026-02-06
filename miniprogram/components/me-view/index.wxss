@@ -23,6 +23,8 @@
 }
 
 /* --- Base Page Style --- */
+@import "/components/ui/common.wxss";
+
 :host {
     display: block;
     height: 100%;
