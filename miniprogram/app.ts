@@ -159,6 +159,8 @@ App<IAppOption>({
           this.notifyLanguageListeners(this.globalData.language);
         }
 
+        this.notifyUserListeners(this.globalData.user);
+
         if (responseData.token) {
           wx.setStorageSync('token', responseData.token);
         }
@@ -197,11 +199,15 @@ App<IAppOption>({
     this.globalData._langListeners.forEach((fn: any) => fn(lang));
   },
 
-  addUserListener(fn: (user: any) => void) {
+  notifyUserListeners(user: any) {
+    this.globalData._userListeners.forEach((fn: any) => fn(user));
+  },
+
+  onUserChange(fn: (user: any) => void) {
     this.globalData._userListeners.add(fn);
   },
 
-  removeUserListener(fn: (user: any) => void) {
+  offUserChange(fn: (user: any) => void) {
     this.globalData._userListeners.delete(fn);
   }
 })

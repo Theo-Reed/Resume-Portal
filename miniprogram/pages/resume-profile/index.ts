@@ -138,6 +138,14 @@ Page({
       },
     })
 
+    const app = getApp<IAppOption>() as any
+    const userUpdateHandler = (user: any) => {
+      console.log('[ResumeProfile] User updated, reloading data...')
+      this.loadResumeData()
+    }
+    app.onUserChange(userUpdateHandler)
+    ;(this as any)._userDetach = () => app.offUserChange(userUpdateHandler)
+
     this.updateLanguage()
     this.initDateOptions()
     this.loadResumeData()
@@ -160,6 +168,10 @@ Page({
     const fn = (this as any)._langDetach
     if (typeof fn === 'function') fn()
     ;(this as any)._langDetach = null
+
+    const userFn = (this as any)._userDetach
+    if (typeof userFn === 'function') userFn()
+    ;(this as any)._userDetach = null
   },
 
   onShow() {
@@ -344,6 +356,7 @@ Page({
     const user = app?.globalData?.user
 
     if (user) {
+      console.log('[ResumeProfile] Loading data for user:', user._id)
       const profile = user.resume_profile || {}
       
       // 直接从 zh/en 字段获取，不再考虑旧的扁平结构
@@ -423,7 +436,7 @@ Page({
         resume_profile: updates
       })
       
-      if (res?.result?.ok) {
+      if (res?.success && res.result?.user) {
         const app = getApp<IAppOption>() as any
         app.globalData.user = res.result.user
         this.loadResumeData()

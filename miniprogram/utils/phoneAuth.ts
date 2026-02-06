@@ -75,18 +75,12 @@ async function getPhoneNumberByCode(code: string): Promise<string | undefined> {
 export async function updatePhoneNumber(phone: string): Promise<void> {
     const updateRes = await callApi('updateUserProfile', { phone, isAuthed: true })
 
-    const result = updateRes.result || (updateRes as any)
-    if (!result?.ok) {
-        console.error('[PhoneAuth] Update profile failed:', result)
+    if (!updateRes.success || !updateRes.result?.user) {
+        console.error('[PhoneAuth] Update profile failed:', updateRes)
         throw new Error('更新用户信息失败')
     }
 
-    const updatedUser = result?.user
-    if (!updatedUser) {
-        console.error('[PhoneAuth] No user data returned:', updateRes?.result)
-        throw new Error('更新用户信息失败：未返回用户数据')
-    }
-
+    const updatedUser = updateRes.result.user
     const app = getApp<IAppOption>() as any
     if (app?.globalData) app.globalData.user = updatedUser
 }
