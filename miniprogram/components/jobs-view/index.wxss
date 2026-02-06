@@ -284,6 +284,7 @@
   min-height: 0;
   will-change: transform;
   transform: translate3d(0, 0, 0);
+  background-color: var(--bg-page);
 }
 
 .jobs-swiper,
