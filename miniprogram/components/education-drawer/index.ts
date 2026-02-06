@@ -124,7 +124,7 @@ Component({
     onSave() {
       const { formData } = this.data
       if (!formData.school) {
-        ui.showToast('请输入学校名称')
+        ui.showToast(t('resume.inputSchool'))
         return
       }
       this.triggerEvent('save', { education: formData })
@@ -132,8 +132,8 @@ Component({
 
     onDelete() {
       ui.showModal({
-        title: '确认删除',
-        content: '确定要删除这段教育经历吗？',
+        title: t('resume.syncConfirmTitle'),
+        content: t('resume.deleteEducationConfirm'),
         success: (res) => {
           if (res.confirm) {
             this.triggerEvent('delete')

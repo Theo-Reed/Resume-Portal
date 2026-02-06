@@ -647,7 +647,7 @@
   <ui-drawer 
     show="{{showDegreePicker}}" 
     title="{{ui.degreePlaceholder}}" 
-    confirmText="{{ui.save || '确定'}}"
+    confirmText="{{ui.save}}"
     bind:close="closeDegreePicker"
     bind:confirm="onDegreePickConfirm"
   >
