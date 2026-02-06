@@ -76,6 +76,7 @@ Component({
       
       const app = getApp<any>();
       const hasShownSplash = app.globalData._splashAnimated;
+      const flowStartTime = Date.now();
 
       // 逻辑还原：
       // 冷启动统一展示 Splash (遮挡加载过程)，无论是否有 OpenID。
@@ -99,6 +100,16 @@ Component({
         if (bootStatus === 'loading') {
           setTimeout(checkState, TIMINGS.MIN_CHECK_INTERVAL);
           return;
+        }
+
+        // 强行增加：大星星的最短呼吸时长保证
+        // 即使 bootStatus 已经变为 success 或 unauthorized，也至少维持 MIN_SPLASH_HOLD 
+        const elapsed = Date.now() - flowStartTime;
+        const remaining = TIMINGS.MIN_SPLASH_HOLD - elapsed;
+        
+        if (remaining > 100) { 
+           setTimeout(checkState, remaining);
+           return;
         }
 
         if (bootStatus === 'success') {
@@ -134,10 +145,13 @@ Component({
           }, TIMINGS.RETRIAL_CYCLE);
         }
         else {
-          console.log('[LoginWall] Unauthorized, showing login immediately');
+          console.log('[LoginWall] Unauthorized, transitioning to login card');
+          
+          // 如果是从 splash 切换过来的，先确保 _shouldShow 为 true (容器可见)
+          // 然后切换到 login 状态，这会触发 Mascot 从中心位移到 Logo 位，并显示登录卡片
           this.setData({ 
-             internalPhase: 'login',
-             _shouldShow: true // CRITICAL FIX: Ensure wall is visible if auth is needed, even if splash was skipped
+             _shouldShow: true,
+             internalPhase: 'login'
           });
         }
       };
@@ -146,6 +160,7 @@ Component({
     },
 
     async onGetPhoneNumber(e: any) {
+      if (this.data.authState !== 'idle') return;
       const { detail } = e;
       if (!detail.code) return;
 
@@ -167,12 +182,12 @@ Component({
           
           this.setData({ 
             successMode: config.mode,
-            internalPhase: config.phase 
+            internalPhase: config.phase,
+            authState: 'success' // 立即触发登录墙卡片背景淡出，让仪式感更纯粹
           });
 
           // 3 秒展示后同步淡出
           setTimeout(() => {
-             this.setData({ authState: 'success' }); // 触发登录墙卡片淡出
              executeFadeOut(this, () => {
                 this.triggerEvent('loginSuccess', app.globalData.user);
              });
@@ -193,7 +208,7 @@ Component({
 
     retry() {
       const app = getApp<any>();
-      this.setData({ internalPhase: 'splash' });
+      this.setData({ internalPhase: 'splash', authState: 'idle' });
       app.refreshUser().then(() => this.startFlow()).catch(() => this.startFlow());
     },
     preventTouch() { return; }

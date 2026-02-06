@@ -16,7 +16,7 @@
 
   <!-- Phase 2: Login Card -->
   <view class="login-card {{internalPhase === 'login' || internalPhase === 'success' ? 'show' : ''}} {{authState === 'success' ? 'hide-all' : ''}}">
-    <view class="card-inner-content {{authState === 'loading' || (authState === 'success' && internalPhase === 'hidden') ? 'content-fade-out' : ''}}">
+    <view class="card-inner-content {{authState === 'loading' || authState === 'success' ? 'content-fade-out' : ''}}">
       <view class="card-header">
         <view class="logo-placeholder"></view>
         <view class="title-group">

@@ -46,21 +46,23 @@
   background: var(--bg-card); 
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  /* 仅对模糊进行过渡，背景色保持静态以防止阶段切换时的闪烁 */
-  transition: backdrop-filter 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  /* 平滑过渡背景色与模糊度 */
+  transition: background 0.8s ease, backdrop-filter 0.8s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-/* 核心修复：登录墙 & 加载中 阶段，背景保持沉浸色或进入微透明态 */
+/* 核心修复：登录墙阶段，背景回复为纯色，与 Splash 保持一致 */
 .login-wall.s-login .glass-mask,
-.login-wall.s-loading .glass-mask {
+.login-wall.s-loading .glass-mask,
+.login-wall.s-success .glass-mask {
   background: var(--bg-card) !important;
-  backdrop-filter: blur(8px) !important;
-  -webkit-backdrop-filter: blur(8px) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 @media (prefers-color-scheme: dark) {
   .login-wall.s-login .glass-mask,
-  .login-wall.s-loading .glass-mask {
+  .login-wall.s-loading .glass-mask,
+  .login-wall.s-success .glass-mask {
     background: var(--bg-card) !important;
   }
 }
@@ -71,10 +73,11 @@
   z-index: 999999 !important;
 }
 
-/* 背景蒙版淡出：在 hidden 阶段启动，1.5秒线性淡出到透明 */
+/* 背景蒙版淡出：在 hidden 阶段启动，由慢到快加速淡出 (Ease-In) */
 .login-wall.s-hidden .glass-mask {
   opacity: 0 !important;
-  transition: opacity 1.5s cubic-bezier(0.55, 0.055, 0.675, 0.19) !important;
+  /* 恢复至 2s，并保持陡峭的加速曲线 (Ease-In) */
+  transition: opacity 2s cubic-bezier(0.9, 0, 0.3, 1) !important;
 }
 
 /* 授权成功，整体渐渐淡出 (手动延迟 1.5s 触发) */
@@ -82,7 +85,8 @@
   opacity: 0 !important;
   pointer-events: none;
   transform: translate(-50%, -50%) !important;
-  transition: opacity 1.5s cubic-bezier(0.55, 0.055, 0.675, 0.19) !important;
+  /* 确保淡出过渡平滑，与背景对齐 */
+  transition: opacity 2s cubic-bezier(0.9, 0, 0.3, 1) !important;
 }
 
 
