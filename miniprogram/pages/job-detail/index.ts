@@ -503,33 +503,40 @@ Page({
 
   async addSavedRecord(job: JobDetailItem) {
     const app = getApp<IAppOption>() as any
-    const openid = app?.globalData?.user?.openid
-    if (!openid) throw new Error('missing openid')
-
+    // Removed strict openid check as backend uses phoneNumber from JWT
+    
     const res = await callApi<any>('saveJob', {
       jobId: job._id,
-      type: job.type,
-      createdAt: job.createdAt,
+      type: job.type || 'remote',
+      createdAt: job.createdAt || new Date().toISOString(),
     })
 
-    this.setData({ saveDocId: String(res.result?._id || '') })
+    if (res.success) {
+      this.setData({ saveDocId: String(res.result?._id || job._id) })
+    } else {
+      throw new Error(res.message || 'Save failed')
+    }
   },
 
   async removeSavedRecord(_id: string) {
     const app = getApp<IAppOption>() as any
-    const openid = app?.globalData?.user?.openid
-    if (!openid) return
 
-    await callApi('unsaveJob', { jobId: _id })
-    this.setData({ saveDocId: '' })
+    const res = await callApi<any>('unsaveJob', { jobId: _id })
+    if (res.success) {
+      this.setData({ saveDocId: '' })
+    } else {
+      throw new Error(res.message || 'Unsave failed')
+    }
   },
 
   async checkSavedState(_id: string, silent = false) {
     if (!_id) return false
 
     const app = getApp<IAppOption>() as any
-    const openid = app?.globalData?.user?.openid
-    if (!openid) {
+    const user = app?.globalData?.user
+    
+    // 如果没有用户数据（未登录），直接返回 false
+    if (!user) {
       if (!silent) this.setData({ saved: false, saveDocId: '' })
       return false
     }
@@ -538,7 +545,7 @@ Page({
       const res = await callApi<any>('checkJobSaved', { jobId: _id })
       const exists = !!res.result?.exists
       const updates: Partial<typeof this.data> = {
-        saveDocId: String(res.result?._id || ''),
+        saveDocId: String(res.result?._id || _id),
       }
       if (!silent) updates.saved = exists
       this.setData(updates)
