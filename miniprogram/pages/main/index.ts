@@ -1,5 +1,7 @@
 
 import { bootManager } from '../../utils/bootManager';
+import { attachLanguageAware } from '../../utils/languageAware';
+import { t } from '../../utils/i18n';
 
 const app = getApp<IAppOption>();
 
@@ -8,12 +10,30 @@ Page({
     activeTab: 1, // Default to Resume (Index 1)
     bootStatus: 'loading',
     user: null as any,
-    isLoggedIn: false
+    isLoggedIn: false,
+    tabLabels: {
+      jobs: '岗位',
+      resume: '简历',
+      me: '我'
+    }
   },
 
   onLoad(options: any) {
     console.log('[Main] onLoad', options);
     
+    // 监听语言变化，同步更新 Tab Bar 文字
+    ;(this as any)._langDetach = attachLanguageAware(this, {
+      onLanguageRevive: (lang) => {
+        this.setData({
+          tabLabels: {
+            jobs: t('tab.jobs', lang),
+            resume: t('tab.resume', lang),
+            me: t('tab.me', lang)
+          }
+        });
+      }
+    });
+
     // 1. Initial Sync
     this.syncState();
 
@@ -21,6 +41,12 @@ Page({
     bootManager.onStatusChange((status) => {
       this.syncState();
     });
+  },
+
+  onUnload() {
+    if (typeof (this as any)._langDetach === 'function') {
+      (this as any)._langDetach();
+    }
   },
 
   syncState() {

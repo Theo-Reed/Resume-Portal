@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "已生成简历",
+  "navigationBarTitleText": "",
   "enablePullDownRefresh": true,
   "usingComponents": {
     "ui-button": "../../components/ui/button/index",

@@ -1,11 +1,4 @@
 <view class="me-view-container">
-  <ui-feedback id="ui-feedback" />
-
-  <view wx:if="{{isInitialLoading && !isLoggedIn}}" class="loading-box">
-    <view class="loading-spinner"></view>
-    <text>{{ui.loading}}</text>
-  </view>
-
   <block>
     <ui-scroll-view scrollY="{{true}}" enableFlex="{{true}}" custom-class="me-scroll-container">
         <!-- ... content ... -->

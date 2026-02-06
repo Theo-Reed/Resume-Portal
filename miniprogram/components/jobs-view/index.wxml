@@ -1,7 +1,5 @@
 <!-- miniprogram/components/jobs-view/index.wxml -->
 <view class="jobs-view-container">
-  <view class="main-content">
-    <!-- Internal tabs for job list (公开 / 精选 / 收藏) -->
     <view class="jobs-tabs">
       <view class="tab-slider tab-slider-{{currentTab}}"></view>
       <view class="tab {{currentTab === 0 ? 'tab-active' : ''}}" data-idx="0" bindtap="onTabTap">{{ui.tabPublic}}</view>
@@ -90,5 +88,4 @@
     </ui-drawer>
 
     <ui-feedback id="ui-feedback" />
-  </view>
 </view>

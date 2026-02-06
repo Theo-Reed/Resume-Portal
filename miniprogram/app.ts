@@ -7,7 +7,7 @@ App<IAppOption>({
   globalData: {
     user: null as any,
     bootStatus: 'loading' as BootStatus,
-    language: 'Chinese' as AppLanguage,
+    language: 'AIChinese' as AppLanguage,
     _langListeners: new Set<any>(),
     _userListeners: new Set<any>(),
     _splashAnimated: false,
@@ -152,6 +152,13 @@ App<IAppOption>({
       if (res.success && responseData && responseData.user) {
         console.log('[App] User refreshed successfully:', responseData.user.phone || responseData.user.phoneNumber);
         this.globalData.user = responseData.user;
+        
+        // Sync language from user profile
+        if (responseData.user.language) {
+          this.globalData.language = normalizeLanguage(responseData.user.language);
+          this.notifyLanguageListeners(this.globalData.language);
+        }
+
         if (responseData.token) {
           wx.setStorageSync('token', responseData.token);
         }
@@ -164,10 +171,37 @@ App<IAppOption>({
   },
 
   applyLanguage() {
-    try {
-      wx.setNavigationBarTitle({ title: '' })
-    } catch {
-      // ignore
+    // Navigation bar titles are explicitly disabled by user request
+  },
+
+  async setLanguage(lang: AppLanguage) {
+    const normalized = normalizeLanguage(lang);
+    this.globalData.language = normalized;
+    if (this.globalData.user) {
+      this.globalData.user.language = normalized;
+      await callApi('updateUser', { language: normalized });
     }
+    this.notifyLanguageListeners(normalized);
+    this.applyLanguage();
+  },
+
+  onLanguageChange(fn: (lang: AppLanguage) => void) {
+    this.globalData._langListeners.add(fn);
+  },
+
+  offLanguageChange(fn: (lang: AppLanguage) => void) {
+    this.globalData._langListeners.delete(fn);
+  },
+
+  notifyLanguageListeners(lang: AppLanguage) {
+    this.globalData._langListeners.forEach((fn: any) => fn(lang));
+  },
+
+  addUserListener(fn: (user: any) => void) {
+    this.globalData._userListeners.add(fn);
+  },
+
+  removeUserListener(fn: (user: any) => void) {
+    this.globalData._userListeners.delete(fn);
   }
 })

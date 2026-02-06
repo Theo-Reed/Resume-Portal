@@ -1,10 +1,9 @@
 <view class="resume-view-container">
-  <ui-feedback id="ui-feedback" />
   
   <ui-scroll-view scrollY="{{true}}" enableFlex="{{true}}" custom-class="tools-scroll">
     <view class="header">
-      <text class="title">求职助手</text>
-      <text class="subtitle">让 AI 帮你搞定简历与面试</text>
+      <text class="title">{{ui.title}}</text>
+      <text class="subtitle">{{ui.subtitle}}</text>
     </view>
 
       <view class="tools-grid">
@@ -14,8 +13,8 @@
           <text class="tool-emoji">📸</text>
         </view>
         <view class="tool-info">
-          <text class="tool-name">截图生成简历</text>
-          <text class="tool-desc">上传岗位截图，AI 自动生成匹配简历</text>
+          <text class="tool-name">{{ui.toolScreenshotTitle}}</text>
+          <text class="tool-desc">{{ui.toolScreenshotDesc}}</text>
         </view>
         <text class="ui-arrow">❯</text>
       </view>
@@ -26,8 +25,8 @@
           <text class="tool-emoji">✨</text>
         </view>
         <view class="tool-info">
-          <text class="tool-name">文字生成简历</text>
-          <text class="tool-desc">粘贴文字，AI自动生成匹配简历</text>
+          <text class="tool-name">{{ui.toolTextTitle}}</text>
+          <text class="tool-desc">{{ui.toolTextDesc}}</text>
         </view>
         <text class="ui-arrow">❯</text>
       </view>
@@ -38,8 +37,8 @@
           <text class="tool-emoji">📄</text>
         </view>
         <view class="tool-info">
-          <text class="tool-name">简历润色</text>
-          <text class="tool-desc">上传旧简历，AI 帮你重写升级</text>
+          <text class="tool-name">{{ui.toolRefineTitle}}</text>
+          <text class="tool-desc">{{ui.toolRefineDesc}}</text>
         </view>
         <text class="ui-arrow">❯</text>
       </view>

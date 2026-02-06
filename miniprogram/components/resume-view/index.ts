@@ -3,6 +3,7 @@
 import { ui } from '../../utils/ui'
 import { callApi } from '../../utils/request'
 import { normalizeLanguage, t } from '../../utils/i18n'
+import { attachLanguageAware } from '../../utils/languageAware'
 
 Component({
   properties: {
@@ -22,6 +23,16 @@ Component({
   },
   data: {
     isInitializing: true,
+    ui: {
+      title: '求职助手',
+      subtitle: '让 AI 帮你搞定简历与面试',
+      toolScreenshotTitle: '截图生成简历',
+      toolScreenshotDesc: '上传岗位截图，AI 自动生成匹配简历',
+      toolTextTitle: '文字生成简历',
+      toolTextDesc: '粘贴文字，AI 自动生成匹配简历',
+      toolRefineTitle: '简历润色',
+      toolRefineDesc: '上传旧简历，AI 帮你重写升级'
+    },
     jdText: '', // Deprecated, keep for now if needed or remove
     showJdDrawer: false,
     drawerTitle: '文字生成简历',
@@ -32,6 +43,33 @@ Component({
       experience: ''
     },
     canSubmit: false
+  },
+
+  lifetimes: {
+    attached() {
+      ;(this as any)._langDetach = attachLanguageAware(this, {
+        onLanguageRevive: (lang) => {
+          this.setData({
+            ui: {
+              title: t('resume.toolTitle', lang),
+              subtitle: t('resume.toolSubtitle', lang),
+              toolScreenshotTitle: t('resume.toolScreenshotTitle', lang),
+              toolScreenshotDesc: t('resume.toolScreenshotDesc', lang),
+              toolTextTitle: t('resume.toolTextTitle', lang),
+              toolTextDesc: t('resume.toolTextDesc', lang),
+              toolRefineTitle: t('resume.toolRefineTitle', lang),
+              toolRefineDesc: t('resume.toolRefineDesc', lang)
+            },
+            drawerTitle: t('resume.toolTextTitle', lang)
+          });
+        }
+      });
+    },
+    detached() {
+      if (typeof (this as any)._langDetach === 'function') {
+        (this as any)._langDetach();
+      }
+    }
   },
 
   pageLifetimes: {

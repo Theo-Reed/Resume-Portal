@@ -189,6 +189,8 @@ const UI_MAP = {
     saving: 'me.saving',
     /** 重置密码/更新成功 */
     settingsUpdated: 'me.settingsUpdated',
+    /** 更新成功反馈 (兼容旧代码名) */
+    updateSuccess: 'me.settingsUpdated',
     /** 更新失败反馈 */
     updateFailed: 'me.updateFailed',
     /** 用户名为空提示 */
