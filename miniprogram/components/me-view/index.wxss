@@ -64,8 +64,8 @@
     align-items: center;
     position: relative;
     z-index: 1;
-    margin-bottom: -10rpx;
-    margin-top: 40rpx;
+    margin-bottom: 0rpx;
+    margin-top: 50rpx;
     padding: 0 50rpx;
 }
 
@@ -161,6 +161,7 @@
     position: relative;
     overflow: hidden;
     margin-bottom: 32rpx;
+    margin-top: 10rpx;
     border: 1rpx solid rgb(226 232 240 / 60%);
 }
 
@@ -343,6 +344,7 @@
     border-radius: 28rpx;
     padding: 8rpx 0;
     margin-bottom: 25rpx;
+    margin-top: 10rpx;
     box-shadow: 0 8rpx 20rpx rgb(0 0 0 / 3%);
     border: 1rpx solid rgb(226 232 240 / 60%);
 }

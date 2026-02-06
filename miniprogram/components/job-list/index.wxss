@@ -20,7 +20,7 @@
 .job-list-content {
   min-height: 100%;
   box-sizing: border-box;
-  padding-bottom: 20rpx; /* Restored to correct visual distance */
+  padding-bottom: 1rpx; /* Restored to correct visual distance */
 }
 
 .job-card {
