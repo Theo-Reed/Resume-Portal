@@ -29,18 +29,18 @@ export async function requestGenerateResume(jobData: any, options: ResumeGenerat
       ? (profile.zh?.completeness || { level: 0, score: 0 }) 
       : (profile.en?.completeness || { level: 0, score: 0 });
 
-    // 2. 简历完整度校验 (Backend: level >= 1 为达标，即 80%+)
+    // 2. 简历完整度校验 (Backend: level >= 1 为达标)
     if (completeness.level < 1) {
       if (options.onFinish) options.onFinish(false)
-      const score = completeness.score || 0
       
+      const isEnglish = lang === 'English'
       ui.showModal({
-        title: lang === 'English' ? 'Resume Incomplete' : '简历信息不完善',
-        content: lang === 'English' 
-          ? `Your current resume score is ${score}%. A higher score (80%+) ensures better AI matching. Do you want to improve it now?`
-          : `您当前的简历完善度为 ${score}%。完善度达到 80% 以上能显著提升 AI 匹配效果。是否现在去完善？`,
-        confirmText: lang === 'English' ? 'Go Improve' : '去完善',
-        cancelText: lang === 'English' ? 'Generate Anyway' : '直接生成',
+        title: isEnglish ? 'Basic Info Incomplete' : '简历基础信息不完善',
+        content: isEnglish 
+          ? 'To ensure AI quality, please fill in your Name, Email, and University in your profile.'
+          : '为保证 AI 匹配效果，请确保已填写：姓名、微信号/邮箱、毕业院校。是否现在去完善？',
+        confirmText: isEnglish ? 'Go Improve' : '去完善',
+        cancelText: isEnglish ? 'Generate Anyway' : '直接生成',
         success: async (res) => {
           if (res.confirm) {
             wx.navigateTo({ url: '/pages/resume-profile/index' })
