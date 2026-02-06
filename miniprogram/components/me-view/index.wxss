@@ -46,7 +46,7 @@
 .hero-section {
     position: relative;
     padding: 0 0 40rpx;
-    background: #fff;
+    background: var(--bg-card);
     overflow: hidden;
     flex-shrink: 0;
 }

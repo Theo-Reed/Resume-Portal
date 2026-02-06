@@ -8,7 +8,7 @@
   <view class="main-content" style="height: calc(100vh - 96rpx - env(safe-area-inset-bottom)); overflow: hidden;">
     <block wx:if="{{bootStatus === 'loading'}}">
       <!-- 基础占位，具体动画由 login-wall 的 splash-phase 承载 -->
-      <view style="height: 100vh; background: #fff;"></view>
+      <view style="height: 100vh; background: var(--bg-page);"></view>
     </block>
 
     <block wx:else>
@@ -30,18 +30,18 @@
   </view>
 
   <!-- 3. Custom Tab Bar -->
-  <view class="custom-tab-bar" style="position: fixed; bottom: 0; left: 0; right: 0; height: 96rpx; background: #fff; display: flex; border-top: 1rpx solid #eee; padding-bottom: env(safe-area-inset-bottom); z-index: 1000;">
-    <view class="tab-item" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;" bindtap="onTabChange" data-index="0">
-      <image src="/assets/tabbar/jobs{{activeTab === 0 ? '-active' : ''}}.png" style="width: 50rpx; height: 50rpx; margin-bottom: 2rpx; padding-top: 10rpx;"></image>
-      <text style="font-size: 20rpx; color: {{activeTab === 0 ? '#2E5FE9' : '#7A7E83'}}; font-weight: {{activeTab === 0 ? 'bold' : 'normal'}};">{{tabLabels.jobs}}</text>
+  <view class="custom-tab-bar">
+    <view class="tab-item" bindtap="onTabChange" data-index="0">
+      <image class="tab-icon" src="/assets/tabbar/jobs{{activeTab === 0 ? '-active' : ''}}.png"></image>
+      <text class="tab-text {{activeTab === 0 ? 'active' : ''}}">{{tabLabels.jobs}}</text>
     </view>
-    <view class="tab-item" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;" bindtap="onTabChange" data-index="1">
-      <image src="/assets/tabbar/resume{{activeTab === 1 ? '-active' : ''}}.png" style="width: 50rpx; height: 50rpx; margin-bottom: 2rpx; padding-top: 10rpx;"></image>
-      <text style="font-size: 20rpx; color: {{activeTab === 1 ? '#2E5FE9' : '#7A7E83'}}; font-weight: {{activeTab === 1 ? 'bold' : 'normal'}};">{{tabLabels.resume}}</text>
+    <view class="tab-item" bindtap="onTabChange" data-index="1">
+      <image class="tab-icon" src="/assets/tabbar/resume{{activeTab === 1 ? '-active' : ''}}.png"></image>
+      <text class="tab-text {{activeTab === 1 ? 'active' : ''}}">{{tabLabels.resume}}</text>
     </view>
-    <view class="tab-item" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;" bindtap="onTabChange" data-index="2">
-      <image src="/assets/tabbar/me{{activeTab === 2 ? '-active' : ''}}.png" style="width: 50rpx; height: 50rpx; margin-bottom: 2rpx; padding-top: 10rpx;"></image>
-      <text style="font-size: 20rpx; color: {{activeTab === 2 ? '#2E5FE9' : '#7A7E83'}}; font-weight: {{activeTab === 2 ? 'bold' : 'normal'}};">{{tabLabels.me}}</text>
+    <view class="tab-item" bindtap="onTabChange" data-index="2">
+      <image class="tab-icon" src="/assets/tabbar/me{{activeTab === 2 ? '-active' : ''}}.png"></image>
+      <text class="tab-text {{activeTab === 2 ? 'active' : ''}}">{{tabLabels.me}}</text>
     </view>
   </view>
 </view>

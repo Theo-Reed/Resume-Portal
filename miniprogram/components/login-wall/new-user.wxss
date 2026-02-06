@@ -39,9 +39,9 @@
 
 /* 2. 背景演变：纯白 -> 毛玻璃 -> 透明 */
 
-/* 初始阶段 & 开屏：纯白 (继承 index.wxss) */
+/* 初始阶段 & 开屏：适配背景 */
 .login-wall.sm-new.s-splash .glass-mask {
-  background: #ffffff !important;
+  background: var(--bg-page) !important;
   backdrop-filter: none !important;
 }
 

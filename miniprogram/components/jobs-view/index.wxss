@@ -5,7 +5,7 @@
   display: block;
   height: 100%;
   overflow: hidden;
-  background-color: #f5f7fb;
+  background-color: var(--bg-page);
 }
 
 .jobs-view-container {
@@ -16,7 +16,7 @@
   padding: 20rpx 32rpx 0;
   box-sizing: border-box;
   overflow: hidden;
-  background-color: #f5f7fb;
+  background-color: var(--bg-page);
 }
 
 .main-content {
@@ -31,7 +31,7 @@
   height: 45rpx;
   padding: 0 12rpx;
   border-radius: 18rpx;
-  background-color: #e5f0ff;
+  background-color: var(--primary-light);
   display: inline-flex;
   align-items: center;
   gap: 6rpx;

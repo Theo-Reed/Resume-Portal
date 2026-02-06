@@ -22,7 +22,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: #fff;
+  background: var(--bg-card);
   border-radius: 40rpx 40rpx 0 0;
   z-index: 9999; /* Adapt for custom tab-bar (9000) */
   transform: translate3d(0, 100%, 0);

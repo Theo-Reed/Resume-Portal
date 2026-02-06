@@ -70,8 +70,8 @@
 }
 
 .icon-box.blue { background: var(--primary-light); }
-.icon-box.purple { background: #F5F3FF; } /* Violet 50 */
-.icon-box.green { background: #F0FDF4; } /* Green 50 */
+.icon-box.purple { background: var(--bg-purple); }
+.icon-box.green { background: var(--bg-green); }
 
 .tool-icon {
   width: 48rpx;

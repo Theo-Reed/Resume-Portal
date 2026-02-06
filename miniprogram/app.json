@@ -8,9 +8,9 @@
     "pages/generated-resumes/index"
   ],
   "window": {
-    "navigationBarTextStyle": "black",
+    "navigationBarTextStyle": "@navTextStyle",
     "navigationBarTitleText": "",
-    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarBackgroundColor": "@navBackgroundColor",
     "enablePullDownRefresh": false
   },
   "darkmode": true,
