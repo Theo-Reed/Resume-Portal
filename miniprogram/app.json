@@ -11,6 +11,9 @@
     "navigationBarTextStyle": "@navTextStyle",
     "navigationBarTitleText": "",
     "navigationBarBackgroundColor": "@navBackgroundColor",
+    "backgroundColor": "@windowBackground",
+    "backgroundColorTop": "@windowBackground",
+    "backgroundColorBottom": "@windowBackground",
     "enablePullDownRefresh": false
   },
   "darkmode": true,

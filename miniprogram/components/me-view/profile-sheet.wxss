@@ -107,7 +107,7 @@
 }
 
 .profile-avatar-bordered {
-    border: 2rpx solid #e5e7eb;
+    border: 2rpx solid var(--border);
     border-radius: 50%;
     padding: 4rpx;
     box-sizing: border-box;
@@ -121,7 +121,7 @@
 }
 
 .profile-avatar-placeholder {
-    background-color: #e0e0e0;
+    background-color: var(--bg-main);
 }
 
 /* ========== 信息卡片 Section - 特有样式 ========== */
@@ -138,7 +138,7 @@
 .profile-info-item:not(:last-child) {
     padding-bottom: 32rpx;
     margin-bottom: 32rpx;
-    border-bottom: 1rpx solid #f3f4f6;
+    border-bottom: 1rpx solid var(--border);
 }
 
 .profile-nickname-header,
@@ -281,8 +281,8 @@
 }
 
 .nickname-modal-cancel {
-    --primary-light: #f1f5f9; /* 灰色背景 */
-    --primary: #64748b; /* 灰色文字 */
+    --primary-light: var(--primary-light); /* 灰色背景 */
+    --primary: var(--text-sub); /* 灰色文字 */
 }
 
 .nickname-modal-save {
@@ -326,5 +326,5 @@
 }
 
 .profile-expired-value-expired {
-    color: #9ca3af;
+    color: var(--text-holder);
 }
