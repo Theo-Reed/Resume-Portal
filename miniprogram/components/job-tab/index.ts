@@ -364,7 +364,7 @@ Component({
           openid
         })
         
-        const responseData = res.data
+        const responseData = res.result
         const savedJobs = (responseData?.jobs || []) as any[]
         const hasMore = savedJobs.length >= this.data.pageSize
         
@@ -420,7 +420,7 @@ Component({
           language: userLanguage
         })
         
-        const responseData = res.data
+        const responseData = res.result
         const jobs = responseData?.jobs || []
         const hasMore = jobs.length >= this.data.pageSize
         

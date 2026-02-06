@@ -47,7 +47,7 @@ async function getPhoneNumberByCode(code: string): Promise<string | undefined> {
     
     const res = await callApi('getPhoneNumber', { code })
 
-    const responseData = res.data
+    const responseData = res.result
     console.log('[PhoneAuth] API response:', responseData)
 
     if (!res.success || !responseData?.phone) {

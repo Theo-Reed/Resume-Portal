@@ -134,8 +134,8 @@ Component({
         // 调用后端换取手机号与 Token
         const res: any = await callApi('getPhoneNumber', { code: detail.code });
 
-        if (res?.success && res.data?.token) {
-          wx.setStorageSync('token', res.data.token);
+        if (res?.success && res.result?.token) {
+          wx.setStorageSync('token', res.result.token);
           
           // 执行全局刷新，确保全局 globalData.user 同步
           await app.refreshUser();

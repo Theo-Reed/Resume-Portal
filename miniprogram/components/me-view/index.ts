@@ -391,8 +391,8 @@ Component({
                 // 2. 如果彻底没有数据且不在请求中，才通过 API 获取
                 if (schemes.length === 0 && !(this as any)._schemesLoading) {
                     (this as any)._schemesLoading = callApi('getMemberSchemes', {}).then((res: any) => {
-                        const responseData = res.data
-                        if (res.success && responseData?.success) {
+                        const responseData = res.result
+                        if (res.success && responseData) {
                             const sList = responseData.schemes || []
                             this.setData({ schemsList: sList })
                             if (responseData.userScheme) (this as any)._cachedUserScheme = responseData.userScheme

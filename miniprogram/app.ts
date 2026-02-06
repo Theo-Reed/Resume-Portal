@@ -101,7 +101,7 @@ App<IAppOption>({
         method: 'POST',
         data: {}
       })
-      const config = res?.data || res
+      const config = res?.result || res
       this.globalData.systemConfig = config || { isBeta: true, isMaintenance: false }
     } catch (err) {
       this.globalData.systemConfig = { isBeta: true, isMaintenance: false }
