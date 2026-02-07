@@ -326,9 +326,8 @@ Page({
 
   onUnload() {
     this.saveDraft();
-  },
-
-  onUnload() {
+    
+    // Detach listeners
     const fn = (this as any)._langDetach
     if (typeof fn === 'function') fn()
     ;(this as any)._langDetach = null

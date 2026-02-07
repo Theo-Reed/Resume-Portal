@@ -1140,7 +1140,7 @@ Component({
             const { ui: uiStrings } = this.data
             if (!this.data.userPhone) {
                 this.checkPhoneBeforePayment();
-                return;
+                return false;
             }
             ui.showLoading(uiStrings.creatingOrder)
 
@@ -1249,6 +1249,7 @@ Component({
                     showCancel: false,
                     confirmText: uiStrings.confirm
                 })
+                return false;
             }
         },
 
