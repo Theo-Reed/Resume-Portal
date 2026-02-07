@@ -12,12 +12,12 @@
         <view class="detail-header-section">
           <view class="detail-title-meta-wrapper">
         <view class="detail-title-row">
-          <text class="detail-title">{{(isAIChinese && job.title_chinese) ? job.title_chinese : ((isAIEnglish && job.title_english) ? job.title_english : job.title)}}</text>
+          <text class="detail-title">{{(isAIChinese && job.title_chinese) ? job.title_chinese : (isAIEnglish && job.title_english ? job.title_english : job.title)}}</text>
         </view>
-        <view class="detail-meta" wx:if="{{(isAIEnglish && (job.source_name_english || job.source_name)) || (!isAIChinese && job.team && job.team !== ui.unknownCompany) || job.salary}}">
-          <text wx:if="{{isAIEnglish && (job.source_name_english || job.source_name)}}" class="detail-meta-item">From {{job.source_name_english || job.source_name}}</text>
-          <text wx:if="{{!isAIEnglish && job.team && job.team !== ui.unknownCompany}}" class="detail-meta-item">{{job.team}}</text>
-          <text wx:if="{{((isAIEnglish && (job.source_name_english || job.source_name)) || (!isAIEnglish && job.team && job.team !== ui.unknownCompany)) && job.salary}}" class="detail-meta-dot">·</text>
+        <view class="detail-meta" wx:if="{{((isAIEnglish || isNormalEnglish) && (job.source_name_english || job.source_name)) || (!isAIEnglish && !isNormalEnglish && job.team && job.team !== ui.unknownCompany) || job.salary}}">
+          <text wx:if="{{(isAIEnglish || isNormalEnglish) && (job.source_name_english || job.source_name)}}" class="detail-meta-item">From {{job.source_name_english || job.source_name}}</text>
+          <text wx:if="{{!isAIEnglish && !isNormalEnglish && job.team && job.team !== ui.unknownCompany}}" class="detail-meta-item">{{job.team}}</text>
+          <text wx:if="{{(((isAIEnglish || isNormalEnglish) && (job.source_name_english || job.source_name)) || (!isAIEnglish && !isNormalEnglish && job.team && job.team !== ui.unknownCompany)) && job.salary}}" class="detail-meta-dot">·</text>
           <text wx:if="{{job.salary}}" class="detail-meta-item">{{job.salary}}</text>
             </view>
           </view>

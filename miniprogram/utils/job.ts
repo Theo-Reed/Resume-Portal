@@ -77,13 +77,20 @@ export function normalizeJobTags<T extends { summary?: string; source_name?: str
 } {
   let summaryStr = item.summary || ''
   
-  // 仅在 AIEnglish 下尝试使用 summary_english
+  // 仅在 AI 模式下尝试使用多语言 summary
   if (language === 'AIEnglish' && (item as any).summary_english) {
     const enSum = (item as any).summary_english
     if (typeof enSum === 'string' && enSum.trim()) {
       summaryStr = enSum
     } else if (Array.isArray(enSum) && enSum.length > 0) {
       summaryStr = enSum.join(',')
+    }
+  } else if (language === 'AIChinese' && (item as any).summary_chinese) {
+    const zhSum = (item as any).summary_chinese
+    if (typeof zhSum === 'string' && zhSum.trim()) {
+      summaryStr = zhSum
+    } else if (Array.isArray(zhSum) && zhSum.length > 0) {
+      summaryStr = zhSum.join(',')
     }
   }
 
@@ -114,18 +121,29 @@ export function mapJobs<T extends Record<string, any>>(
   jobs: T[],
   language?: AppLanguage | string
 ): (T & { tags: string[]; displayTags: string[] })[] {
+  const isEng = language === 'AIEnglish' || language === 'English'
+
   return (jobs || []).map((job) => {
-    // 获取 experience 字段（normalizeJobTags 内部会进行翻译）
+    // 获取 experience 字段
     const experience = job.experience && typeof job.experience === 'string' ? job.experience.trim() : ''
     
-    // 翻译 salary 字段
-    const salary = job.salary && typeof job.salary === 'string' ? job.salary.trim() : ''
-    const translatedSalary = translateFieldValue(salary, 'salary', language)
+    // 薪资处理 (English/AIEnglish 优先用英文版)
+    const rawSalary = (isEng && job.salary_english) ? job.salary_english : (job.salary || '')
+    const salaryStr = typeof rawSalary === 'string' ? rawSalary.trim() : ''
+    const translatedSalary = translateFieldValue(salaryStr, 'salary', language)
+
+    // 来源处理 (English/AIEnglish 优先用英文版)
+    const rawSourceName = (isEng && job.source_name_english) ? job.source_name_english : (job.source_name || '')
+    const sourceNameStr = typeof rawSourceName === 'string' ? rawSourceName.trim() : ''
     
-    const { tags, displayTags } = normalizeJobTags(job, language, experience)
+    // 构造临时对象传递给 normalizeJobTags，确保使用的 source_name 是语言匹配的
+    const tempJob = { ...job, source_name: sourceNameStr }
+    const { tags, displayTags } = normalizeJobTags(tempJob, language, experience)
+
     return {
       ...job,
-      salary: translatedSalary || salary, // 使用翻译后的salary
+      salary: translatedSalary || salaryStr,
+      source_name: sourceNameStr,
       tags,
       displayTags,
     }

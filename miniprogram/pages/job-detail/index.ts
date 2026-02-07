@@ -53,6 +53,7 @@ Page({
     saveBusy: false,
     saveDocId: '',
     isAIEnglish: false,
+    isNormalEnglish: false,
     isAIChinese: false,
     isStandardChinese: false,
     loadingText: t('jobs.loading'),
@@ -120,14 +121,21 @@ Page({
 
           const experience = (job as any).experience && typeof (job as any).experience === 'string' ? (job as any).experience.trim() : ''
           const { displayTags } = normalizeJobTags(job, lang, experience)
-          const salary = job.salary && typeof job.salary === 'string' ? job.salary.trim() : ''
-          const translatedSalary = translateFieldValue(salary, 'salary', lang)
           
+          const isEng = lang === 'AIEnglish' || lang === 'English'
+          const rawSalary = (isEng && job.salary_english) ? job.salary_english : (job.salary || '')
+          const salaryStr = typeof rawSalary === 'string' ? rawSalary.trim() : ''
+          const translatedSalary = translateFieldValue(salaryStr, 'salary', lang)
+          
+          const rawSourceName = (isEng && job.source_name_english) ? job.source_name_english : (job.source_name || '')
+          const sourceNameStr = typeof rawSourceName === 'string' ? rawSourceName.trim() : ''
+
           this.setData({
             job: {
               ...job,
               richDescription: formatDescription(currentDesc),
-              salary: translatedSalary || salary,
+              salary: translatedSalary || salaryStr,
+              source_name: sourceNameStr,
               displayTags,
             } as any,
           })
@@ -159,6 +167,7 @@ Page({
     const lang = normalizeLanguage(app?.globalData?.language)
     this.setData({
       isAIEnglish: lang === 'AIEnglish',
+      isNormalEnglish: lang === 'English',
       isAIChinese: lang === 'AIChinese',
       isStandardChinese: lang === 'Chinese',
       loadingText: t('jobs.loading'),
@@ -203,13 +212,21 @@ Page({
     
     const app = getApp<IAppOption>() as any
     const lang = normalizeLanguage(app?.globalData?.language)
-    const salary = jobData.salary && typeof jobData.salary === 'string' ? jobData.salary.trim() : ''
-    const translatedSalary = translateFieldValue(salary, 'salary', lang)
+    
+    const isEng = lang === 'AIEnglish' || lang === 'English'
+    const rawSalary = (isEng && jobData.salary_english) ? jobData.salary_english : (jobData.salary || '')
+    const salaryStr = typeof rawSalary === 'string' ? rawSalary.trim() : ''
+    const translatedSalary = translateFieldValue(salaryStr, 'salary', lang)
+    
+    // 来源处理
+    const rawSourceName = (isEng && jobData.source_name_english) ? jobData.source_name_english : (jobData.source_name || '')
+    const sourceNameStr = typeof rawSourceName === 'string' ? rawSourceName.trim() : ''
     
     this.setData({
       job: {
         ...jobData,
-        salary: translatedSalary || salary,
+        salary: translatedSalary || salaryStr,
+        source_name: sourceNameStr,
         displayTags,
         richDescription: formatDescription(jobData.description),
       } as JobDetailItem & { richDescription: string },
