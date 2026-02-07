@@ -47,7 +47,8 @@ Component({
     previewType: 'image', // 'image' | 'pdf'
     previewPath: '',
     previewName: '',
-    previewSize: 0
+    previewSize: 0,
+    onboardingMode: false
   },
 
   lifetimes: {
@@ -277,10 +278,82 @@ Component({
 
     onConfirmPreview() {
         this.setData({ showPreviewModal: false });
-        if (this.data.previewAction === 'refine') {
+        if (this.data.onboardingMode) {
+            this.processOnboardingUpload(this.data.previewPath, this.data.previewName);
+        } else if (this.data.previewAction === 'refine') {
             this.processUpload(this.data.previewPath, this.data.previewName);
         } else {
             this.processScreenshotUpload();
+        }
+    },
+
+    async processOnboardingUpload(path: string, _name: string) {
+        const app = getApp<any>();
+        const lang = normalizeLanguage(app.globalData.language);
+        ui.showLoading(t('resume.aiChecking', lang));
+        
+        try {
+            // Step 1: Parse and Apply to Profile directly
+            const res = await uploadApi<any>({
+                url: '/resume/apply-parsed',
+                filePath: path,
+                name: 'file'
+            });
+
+            ui.hideLoading();
+            this.setData({ onboardingMode: false });
+
+            if (res.success) {
+                // Update global user data
+                if (res.result?.user) {
+                    app.globalData.user = res.result.user;
+                }
+                
+                ui.showModal({
+                    title: t('app.success', lang),
+                    content: t('resume.onboardingSuccess', lang),
+                    showCancel: false,
+                    success: () => {
+                        // Refresh current view (profile etc)
+                        this.onShowCompat();
+                    }
+                });
+            } else {
+                this.handleUploadError(res, lang);
+            }
+        } catch (err: any) {
+            ui.hideLoading();
+            this.setData({ onboardingMode: false });
+            this.handleUploadError(err, lang);
+        }
+    },
+
+    handleUploadError(err: any, lang: string) {
+        let errData = err.data;
+        if (typeof errData === 'string') {
+            try { errData = JSON.parse(errData); } catch(e){}
+        }
+        const code = (errData && errData.code) || err.code;
+
+        if (err.statusCode === 401) {
+            ui.showToast(t('resume.authFailedLogin', lang));
+        } else if (code === StatusCode.QUOTA_EXHAUSTED) {
+            ui.showModal({
+                title: t('membership.quotaExceededTitle', lang),
+                content: t('membership.quotaExceededContent', lang),
+                showCancel: false,
+                isAlert: true
+            });
+        } else if (code === StatusCode.INVALID_DOCUMENT_CONTENT || code === StatusCode.MISSING_IDENTITY_INFO) {
+             ui.showModal({
+                    title: t('resume.refineErrorTitle', lang) || '识别受阻',
+                    content: t('resume.refineErrorContent', lang),
+                    showCancel: false,
+                    isAlert: true
+            });
+        } else {
+            const msg = (errData && errData.message) || err.message || t('app.error', lang);
+            ui.showToast(msg);
         }
     },
 

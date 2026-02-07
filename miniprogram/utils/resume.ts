@@ -50,6 +50,7 @@ export async function requestGenerateResume(jobData: any, options: ResumeGenerat
         ? t('resume.jobMayBeEnglish', interfaceLang) 
         : t('resume.jobMayBeChinese', interfaceLang)
     } else if (jobData && typeof jobData.is_english !== 'undefined') {
+      isEnglishStatus = jobData.is_english === 1 ? 1 : 0
       selectContent = jobData.is_english === 1 
         ? t('resume.jobIsEnglish', interfaceLang) 
         : t('resume.jobIsChinese', interfaceLang)
@@ -58,8 +59,8 @@ export async function requestGenerateResume(jobData: any, options: ResumeGenerat
       const isEnglishDetected = options.overrideProfile.language === 'english';
       isEnglishStatus = isEnglishDetected ? 1 : 0;
       selectContent = isEnglishDetected
-        ? t('resume.jobIsEnglish', interfaceLang)
-        : t('resume.jobIsChinese', interfaceLang)
+        ? t('resume.resumeIsEnglish', interfaceLang)
+        : t('resume.resumeIsChinese', interfaceLang)
     }
 
     return new Promise((resolve) => {
@@ -418,5 +419,66 @@ async function pollTaskStatus(taskId: string, attempt = 0) {
     // Errored, retry later
     setTimeout(() => pollTaskStatus(taskId, attempt + 1), 15000);
   }
+}
+
+/**
+ * 检查是否需要触发简历完善度引导
+ */
+export async function checkResumeOnboarding() {
+  const app = getApp<any>();
+  const user = app.globalData.user;
+  if (!user) return;
+
+  const interfaceLang = normalizeLanguage(app.globalData.language);
+  
+  // 1. 本地冷冻期检查 (24h)
+  const nextNotifyTime = wx.getStorageSync('resume_onboarding_next_time');
+  if (nextNotifyTime && Date.now() < nextNotifyTime) {
+    return;
+  }
+
+  // 2. 简历完成度检查 (只要主语言完成度 <= 45 即可，这里我们以业务偏好为主)
+  const profile = user.resume_profile || {};
+  const completeness = profile.zh?.completeness?.score || 0;
+  if (completeness > 45) return;
+
+  // 3. 数据库冷却期检查 (后台策略)
+  const membership = user.membership || {};
+  const level = membership.level || 0;
+  const lastParseAt = membership.last_resume_parse_at ? new Date(membership.last_resume_parse_at).getTime() : 0;
+  const now = Date.now();
+
+  let cooldownMs = 24 * 3600 * 1000;
+  if (level === 1) cooldownMs = 12 * 3600 * 1000;
+  else if (level === 2 || level === 3) cooldownMs = 4 * 3600 * 1000;
+  else if (level >= 4) cooldownMs = 0;
+
+  if (now - lastParseAt < cooldownMs) return;
+
+  // 4. 展示引导弹窗
+  ui.showModal({
+    title: t('resume.onboardingTitle', interfaceLang),
+    content: t('resume.onboardingContent', interfaceLang),
+    cancelText: t('resume.onboardingCancel', interfaceLang),
+    confirmText: t('resume.onboardingConfirm', interfaceLang),
+    success: (res) => {
+      if (res.confirm) {
+        // 点击立刻体验，触发组件内的上传逻辑
+        // 我们通过事件中心或者全局变量通知组件
+        app.globalData._triggerResumeImport = true;
+        // 重新获取当前页面并通知组件
+        const pages = getCurrentPages();
+        const currentPage = pages[pages.length - 1];
+        const resumeView = currentPage.selectComponent('#resume-view');
+        if (resumeView && resumeView.onSelectFromLocal) {
+            resumeView.setData({ onboardingMode: true });
+            resumeView.onSelectFromLocal();
+        }
+      } else if (res.cancel) {
+        // 24h 不再提醒
+        wx.setStorageSync('resume_onboarding_next_time', Date.now() + 24 * 3600 * 1000);
+      }
+    }
+  });
 }
 

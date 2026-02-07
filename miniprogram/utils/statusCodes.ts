@@ -19,6 +19,7 @@ export enum StatusCode {
   // Permission errors (40300+)
   FORBIDDEN = 40301,
   QUOTA_EXHAUSTED = 40302,
+  COOLDOWN_ACTIVE = 40303,
   
   // Conflict errors (40900+)
   USER_EXISTS = 40901,

@@ -84,6 +84,9 @@ Page({
 
   onShow() {
     this.syncState();
+    if (this.data.activeTab === 1) {
+      import('../../utils/resume').then(m => m.checkResumeOnboarding());
+    }
   },
 
   onLoginSuccess(_e: any) {
@@ -91,6 +94,9 @@ Page({
     this.syncState();
     // After login animation/wall, check for background tasks
     startBackgroundTaskCheck();
+    if (this.data.activeTab === 1) {
+      import('../../utils/resume').then(m => m.checkResumeOnboarding());
+    }
   },
 
   onTabChange(e: any) {
@@ -102,6 +108,10 @@ Page({
     this.setData({ activeTab: index });
     app.globalData.tabSelected = index;
     if (wx.vibrateShort) wx.vibrateShort({ type: 'light' });
+
+    if (index === 1) {
+      import('../../utils/resume').then(m => m.checkResumeOnboarding());
+    }
   },
 
   onShareAppMessage() {
