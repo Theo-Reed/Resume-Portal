@@ -21,6 +21,8 @@
         value="{{formData.school}}" 
         bindinput="onInputChange" 
         data-field="school"
+        cursor-color="#2E5FE9"
+        show-confirm-bar="{{false}}"
       />
     </view>
 
@@ -41,6 +43,8 @@
         value="{{formData.major}}" 
         bindinput="onInputChange" 
         data-field="major"
+        cursor-color="#2E5FE9"
+        show-confirm-bar="{{false}}"
       />
     </view>
 

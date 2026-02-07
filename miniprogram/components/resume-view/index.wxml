@@ -66,6 +66,8 @@
           value="{{targetJob.title}}" 
           bindinput="onJdFieldChange" 
           data-field="title"
+          cursor-color="#2E5FE9"
+          show-confirm-bar="{{false}}"
         />
       </view>
 
@@ -78,6 +80,8 @@
           value="{{targetJob.company}}" 
           bindinput="onJdFieldChange" 
           data-field="company"
+          cursor-color="#2E5FE9"
+          show-confirm-bar="{{false}}"
         />
       </view>
 
@@ -90,6 +94,8 @@
           value="{{targetJob.experience}}" 
           bindinput="onJdFieldChange" 
           data-field="experience"
+          cursor-color="#2E5FE9"
+          show-confirm-bar="{{false}}"
         />
       </view>
       
@@ -104,6 +110,8 @@
           bindinput="onJdFieldChange" 
           data-field="content"
           maxlength="5000"
+          cursor-color="#2E5FE9"
+          show-confirm-bar="{{false}}"
         ></textarea>
       </view>
     </view>

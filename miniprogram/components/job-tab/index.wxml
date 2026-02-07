@@ -9,6 +9,8 @@
       confirm-type="search"
       value="{{searchKeyword}}"
       bindinput="onSearchInput"
+      cursor-color="#2E5FE9"
+      show-confirm-bar="{{false}}"
     />
 
     <view class="search-actions">
