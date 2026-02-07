@@ -382,7 +382,7 @@ Component({
     */
 
     processUpload(path: string, name: string) {
-        ui.showLoading(t('resume.toolRefineTitle'));
+        ui.showLoading('请不要退出');
         const token = wx.getStorageSync('token');
         const app = getApp<any>();
         const lang = normalizeLanguage(app.globalData.language);

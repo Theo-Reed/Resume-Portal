@@ -259,3 +259,62 @@ function handleGenerateError(err: any, _lang: string) {
     isAlert: true
   })
 }
+
+/**
+ * 启动后台任务检查逻辑 (用于用户异常退出后的补偿)
+ * 会在 App 启动且登录成功后调用一次
+ */
+export async function startBackgroundTaskCheck() {
+  try {
+    // 1. 查找是否有正在处理中的任务
+    const res = await callApi<any>('getGeneratedResumes', { 
+      status: 'processing',
+      limit: 5 // 只查最近几个
+    });
+
+    if (res.success && res.result?.items && res.result.items.length > 0) {
+      console.log(`[TaskCheck] Found ${res.result.items.length} processing tasks. Starting poll...`);
+      
+      // 对于每个正在处理的任务，启动一个定时检查
+      res.result.items.forEach((task: any) => {
+        pollTaskStatus(task.task_id);
+      });
+    }
+
+    // 2. [可选] 也可以检查最近 5 分钟内是否有成功但在用户“离线”期间完成的任务
+    // 这里简单处理：如果发现有 processing，就 poll。
+  } catch (err) {
+    console.error('[TaskCheck] Failed to check pending tasks:', err);
+  }
+}
+
+/**
+ * 轮询特定任务的状态
+ */
+async function pollTaskStatus(taskId: string, attempt = 0) {
+  if (attempt > 30) { // 最多轮询 30 次 (5 约分钟)
+    console.warn(`[TaskCheck] Poll timeout for task ${taskId}`);
+    return;
+  }
+
+  try {
+    const res = await callApi<any>('getGeneratedResumes', { task_id: taskId });
+    if (res.success && res.result?.items && res.result.items.length > 0) {
+      const task = res.result.items[0];
+      if (task.status === 'success') {
+        console.log(`[TaskCheck] Task ${taskId} finished successfully! Showing modal.`);
+        ui.showGenerationSuccessModal();
+      } else if (task.status === 'failed') {
+        console.warn(`[TaskCheck] Task ${taskId} failed.`);
+      } else {
+        // Still processing, wait 10s and retry
+        setTimeout(() => pollTaskStatus(taskId, attempt + 1), 10000);
+      }
+    }
+  } catch (err) {
+    console.error(`[TaskCheck] Poll error for ${taskId}:`, err);
+    // Errored, retry later
+    setTimeout(() => pollTaskStatus(taskId, attempt + 1), 15000);
+  }
+}
+

@@ -3,6 +3,7 @@ import { bootManager, type BootStatus } from './utils/bootManager'
 import { themeManager } from './utils/themeManager'
 import { request, callApi, performLogin } from './utils/request'
 import { checkIsAuthed } from './utils/util'
+import { startBackgroundTaskCheck } from './utils/resume'
 
 App<IAppOption>({
   globalData: {
@@ -71,6 +72,8 @@ App<IAppOption>({
     if (currentStatus === 'loading' || currentStatus === 'success') {
         if (checkIsAuthed(user)) {
             bootManager.setStatus('success');
+            // Login success, check for background tasks (Resume generation, etc.)
+            startBackgroundTaskCheck();
         } else if (this.globalData.bootStatus !== 'server-down' && this.globalData.bootStatus !== 'no-network') {
             bootManager.setStatus('unauthorized');
         } else if (currentStatus === 'loading') {
