@@ -261,7 +261,12 @@ Component({
            extension: ['pdf', 'png', 'jpg', 'jpeg'],
            success: (res) => {
                const file = res.tempFiles[0];
-               this.processUpload(file.path, file.name || 'file.pdf');
+               this.validateAndConfirm(file);
+           },
+           fail: (err) => {
+               if (err.errMsg.indexOf('cancel') === -1) {
+                   ui.showToast('选择文件失败');
+               }
            }
        });
     },
@@ -271,8 +276,78 @@ Component({
             count: 1,
             sizeType: ['compressed'],
             sourceType: ['album', 'camera'],
+            success: (res: any) => {
+                // Compatible with array return in newer lib, but tempFiles is standard now
+                const file = res.tempFiles ? res.tempFiles[0] : { path: res.tempFilePaths[0], size: 2 * 1024 * 1024 }; 
+                this.validateAndConfirm({
+                    path: file.path,
+                    size: file.size,
+                    name: 'image.jpg'
+                });
+            },
+           fail: (err) => {
+               if (err.errMsg.indexOf('cancel') === -1) {
+                   ui.showToast('选择图片失败');
+               }
+           }
+        });
+    },
+
+    validateAndConfirm(file: { path: string, size: number, name: string }) {
+        const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+        const MIN_SIZE = 100; // 100 Bytes
+
+        // 1. Size Validation
+        if (file.size > MAX_SIZE) {
+            ui.showModal({
+                title: '文件过大',
+                content: `文件大小不能超过 10MB。当前大小: ${(file.size / 1024 / 1024).toFixed(2)}MB`,
+                showCancel: false
+            });
+            return;
+        }
+
+        if (file.size < MIN_SIZE) {
+            ui.showModal({
+                title: '文件无效',
+                content: '文件过小或为空，请重新选择有效的文件。',
+                showCancel: false
+            });
+            return;
+        }
+        
+        // 2. Format Validation
+        const allowedExts = ['pdf', 'png', 'jpg', 'jpeg'];
+        const ext = file.name.split('.').pop()?.toLowerCase();
+        
+        // If it's a chat file (has a real name), check extension strictly
+        // For local images, we force name="image.jpg" so it passes, but wx.chooseImage ensures it's an image.
+        if (ext && !allowedExts.includes(ext)) { 
+             ui.showModal({
+                title: '格式不支持',
+                content: '仅支持 PDF, PNG, JPG, JPEG 格式的文件。',
+                showCancel: false
+            });
+            return;
+        }
+
+        this.showConfirmUpload(file.path, file.name);
+    },
+
+    showConfirmUpload(path: string, fileName: string) {
+        // TODO: Move text to i18n
+        const title = 'Confirm Upload';
+        const content = `You selected "${fileName}". Uploading this file to generate a new resume will consume 1 quota. Continue?`;
+        
+        ui.showModal({
+            title: t('resume.confirmUploadTitle') || '确认上传',
+            content: t('resume.confirmUploadContent', { fileName }) || `您选择了"${fileName}"。\n上传并生成简历将消耗 1 次额度，是否继续？`,
+            confirmText: '确认上传',
+            cancelText: '取消',
             success: (res) => {
-                this.processUpload(res.tempFilePaths[0], 'image.jpg');
+                if (res.confirm) {
+                    this.processUpload(path, fileName); 
+                }
             }
         });
     },
@@ -299,13 +374,28 @@ Component({
                    const data = JSON.parse(res.data);
                    if (data.success) {
                        this.closeRefineDrawer();
-                       ui.showToast('Starting Refinement...');
+                       ui.showToast('生成中...');
                        
                        // Navigate to Generated Resumes page or refresh list
                        // Assuming Generated Resumes is in '/pages/generated-resumes/index'
                        wx.navigateTo({ url: '/pages/generated-resumes/index' });
                    } else {
-                       ui.showModal({ title: 'Error', content: data.message || 'Upload failed' });
+                       // Handle Specific Errors
+                       if (data.code === 40002) { // INVALID_DOCUMENT_CONTENT
+                           ui.showModal({
+                               title: '无法识别',
+                               content: data.message || '未识别到有效文字，请上传清晰的简历图片或PDF。',
+                               showCancel: false
+                           });
+                       } else if (data.code === 40302) {
+                           ui.showModal({
+                               title: '额度不足',
+                               content: data.message || '您的生成额度已用完，请获取更多次数。',
+                               showCancel: false
+                           });
+                       } else {
+                           ui.showModal({ title: 'Error', content: data.message || 'Upload failed', showCancel: false });
+                       }
                    }
                } catch (e) {
                    ui.showToast('Upload failed');
