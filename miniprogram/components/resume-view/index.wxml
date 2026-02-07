@@ -123,6 +123,7 @@
     show="{{showRefineDrawer}}" 
     title="{{ui.toolRefineTitle}}" 
     useScroll="{{false}}"
+    showConfirm="{{false}}"
     bind:close="closeRefineDrawer"
   >
     <view class="drawer-body">
