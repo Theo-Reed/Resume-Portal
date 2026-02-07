@@ -52,18 +52,22 @@ export async function requestGenerateResume(jobData: any, options: ResumeGenerat
         : t('resume.jobIsChinese', interfaceLang)
     }
 
-    const primaryBlue = '#2E5FE9'
-    const defaultGray = '#000000'
-
     ui.showModal({
       title: t('resume.generateResumeTitle', interfaceLang),
       content: selectContent,
       confirmText: t('resume.langChinese', interfaceLang),
-      confirmColor: isEnglishStatus === 0 ? primaryBlue : defaultGray,
       cancelText: t('resume.langEnglish', interfaceLang),
-      cancelColor: isEnglishStatus === 1 ? primaryBlue : defaultGray,
+      emphasis: isEnglishStatus === 1 ? 'left' : 'right',
       showCancel: true,
-      success: async (selectRes) => {
+      success: async (selectRes: any) => {
+        // 如果点击 mask 关闭，或者点击取消按钮（对于这个弹窗通常视为关闭行为）
+        // 且用户既没有确认也没有取消选中状态时，我们重置 leads 状态并退出
+        if (selectRes && selectRes.isMask) {
+          if (options.onCancel) options.onCancel()
+          if (options.onFinish) options.onFinish(false)
+          return
+        }
+
         if (!selectRes || (!selectRes.confirm && !selectRes.cancel)) {
           if (options.onCancel) options.onCancel()
           if (options.onFinish) options.onFinish(false)

@@ -10,6 +10,8 @@ Component({
     showCancel: { type: Boolean, value: true },
     type: { type: String, value: 'loading' }, // 'loading', 'success', 'error', 'info', 'modal'
     mask: { type: Boolean, value: false },
+    maskClosable: { type: Boolean, value: true },
+    emphasis: { type: String, value: 'right' },
     visible: { 
       type: Boolean, 
       value: false,
@@ -52,6 +54,15 @@ Component({
     onConfirm() {
       this.triggerEvent('confirm');
       this.setData({ visible: false });
+    },
+    onMaskTap() {
+      if (this.data.mask && this.data.maskClosable) {
+        this.triggerEvent('cancel', { isMask: true });
+        this.setData({ visible: false });
+      }
+    },
+    onContentTap() {
+      // 阻止冒泡到 maskTap
     }
   }
 })

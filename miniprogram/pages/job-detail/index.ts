@@ -338,6 +338,7 @@ Page({
           content: t('jobs.generatedResumeExistsContent'),
           confirmText: t('jobs.generatedResumeExistsConfirm'),
           cancelText: t('jobs.generatedResumeExistsCancel'),
+          emphasis: 'left',
           success: (res) => {
             if (res.confirm) {
               this.doGenerateResumeAction()
@@ -370,6 +371,9 @@ Page({
         this.setData({ isGenerating: true })
       },
       onFinish: () => {
+        this.setData({ isGenerating: false })
+      },
+      onCancel: () => {
         this.setData({ isGenerating: false })
       }
     })

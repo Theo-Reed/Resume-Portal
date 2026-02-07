@@ -100,6 +100,8 @@ export const ui = {
     cancelText?: string;
     cancelColor?: string;
     showCancel?: boolean;
+    maskClosable?: boolean;
+    emphasis?: 'left' | 'right';
     success?: (res: { confirm: boolean; cancel: boolean }) => void;
   }) {
     const pages = getCurrentPages();
@@ -111,10 +113,12 @@ export const ui = {
         title: options.title || '',
         modalContent: options.content || '',
         confirmText: options.confirmText || t('app.confirm'),
-        confirmColor: options.confirmColor || '#07c160',
+        confirmColor: options.confirmColor || (options.emphasis === 'left' ? '#64748B' : '#2E5FE9'),
         cancelText: options.cancelText || t('app.cancel'),
-        cancelColor: options.cancelColor || '#000000',
+        cancelColor: options.cancelColor || (options.emphasis === 'left' ? '#2E5FE9' : '#64748B'),
         showCancel: options.showCancel !== false,
+        maskClosable: options.maskClosable !== false,
+        emphasis: options.emphasis || 'right',
         type: 'modal',
         mask: true,
         visible: true
@@ -125,9 +129,19 @@ export const ui = {
         feedback.setData({ visible: false });
         if (options.success) options.success({ confirm: true, cancel: false });
       };
-      feedback.onCancel = () => {
+      feedback.onCancel = (event?: any) => {
         feedback.setData({ visible: false });
-        if (options.success) options.success({ confirm: false, cancel: true });
+        // 如果是点击 mask 导致的 cancel，我们额外标识一下，但在标准的 confirm/cancel 结构中
+        // 通常点击 mask 被视为一种特殊的取消
+        const isMask = event && event.detail && event.detail.isMask;
+        if (options.success) {
+          options.success({ 
+            confirm: false, 
+            cancel: true,
+            // @ts-ignore
+            isMask: !!isMask 
+          });
+        }
       };
     } else {
       // 降级使用原生

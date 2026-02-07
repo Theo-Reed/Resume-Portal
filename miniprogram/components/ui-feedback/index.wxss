@@ -180,7 +180,7 @@
   padding: 28rpx 0;
   text-align: center;
   font-size: 32rpx;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .ui-modal-btn.cancel {

@@ -1,5 +1,5 @@
-<view class="ui-feedback {{displayVisible ? 'ui-visible' : ''}} {{mask ? 'ui-mask' : ''}}" wx:if="{{innerVisible}}">
-  <view class="ui-content {{type}}">
+<view class="ui-feedback {{displayVisible ? 'ui-visible' : ''}} {{mask ? 'ui-mask' : ''}}" wx:if="{{innerVisible}}" bindtap="onMaskTap">
+  <view class="ui-content {{type}}" catchtap="onContentTap">
     <!-- Loading Spinner -->
     <view wx:if="{{type === 'loading'}}" class="ui-loading-spinner">
       <view class="ui-spinner-ring"></view>
@@ -24,8 +24,8 @@
         <rich-text class="ui-modal-content" nodes="{{modalContent}}"></rich-text>
       </view>
       <view class="ui-modal-footer">
-        <view wx:if="{{showCancel}}" class="ui-modal-btn cancel" bindtap="onCancel">{{cancelText}}</view>
-        <view class="ui-modal-btn confirm" bindtap="onConfirm">{{confirmText}}</view>
+        <view wx:if="{{showCancel}}" class="ui-modal-btn cancel" style="color: {{cancelColor || '#64748B'}}; font-weight: {{emphasis === 'left' ? '600' : '400'}}" bindtap="onCancel">{{cancelText}}</view>
+        <view class="ui-modal-btn confirm" style="color: {{confirmColor || '#2E5FE9'}}; font-weight: {{emphasis === 'right' ? '600' : '400'}}" bindtap="onConfirm">{{confirmText}}</view>
       </view>
     </block>
 

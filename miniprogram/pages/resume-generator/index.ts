@@ -102,6 +102,9 @@ Page({
         } else {
           this.handleError(new Error('生成请求未成功'));
         }
+      },
+      onCancel: () => {
+        // 用户中途取消，不需要报错，直接结束 loading 状态即可（如果有的话）
       }
     })
   },
