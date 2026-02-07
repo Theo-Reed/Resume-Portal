@@ -11,6 +11,7 @@ export interface ResumeGenerateOptions {
   showSuccessModal?: boolean
   waitForCompletion?: boolean
   isPaid?: boolean
+  overrideProfile?: any // NEW: Allow passing an already extracted profile
 }
 
 /**
@@ -22,7 +23,7 @@ export async function requestGenerateResume(jobData: any, options: ResumeGenerat
   if (options.onStart) options.onStart()
 
   try {
-    // 1. 实时刷新用户以获取最新的资料
+    // 1. 获取用户信息（如果提供了 overrideProfile，我们仍然刷新用户以获取头像等基础资料）
     const user = await app.refreshUser()
     if (!user) {
       if (options.onFinish) options.onFinish(false)
@@ -30,7 +31,7 @@ export async function requestGenerateResume(jobData: any, options: ResumeGenerat
       return 
     }
 
-    const profile = user.resume_profile || {}
+    const profile = options.overrideProfile || user.resume_profile || {}
     const interfaceLang = normalizeLanguage(app.globalData.language)
 
     // 2. 语言选择对话框
@@ -52,6 +53,13 @@ export async function requestGenerateResume(jobData: any, options: ResumeGenerat
       selectContent = jobData.is_english === 1 
         ? t('resume.jobIsEnglish', interfaceLang) 
         : t('resume.jobIsChinese', interfaceLang)
+    } else if (options.overrideProfile) {
+      // 简历上传/润色模式：根据 AI 解析出的简历语言判断
+      const isEnglishDetected = options.overrideProfile.language === 'english';
+      isEnglishStatus = isEnglishDetected ? 1 : 0;
+      selectContent = isEnglishDetected
+        ? t('resume.jobIsEnglish', interfaceLang)
+        : t('resume.jobIsChinese', interfaceLang)
     }
 
     return new Promise((resolve) => {
@@ -63,6 +71,9 @@ export async function requestGenerateResume(jobData: any, options: ResumeGenerat
         emphasis: isEnglishStatus === 1 ? 'left' : 'right',
         showCancel: true,
         success: async (selectRes: any) => {
+          // ...
+          // (Rest of the logic remains mostly same but using the provided profile)
+
           // 如果点击 mask 关闭，或者点击取消按钮（对于这个弹窗通常视为关闭行为）
           // 且用户既没有确认也没有取消选中状态时，我们重置 leads 状态并退出
           if (selectRes && selectRes.isMask) {

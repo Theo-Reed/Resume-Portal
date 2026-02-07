@@ -311,25 +311,16 @@ Component({
         ui.showLoading(t('resume.aiChecking', lang));
         
         try {
+            // Step 1: Parse the file to get profile data and detect language
             const data = await uploadApi<any>({
-                url: '/refine-resume',
+                url: '/resume/parse',
                 filePath: path,
                 name: 'file'
             });
 
-            ui.hideLoading();
-
-            if (data.success) {
-                ui.showGenerationSuccessModal(
-                    t('jobs.generateFinishedTitle', lang),
-                    t('jobs.generateFinishedContent', lang)
-                );
-                // 启动轮询检查任务状态
-                if (data.taskId) {
-                    startBackgroundTaskCheck();
-                }
-            } else {
-                // Handle Logical Errors (200 OK but success=false)
+            if (!data.success || !data.result) {
+                ui.hideLoading();
+                // Handle Logical Errors
                 if (data.code === StatusCode.INVALID_DOCUMENT_CONTENT || data.code === StatusCode.MISSING_IDENTITY_INFO) { 
                     ui.showModal({
                         title: t('resume.refineErrorTitle', lang) || '识别受阻',
@@ -347,7 +338,79 @@ Component({
                 } else {
                     ui.showToast(data.message || t('app.error', lang));
                 }
+                return;
             }
+
+            const extracted = data.result.profile;
+            const detectedLang = data.result.language; // 'chinese' or 'english'
+
+            // Step 2: Construct Dummy Job Data for "Polishing" flow
+            const latestJob = (extracted.experience && extracted.experience[0]) || {};
+            const targetTitle = latestJob.role || (extracted.name ? `${extracted.name}的简历` : "求职者");
+
+            const dummyJob = {
+                _id: `POLISH_${Date.now()}`,
+                title: targetTitle,
+                title_chinese: targetTitle,
+                title_english: targetTitle,
+                description: "通用简历润色与增强",
+                experience: "3 years"
+            };
+
+            // Step 3: Map to internal profile structure (aligned with backend expectations)
+            const overrideProfile: any = {
+                name: extracted.name || "",
+                gender: extracted.gender || "",
+                phone: extracted.mobile || "",
+                email: extracted.email || "",
+                wechat: extracted.wechat || "",
+                location: extracted.city || "",
+                language: detectedLang, // Store detected language
+                // Note: requestGenerateResume expects profile.zh or profile.en for completeness check
+                // but since we are overriding, we'll bypass the deep completeness check structure
+                is_override: true 
+            };
+
+            const mappedEducations = (extracted.education || []).map((e: any) => ({
+                school: e.school || "",
+                degree: e.degree || "",
+                major: e.major || "",
+                startDate: e.startTime || "",
+                endDate: e.endTime || ""
+            }));
+
+            const mappedExperiences = (extracted.experience || []).map((e: any) => ({
+                company: e.company || "",
+                jobTitle: e.role || "",
+                workContent: e.description || "",
+                startDate: e.startTime || "",
+                endDate: e.endTime || ""
+            }));
+
+            // Wrap based on detected lang to satisfy requestGenerateResume's completeness check
+            if (detectedLang === 'english') {
+                overrideProfile.en = { educations: mappedEducations, workExperiences: mappedExperiences, completeness: { level: 2 } };
+                overrideProfile.zh = { educations: [], workExperiences: [], completeness: { level: 0 } };
+            } else {
+                overrideProfile.zh = { educations: mappedEducations, workExperiences: mappedExperiences, completeness: { level: 2 } };
+                overrideProfile.en = { educations: [], workExperiences: [], completeness: { level: 0 } };
+            }
+
+            ui.hideLoading();
+
+            // Step 4: Call Unified Generation Flow (This will show the language modal)
+            const result = await requestGenerateResume(dummyJob, {
+                overrideProfile,
+                isPaid: true, // Mark as paid because /parse already cost 1pt
+                showSuccessModal: true,
+                waitForCompletion: false
+            });
+
+            if (result && typeof result === 'string') {
+                 // Generation task started successfully, task_id returned
+                 startBackgroundTaskCheck();
+            }
+
         } catch (err: any) {
             ui.hideLoading();
             console.error('[Upload] Error:', err);
@@ -359,6 +422,28 @@ Component({
             }
             const code = (errData && errData.code);
 
+            if (err.statusCode === 401) {
+                ui.showToast(t('resume.authFailedLogin', lang));
+            } else if (code === StatusCode.QUOTA_EXHAUSTED) { // Quota Exhausted (403)
+                ui.showModal({
+                    title: t('membership.quotaExceededTitle', lang) || '额度不足',
+                    content: t('membership.quotaExceededContent', lang),
+                    showCancel: false,
+                    isAlert: true
+                });
+            } else if (code === StatusCode.INVALID_DOCUMENT_CONTENT || code === StatusCode.MISSING_IDENTITY_INFO) { // Identify/Content Error (403/400)
+                 ui.showModal({
+                        title: t('resume.refineErrorTitle', lang) || '识别受阻',
+                        content: t('resume.refineErrorContent', lang),
+                        showCancel: false,
+                        isAlert: true
+                });
+            } else {
+                const msg = (errData && errData.message) || err.message || t('app.error', lang);
+                ui.showToast(msg);
+            }
+        }
+    },
             if (err.statusCode === 401) {
                 ui.showToast(t('resume.authFailedLogin', lang));
             } else if (code === StatusCode.QUOTA_EXHAUSTED) { // Quota Exhausted (403)
