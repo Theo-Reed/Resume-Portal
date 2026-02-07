@@ -1,5 +1,8 @@
 // miniprogram/components/education-drawer/index.ts
-import { normalizeLanguage, t } from '../../utils/i18n'
+import { normalizeLanguage, t, type AppLanguage } from '../../utils/i18n'
+import { attachLanguageAware } from '../../utils/languageAware'
+import { attachThemeAware } from '../../utils/themeAware'
+import { themeManager } from '../../utils/themeManager'
 import { ui } from '../../utils/ui'
 
 Component({
@@ -47,7 +50,28 @@ Component({
 
   lifetimes: {
     attached() {
+      ;(this as any)._langDetach = attachLanguageAware(this, {
+        onLanguageRevive: () => {
+          this.updateLanguage()
+        },
+      })
+
+      // attach theme-aware behavior
+      ;(this as any)._themeDetach = attachThemeAware(this, {
+        onThemeChange: () => {
+          this.updateLanguage()
+        },
+      })
+
       this.updateLanguage()
+    },
+    detached() {
+      if (typeof (this as any)._langDetach === 'function') {
+        (this as any)._langDetach()
+      }
+      if (typeof (this as any)._themeDetach === 'function') {
+        (this as any)._themeDetach()
+      }
     }
   },
 
@@ -58,7 +82,7 @@ Component({
       
       const ui = {
         addEducation: t('resume.addEducation', lang),
-        editEducation: '编辑教育经历', // TODO: add to i18n
+        editEducation: t('resume.editEducation', lang) || '编辑教育经历',
         school: t('resume.school', lang),
         degree: t('resume.degree', lang),
         major: t('resume.major', lang),
@@ -71,6 +95,7 @@ Component({
         save: t('resume.save', lang),
         cancel: t('resume.cancel', lang),
         delete: t('resume.delete', lang),
+        cursorColor: themeManager.getPrimaryColor(),
         degreeOptions: lang === 'English' || lang === 'AIEnglish' 
           ? ['Associate', 'Bachelor', 'Master', 'PhD', 'Other']
           : ['大专', '本科', '硕士', '博士', '其他']

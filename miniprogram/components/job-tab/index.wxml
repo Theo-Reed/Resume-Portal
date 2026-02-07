@@ -9,7 +9,7 @@
       confirm-type="search"
       value="{{searchKeyword}}"
       bindinput="onSearchInput"
-      cursor-color="#2E5FE9"
+      cursor-color="{{ui.cursorColor}}"
       show-confirm-bar="{{false}}"
     />
 

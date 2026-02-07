@@ -1,8 +1,10 @@
 // components/resume-view/index.ts
 
 import { ui } from '../../utils/ui'
-import { normalizeLanguage, t } from '../../utils/i18n/index'
+import { normalizeLanguage, t, type AppLanguage } from '../../utils/i18n/index'
 import { attachLanguageAware } from '../../utils/languageAware'
+import { attachThemeAware } from '../../utils/themeAware'
+import { themeManager } from '../../utils/themeManager'
 import { checkIsAuthed } from '../../utils/util'
 import { requestGenerateResume } from '../../utils/resume'
 
@@ -58,29 +60,38 @@ Component({
   lifetimes: {
     attached() {
       ;(this as any)._langDetach = attachLanguageAware(this, {
-        onLanguageRevive: () => {
+        onLanguageRevive: (lang: AppLanguage) => {
           this.setData({
             ui: {
-              title: t('resume.toolTitle'),
-              subtitle: t('resume.toolSubtitle'),
-              toolScreenshotTitle: t('resume.toolScreenshotTitle'),
-              toolScreenshotDesc: t('resume.toolScreenshotDesc'),
-              toolTextTitle: t('resume.toolTextTitle'),
-              toolTextDesc: t('resume.toolTextDesc'),
-              toolRefineTitle: t('resume.toolRefineTitle'),
-              toolRefineDesc: t('resume.toolRefineDesc')
-              ,
-              confirmGenerate: t('resume.confirmGenerate'),
-              jdPlaceholder: t('resume.jdPlaceholder'),
-              jobDescription: t('resume.jobDescription'),
-              jobTitle: t('resume.jobTitle'),
-              jobTitlePlaceholder: t('resume.jobTitlePlaceholder'),
-              company: t('resume.company'),
-              companyPlaceholder: t('resume.companyPlaceholder'),
-              experience: t('resume.experience'),
-              experiencePlaceholder: t('resume.experiencePlaceholder')
+              title: t('resume.toolTitle', lang),
+              subtitle: t('resume.toolSubtitle', lang),
+              toolScreenshotTitle: t('resume.toolScreenshotTitle', lang),
+              toolScreenshotDesc: t('resume.toolScreenshotDesc', lang),
+              toolTextTitle: t('resume.toolTextTitle', lang),
+              toolTextDesc: t('resume.toolTextDesc', lang),
+              toolRefineTitle: t('resume.toolRefineTitle', lang),
+              toolRefineDesc: t('resume.toolRefineDesc', lang),
+              confirmGenerate: t('resume.confirmGenerate', lang),
+              jdPlaceholder: t('resume.jdPlaceholder', lang),
+              jobDescription: t('resume.jobDescription', lang),
+              jobTitle: t('resume.jobTitle', lang),
+              jobTitlePlaceholder: t('resume.jobTitlePlaceholder', lang),
+              company: t('resume.company', lang),
+              companyPlaceholder: t('resume.companyPlaceholder', lang),
+              experience: t('resume.experience', lang),
+              experiencePlaceholder: t('resume.experiencePlaceholder', lang),
+              cursorColor: themeManager.getPrimaryColor()
             },
-            drawerTitle: t('resume.toolTextTitle')
+            drawerTitle: t('resume.toolTextTitle', lang)
+          });
+        }
+      });
+
+      // attach theme-aware behavior
+      ;(this as any)._themeDetach = attachThemeAware(this, {
+        onThemeChange: () => {
+          this.setData({
+            'ui.cursorColor': themeManager.getPrimaryColor()
           });
         }
       });
@@ -88,6 +99,9 @@ Component({
     detached() {
       if (typeof (this as any)._langDetach === 'function') {
         (this as any)._langDetach();
+      }
+      if (typeof (this as any)._themeDetach === 'function') {
+        (this as any)._themeDetach();
       }
     }
   },

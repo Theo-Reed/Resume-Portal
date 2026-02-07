@@ -79,7 +79,7 @@
                 focus="{{nicknameModalOpen}}"
                 confirm-type="done"
                 bindconfirm="onSaveNickname"
-                cursor-color="#2E5FE9"
+                cursor-color="{{ui.cursorColor}}"
                 show-confirm-bar="{{false}}"
         />
         <text class="nickname-counter {{nicknameWeightedLength > 16 ? 'overflow' : ''}}">{{nicknameDisplayCount}}/8</text>

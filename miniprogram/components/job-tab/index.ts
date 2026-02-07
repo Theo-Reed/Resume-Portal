@@ -1,10 +1,12 @@
 // miniprogram/components/job-tab/index.ts
 import type { JobItem } from '../../utils/job'
 import { mapJobs } from '../../utils/job'
-import { normalizeLanguage, t } from '../../utils/i18n/index'
+import { normalizeLanguage, t, type AppLanguage } from '../../utils/i18n/index'
 import { callApi } from '../../utils/request'
 import { ui } from '../../utils/ui'
 import { bootManager } from '../../utils/bootManager'
+import { themeManager } from '../../utils/themeManager'
+import { attachThemeAware } from '../../utils/themeAware'
 
 type DrawerFilterValue = {
   salary: string
@@ -98,6 +100,13 @@ Component({
         app.onLanguageChange((this as any)._langListener)
       }
 
+      // attach theme-aware behavior
+      ;(this as any)._themeDetach = attachThemeAware(this, {
+        onThemeChange: () => {
+          this.syncLanguageFromApp()
+        },
+      })
+
       // 2. 工业级预加载逻辑：监听 BootManager 信号
       // 当全局启动就绪或确定为未授权时，无论当前 Tab 是否激活，都触发并行加载
       const checkAndLoad = () => {
@@ -128,6 +137,10 @@ Component({
         app.offLanguageChange(listener)
       }
       ;(this as any)._langListener = null
+
+      if (typeof (this as any)._themeDetach === 'function') {
+        (this as any)._themeDetach()
+      }
 
       // 自动清理 BootManager 订阅
       if ((this as any)._unsubBoot) {
@@ -186,6 +199,7 @@ Component({
           restoreSearchLabel: t('jobs.restoreSearchLabel'),
           emptyFavorites: t('jobs.noSavedJobs'),
           featuredSubscribeText: t('jobs.featuredSubscribeText'),
+          cursorColor: themeManager.getPrimaryColor(),
         },
       })
     },

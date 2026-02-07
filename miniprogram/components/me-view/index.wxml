@@ -225,7 +225,7 @@
                    value="{{inputInviteCode}}" 
                    bindinput="onInviteCodeInput"
                    maxlength="6"
-                   cursor-color="#2E5FE9"
+                   cursor-color="{{ui.cursorColor}}"
                    show-confirm-bar="{{false}}" />
           </view>
         </view>

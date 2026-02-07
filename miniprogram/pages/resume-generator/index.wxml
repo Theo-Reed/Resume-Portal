@@ -17,7 +17,7 @@
           value="{{targetJob.title}}" 
           bindinput="onFieldChange" 
           data-field="title"
-          cursor-color="#2E5FE9"
+          cursor-color="{{ui.cursorColor}}"
           show-confirm-bar="{{false}}"
         />
       </view>
@@ -41,7 +41,7 @@
           data-field="content"
           maxlength="-1"
           auto-height="{{false}}"
-          cursor-color="#2E5FE9"
+          cursor-color="{{ui.cursorColor}}"
           show-confirm-bar="{{false}}"
         ></textarea>
       </view>
@@ -64,7 +64,7 @@
           data-field="aiMessage"
           maxlength="-1"
           auto-height="{{false}}"
-          cursor-color="#2E5FE9"
+          cursor-color="{{ui.cursorColor}}"
           show-confirm-bar="{{false}}"
         ></textarea>
       </view>
