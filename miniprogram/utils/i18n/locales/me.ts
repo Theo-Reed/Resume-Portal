@@ -78,9 +78,12 @@ export const me = {
     vipTag: { Chinese: 'VIP', English: 'VIP' },
     copy: { Chinese: '复制', English: 'Copy' },
     apply: { Chinese: '应用', English: 'Apply' },
-    contactAuthor: { Chinese: '联系作者', English: 'Contact Author' },
+    contactAuthor: { Chinese: '我要反馈', English: 'Feedback' },
     contactAuthorDesc: { Chinese: '合作、反馈或活动报名', English: 'Collab, feedback or events' },
-    authorWechatSlogan: { Chinese: '活动报名成功后请务必添加作者微信，发布岗位及商务合作请备注原因。', English: 'Please add author on WeChat after activity signup. Job posts and business collabs require a note.' },
+    authorWechatSlogan: { 
+        Chinese: '📖 反馈 bug 联系作者获得额度奖励\n🎓 会员可获取求职辅导（备注手机号）\n💼 发布岗位及商务合作请备注原因', 
+        English: '📖 Report bugs for credit rewards\n🎓 Members get career coaching (note phone)\n💼 Job posts & business collab with notes' 
+    },
     wechatIdCopied: { Chinese: '微信号已复制，请去微信添加', English: 'WeChat ID copied, please add in App' },
     shareDesc: { Chinese: '每成功邀请一位好友，双方各获得3天高级会员', English: 'Refer a friend, both get 3 days Premium' },
     expiresSuffix: { Chinese: '到期', English: 'Expires' },

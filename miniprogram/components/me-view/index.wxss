@@ -336,9 +336,15 @@
 .points-progress-wrap {
     width: 100%;
     height: 8rpx;
-    background: var(--divider);
+    background: rgba(0, 0, 0, 0.12); /* 稍微加深了背景灰色 */
     border-radius: 100rpx;
     overflow: hidden;
+}
+
+@media (prefers-color-scheme: dark) {
+    .points-progress-wrap {
+        background: rgba(255, 255, 255, 0.15); /* 暗黑模式下的轨道背景 */
+    }
 }
 
 .points-progress-inner {
@@ -357,6 +363,7 @@
 .card-validity {
     display: flex;
     flex-direction: column;
+    margin-left: 10rpx;
 }
 
 .val-label {
@@ -1277,10 +1284,11 @@
 }
 
 .qr-code-container-sheet {
-    width: 600rpx; /* Increased size since we have more room */
+    width: 50vw; 
+    height: 50vw;
     background: var(--bg-card);
-    border-radius: 0; /* Fully square/zero rounded if preferred, but let's keep some or zero as requested */
-    padding: 0; /* Zero padding as requested */
+    border-radius: 0; 
+    padding: 0; 
     border: none;
     box-shadow: none;
     overflow: hidden;
@@ -1289,6 +1297,13 @@
 .qr-code-image-sheet {
     width: 100%;
     display: block;
+}
+
+@media (prefers-color-scheme: dark) {
+    .qr-code-image-sheet {
+        filter: invert(0.92) hue-rotate(180deg);
+        background: #fff; /* Ensure it has a base to invert from if transparent, though usually these SVGs have white backgrounds */
+    }
 }
 
 .qr-hint {
@@ -1507,8 +1522,14 @@
 .points-progress-wrap {
     width: 100%;
     height: 5rpx;
-    background: var(--border);
+    background: rgba(0, 0, 0, 0.1);
     border-radius: 100rpx;
+}
+
+@media (prefers-color-scheme: dark) {
+    .points-progress-wrap {
+        background: rgba(255, 255, 255, 0.12);
+    }
 }
 /* --- Sheet V3 (Full Redesign) --- */
 .sheet-v3 {
