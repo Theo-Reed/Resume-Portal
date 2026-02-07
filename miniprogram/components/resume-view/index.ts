@@ -461,7 +461,8 @@ Component({
         })
     },
 
-    onScreenshotResumeTap() {
+    // Unified action name matching WXML
+    onUploadScreenshot() {
         if (!this.checkPhonePermission()) return;
         
         // Level Check: Must be VIP (>0) or have sufficient points? 
