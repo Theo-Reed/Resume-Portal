@@ -45,78 +45,6 @@
     </view>
   </ui-scroll-view>
 
-  <!-- Unified Drawer for Text/Screenshot Resume Generation -->
-  <ui-drawer 
-    id="jdDrawer" 
-    show="{{showJdDrawer}}" 
-    title="{{drawerTitle}}" 
-    confirmText="{{ui.confirmGenerate}}"
-    confirmActive="{{canSubmit}}"
-    useScroll="{{false}}"
-    bind:close="closeJdDrawer"
-    bind:confirm="onOptimizeKeywords"
-  >
-    <view class="drawer-body">
-      <view class="form-item">
-        <text class="label">{{ui.jobTitle}}</text>
-        <input 
-          class="input" 
-          placeholder="{{ui.jobTitlePlaceholder}}" 
-          placeholder-class="placeholder"
-          value="{{targetJob.title}}" 
-          bindinput="onJdFieldChange" 
-          data-field="title"
-          cursor-color="{{ui.cursorColor}}"
-          show-confirm-bar="{{false}}"
-        />
-      </view>
-
-      <view class="form-item">
-        <text class="label">{{ui.company}}</text>
-        <input 
-          class="input" 
-          placeholder="{{ui.companyPlaceholder}}" 
-          placeholder-class="placeholder"
-          value="{{targetJob.company}}" 
-          bindinput="onJdFieldChange" 
-          data-field="company"
-          cursor-color="{{ui.cursorColor}}"
-          show-confirm-bar="{{false}}"
-        />
-      </view>
-
-      <view class="form-item">
-        <text class="label">{{ui.experience}}</text>
-        <input 
-          class="input" 
-          placeholder="{{ui.experiencePlaceholder}}" 
-          placeholder-class="placeholder"
-          value="{{targetJob.experience}}" 
-          bindinput="onJdFieldChange" 
-          data-field="experience"
-          cursor-color="{{ui.cursorColor}}"
-          show-confirm-bar="{{false}}"
-        />
-      </view>
-      
-      <view class="form-item">
-        <text class="label">{{ui.jobDescription}}</text>
-        <textarea 
-          class="textarea" 
-          placeholder="{{ui.jdPlaceholder}}" 
-          placeholder-class="placeholder"
-          style="min-height: 200rpx;"
-          value="{{targetJob.content}}" 
-          bindinput="onJdFieldChange" 
-          data-field="content"
-          maxlength="5000"
-          cursor-color="{{ui.cursorColor}}"
-          show-confirm-bar="{{false}}"
-        ></textarea>
-      </view>
-    </view>
-  </ui-drawer>
-
   <!-- Resume Refine Drawer -->
   <ui-drawer 
     id="refineDrawer" 
@@ -179,7 +107,7 @@
 
         <view class="preview-footer">
             <button class="btn-cancel" bindtap="onCancelPreview">取消</button>
-            <button class="btn-confirm" bindtap="onConfirmPreview">确认上传并消耗 1 额度</button>
+            <button class="btn-confirm" bindtap="onConfirmPreview">确认上传</button>
         </view>
     </view>
   </view>

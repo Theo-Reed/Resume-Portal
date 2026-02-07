@@ -37,30 +37,10 @@ Component({
       toolTextDesc: t('resume.toolTextDesc'),
       toolRefineTitle: t('resume.toolRefineTitle'),
       toolRefineDesc: t('resume.toolRefineDesc'),
-      confirmGenerate: t('resume.confirmGenerate'),
-      jdPlaceholder: t('resume.jdPlaceholder'),
-      jobDescription: t('resume.jobDescription'),
-      jobTitle: t('resume.jobTitle'),
-      jobTitlePlaceholder: t('resume.jobTitlePlaceholder'),
-      company: t('resume.company'),
-      companyPlaceholder: t('resume.companyPlaceholder'),
-      experience: t('resume.experience'),
-      experiencePlaceholder: t('resume.experiencePlaceholder'),
       refineRefineReminder: t('resume.refineRefineReminder'),
       screenshotReminder: t('resume.screenshotReminder')
     },
-    jdText: '', // Deprecated, keep for now if needed or remove
-    showJdDrawer: false,
     showRefineDrawer: false,
-    drawerTitle: t('resume.toolTextTitle'),
-    targetJob: {
-      title: '',
-      company: '',
-      content: '',
-      experience: ''
-    },
-    isPaid: false,
-    canSubmit: false,
     // Preview Modal State
     showPreviewModal: false,
     previewAction: 'refine' as 'refine' | 'screenshot', // Context for the preview modal
@@ -84,20 +64,10 @@ Component({
               toolTextDesc: t('resume.toolTextDesc', lang),
               toolRefineTitle: t('resume.toolRefineTitle', lang),
               toolRefineDesc: t('resume.toolRefineDesc', lang),
-              confirmGenerate: t('resume.confirmGenerate', lang),
-              jdPlaceholder: t('resume.jdPlaceholder', lang),
-              jobDescription: t('resume.jobDescription', lang),
-              jobTitle: t('resume.jobTitle', lang),
-              jobTitlePlaceholder: t('resume.jobTitlePlaceholder', lang),
-              company: t('resume.company', lang),
-              companyPlaceholder: t('resume.companyPlaceholder', lang),
-              experience: t('resume.experience', lang),
-              experiencePlaceholder: t('resume.experiencePlaceholder', lang),
               refineRefineReminder: t('resume.refineRefineReminder', lang),
               screenshotReminder: t('resume.screenshotReminder', lang),
               cursorColor: themeManager.getPrimaryColor()
-            },
-            drawerTitle: t('resume.toolTextTitle', lang)
+            }
           });
         }
       });
@@ -194,77 +164,9 @@ Component({
 
     openJdDrawer() {
         if (!this.checkPhonePermission()) return
-      const app = getApp<any>()
-      const lang = normalizeLanguage(app.globalData.language)
-      this.setData({ 
-      showJdDrawer: true,
-      drawerTitle: t('resume.toolTextTitle', lang),
-      isPaid: false, // Manual entry is not pre-paid
-      targetJob: {
-        title: '',
-        company: '',
-        content: '',
-        experience: ''
-      },
-      canSubmit: false
-      })
-    },
-
-    closeJdDrawer() {
-        this.setData({ showJdDrawer: false })
-    },
-
-    onJdFieldChange(e: any) {
-        const { field } = e.currentTarget.dataset
-        const { value } = e.detail
-        this.setData({
-            [`targetJob.${field}`]: value
-        }, () => this.validateForm())
-    },
-
-    validateForm() {
-        const { title, content, experience } = this.data.targetJob
-        // Must have Job Title AND JD content AND Experience
-        const hasTitle = title && title.trim().length >= 2
-        const hasContent = content && content.trim().length > 10
-        const hasExperience = experience && experience.trim().length >= 1
-        
-        const valid = hasTitle && hasContent && hasExperience
-        this.setData({ canSubmit: !!valid })
-    },
-
-    async onOptimizeKeywords(e: any) {
-        if (!this.data.canSubmit) return
-
-        const { targetJob } = this.data
-        const { complete, fail } = e.detail;
-
-        // Mock job_data for custom text generation
-        const mockJobData = {
-            _id: `CUSTOM_${Date.now()}`,
-            _is_custom: true, // 标记为用户手动输入的简历生成
-            title: targetJob.title,
-            title_chinese: targetJob.title,
-            title_english: targetJob.title,
-            description: targetJob.content,
-            experience: targetJob.experience,
-            source_name: targetJob.company || t('jobs.unknownCompany'),
-            createdAt: new Date().toISOString()
-        }
-
-        await requestGenerateResume(mockJobData, {
-            isPaid: this.data.isPaid,
-            onFinish: (success) => {
-                if (success) {
-                    complete(true)
-                } else {
-                    fail()
-                }
-            },
-            onCancel: () => {
-                complete(false)
-            }
-        })
+        wx.navigateTo({
+            url: '/pages/resume-generator/index'
+        });
     },
 
     // --- Resume Refine Actions ---
@@ -509,17 +411,10 @@ Component({
                     return;
                 }
 
-                // Instead of showModal, open the "Text to Resume" drawer with pre-filled data
-                this.setData({
-                    showJdDrawer: true,
-                    isPaid: true, // Mark as already paid via screenshot parsing
-                    targetJob: {
-                        title: title || '',
-                        company: '', // Screenshot parser doesn't return company usually
-                        content: description || '',
-                        experience: String(years || '')
-                    }
-                }, () => this.validateForm());
+                // Navigate to the full page with parsed data
+                wx.navigateTo({
+                    url: `/pages/resume-generator/index?from=screenshot&title=${encodeURIComponent(title || '')}&years=${years}&content=${encodeURIComponent(description || '')}`
+                });
             } else {
                 // Handle Logical Errors (200 OK but success=false)
                 if (data.code === StatusCode.INVALID_DOCUMENT_CONTENT || data.code === StatusCode.MISSING_IDENTITY_INFO) {

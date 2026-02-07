@@ -9,7 +9,9 @@ export interface ResumeGenerateOptions {
   onFinish?: (success: boolean) => void
   onCancel?: () => void
   showSuccessModal?: boolean
-  waitForCompletion?: boolean // New Option  isPaid?: boolean}
+  waitForCompletion?: boolean
+  isPaid?: boolean
+}
 
 /**
  * 统一处理生成 AI 简历的业务流：刷新用户、校验完整度、构造数据、调用 API、处理异常、展示成功弹窗
@@ -78,7 +80,6 @@ export async function requestGenerateResume(jobData: any, options: ResumeGenerat
           }
 
           const chosenIsChinese = selectRes.confirm
-          const targetLang: AppLanguage = chosenIsChinese ? 'Chinese' : 'English'
           
           // --- NEW CONTENT CHECK & LOADING LOGIC ---
           ui.showLoading(t('resume.aiChecking', interfaceLang), true);
