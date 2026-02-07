@@ -79,11 +79,35 @@ export const callApi = async <T = any>(name: string, data: any = {}): Promise<IA
     }
   }
 
-  return request<IApiResponse<T>>({
-    url: `/${name}`,
-    method: 'POST',
-    data,
-  });
+  try {
+    return await request<IApiResponse<T>>({
+      url: `/${name}`,
+      method: 'POST',
+      data,
+    });
+  } catch (error: any) {
+    if (error.statusCode === 401) {
+      console.warn(`[API] ${name} returned 401. Clearing tokens...`);
+      wx.removeStorageSync('token');
+      wx.removeStorageSync('user_openid');
+      // 可以根据需要跳转到登录页，但通常静默登录更好
+      // 这里我们尝试静默登录一次并重试
+      if (name !== 'login') {
+         console.log(`[API] Attempting re-login and retry for ${name}...`);
+         try {
+           await performLogin();
+           return await request<IApiResponse<T>>({
+              url: `/${name}`,
+              method: 'POST',
+              data,
+            });
+         } catch (reLoginError) {
+           console.error('[API] Re-login retry failed:', reLoginError);
+         }
+      }
+    }
+    throw error;
+  }
 };
 
 let loginPromise: Promise<string> | null = null;
@@ -146,6 +170,64 @@ export const performLogin = (): Promise<string> => {
   });
 
   return loginPromise;
+};
+
+/**
+ * Helper to upload files to the backend
+ */
+export const uploadApi = async <T = any>(options: {
+  url: string;
+  filePath: string;
+  name?: string;
+  formData?: any;
+}): Promise<T> => {
+  const { url, filePath, name = 'file', formData = {} } = options;
+  const fullUrl = url.startsWith('http') ? url : `${BASE_URL}${url}`;
+  
+  const performUpload = (): Promise<T> => {
+    return new Promise((resolve, reject) => {
+      const openid = wx.getStorageSync('user_openid');
+      const token = wx.getStorageSync('token');
+
+      wx.uploadFile({
+        url: fullUrl,
+        filePath,
+        name,
+        formData,
+        header: {
+          'x-openid': openid || '',
+          'Authorization': token ? `Bearer ${token}` : '',
+        },
+        success: (res) => {
+          if (res.statusCode >= 200 && res.statusCode < 300) {
+            try {
+              resolve(JSON.parse(res.data) as T);
+            } catch (err) {
+              reject(new Error('Failed to parse response'));
+            }
+          } else {
+            const error = new Error(`Upload failed with status ${res.statusCode}`);
+            (error as any).statusCode = res.statusCode;
+            (error as any).data = res.data;
+            reject(error);
+          }
+        },
+        fail: (err) => reject(err),
+      });
+    });
+  };
+
+  try {
+    return await performUpload();
+  } catch (error: any) {
+    if (error.statusCode === 401) {
+      console.warn('[Upload] 401 detected, retrying after login...');
+      wx.removeStorageSync('token');
+      await performLogin();
+      return await performUpload();
+    }
+    throw error;
+  }
 };
 
 export const testRequest = async () => {

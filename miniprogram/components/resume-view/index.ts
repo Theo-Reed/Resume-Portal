@@ -6,7 +6,8 @@ import { attachLanguageAware } from '../../utils/languageAware'
 import { attachThemeAware } from '../../utils/themeAware'
 import { themeManager } from '../../utils/themeManager'
 import { checkIsAuthed } from '../../utils/util'
-import { requestGenerateResume, showGenerationSuccessModal } from '../../utils/resume'
+import { requestGenerateResume, showGenerationSuccessModal, startBackgroundTaskCheck } from '../../utils/resume'
+import { callApi, uploadApi } from '../../utils/request'
 
 Component({
   properties: {

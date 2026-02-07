@@ -268,24 +268,46 @@ const pollingTasks = new Set<string>();
  */
 export async function startBackgroundTaskCheck() {
   try {
+    const app = getApp<any>();
+    
     // 1. 查找是否有正在处理中的任务
-    const res = await callApi<any>('getGeneratedResumes', { 
+    const processingRes = await callApi<any>('getGeneratedResumes', { 
       status: 'processing',
-      limit: 5 // 只查最近几个
+      limit: 5 
     });
 
-    if (res.success && res.result?.items && res.result.items.length > 0) {
-      console.log(`[TaskCheck] Found ${res.result.items.length} processing tasks.`);
-      
-      // 对于每个正在处理的任务，启动一个定时检查
-      res.result.items.forEach((task: any) => {
+    if (processingRes.success && processingRes.result?.items) {
+      processingRes.result.items.forEach((task: any) => {
         if (!pollingTasks.has(task.task_id)) {
           pollTaskStatus(task.task_id);
         }
       });
     }
 
-    // 2. [可选] 也可以检查最近 5 分钟内是否有成功但在用户“离线”期间完成的任务
+    // 2. 补偿机制：查找最近 10 分钟内完成，但用户可能没看到的任务
+    const completedRes = await callApi<any>('getGeneratedResumes', {
+      status: 'completed',
+      limit: 3
+    });
+
+    if (completedRes.success && completedRes.result?.items) {
+      const now = Date.now();
+      completedRes.result.items.forEach((task: any) => {
+        const finishTime = new Date(task.completeTime || task.createTime).getTime();
+        // 如果是 10 分钟内完成的，且用户通过 App 启动进入，提示一次
+        if (now - finishTime < 10 * 60 * 1000) {
+          const shownKey = `shown_task_${task.task_id}`;
+          if (!wx.getStorageSync(shownKey)) {
+            const lang = normalizeLanguage(app.globalData.language);
+            ui.showGenerationSuccessModal(
+              t('jobs.generateFinishedTitle', lang),
+              t('jobs.generateFinishedContent', lang)
+            );
+            wx.setStorageSync(shownKey, true); // 防止重复弹窗
+          }
+        }
+      });
+    }
   } catch (err) {
     console.error('[TaskCheck] Failed to check pending tasks:', err);
   }
