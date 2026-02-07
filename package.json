@@ -7,7 +7,7 @@
   "author": "",
   "license": "",
   "devDependencies": {
-    "miniprogram-api-typings": "^2.8.3-1",
+    "miniprogram-api-typings": "^3.12.3",
     "stylelint": "^16.26.1",
     "stylelint-config-standard": "^40.0.0",
     "stylelint-declaration-strict-value": "^1.10.11"

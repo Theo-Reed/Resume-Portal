@@ -5,4 +5,5 @@ miniprogram/env.js
 
 # Cloud functions node_modules
 cloudfunctions/*/node_modules/
-*/.DS_Store
+
+.DS_Store
