@@ -8,10 +8,10 @@
         <text class="header-subtitle">{{ui.subtitle}}</text>
       </view>
 
-      <view class="form-item">
+      <view class="form-item {{shakeField === 'title' ? 'shake' : ''}}">
         <text class="label">{{ui.jobTitle}}</text>
         <input 
-          class="input" 
+          class="input {{validation.title}}" 
           placeholder="{{ui.jobTitlePlaceholder}}" 
           placeholder-class="placeholder"
           value="{{targetJob.title}}" 
@@ -20,40 +20,46 @@
         />
       </view>
 
-      <view class="form-item">
+      <view class="form-item {{shakeField === 'experience' ? 'shake' : ''}}">
         <text class="label">{{ui.workYears}}</text>
-        <input 
-          class="input" 
-          placeholder="{{ui.workYearsPlaceholder}}" 
-          placeholder-class="placeholder"
-          value="{{targetJob.experience}}" 
-          bindinput="onFieldChange" 
-          data-field="experience"
-        />
-      </view>
-
-      <view class="form-item">
-        <text class="label">{{ui.company}}</text>
-        <input 
-          class="input" 
-          placeholder="{{ui.companyPlaceholder}}" 
-          placeholder-class="placeholder"
-          value="{{targetJob.company}}" 
-          bindinput="onFieldChange" 
-          data-field="company"
-        />
+        <view class="picker-content {{validation.experience}}" bindtap="openExperiencePicker">
+          <text wx:if="{{targetJob.experience}}">{{targetJob.experience}}</text>
+          <text wx:else class="placeholder">{{ui.workYearsPlaceholder}}</text>
+          <text class="ui-arrow">▼</text>
+        </view>
       </view>
       
-      <view class="form-item">
+      <view class="form-item {{shakeField === 'content' ? 'shake' : ''}}">
         <text class="label">{{ui.jobDescription}}</text>
         <textarea 
-          class="textarea" 
+          class="textarea {{validation.content}}" 
           placeholder="{{ui.jdPlaceholder}}" 
           placeholder-class="placeholder"
           value="{{targetJob.content}}" 
           bindinput="onFieldChange" 
           data-field="content"
-          maxlength="5000"
+          maxlength="-1"
+          auto-height="{{false}}"
+        ></textarea>
+      </view>
+
+      <!-- AI Message -->
+      <view class="form-item {{shakeField === 'aiMessage' ? 'shake' : ''}}">
+        <view class="header-row">
+          <text class="label" style="margin-bottom: 0;">AI Message</text>
+          <view class="sync-btn" bindtap="onSyncResume">
+            <text>🔄</text>
+            <text>与简历资料同步</text>
+          </view>
+        </view>
+        <textarea 
+          class="textarea {{validation.aiMessage}}" 
+          placeholder="给 AI 的提示词..." 
+          placeholder-class="placeholder"
+          value="{{aiMessage}}" 
+          bindinput="onFieldChange" 
+          data-field="aiMessage"
+          maxlength="-1"
           auto-height="{{false}}"
         ></textarea>
       </view>
@@ -65,5 +71,28 @@
     width="42.5%"
     disabled="{{!isReady}}"
     bind:tap="handleSubmit" 
+    bind:disabledTap="onDisabledTap"
   />
+
+  <!-- 目标岗位年限选择器 (滚轮弹窗) -->
+  <ui-drawer 
+    show="{{showExperiencePicker}}" 
+    title="{{ui.workYears}}" 
+    confirmText="确定"
+    bind:close="closeExperiencePicker"
+    bind:confirm="onExperienceConfirm"
+  >
+    <view class="picker-view-container">
+      <picker-view 
+        indicator-style="height: 160rpx;" 
+        style="width: 100%; height: 600rpx;" 
+        value="{{tempExperienceIndex}}" 
+        bindchange="onExperiencePickerChange"
+      >
+        <picker-view-column>
+          <view wx:for="{{experienceRange}}" wx:key="*this" class="picker-column-item">{{item}}</view>
+        </picker-view-column>
+      </picker-view>
+    </view>
+  </ui-drawer>
 </view>

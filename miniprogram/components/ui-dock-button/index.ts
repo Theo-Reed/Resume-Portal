@@ -11,7 +11,11 @@ Component({
   },
   methods: {
     onTap() {
-      if (this.data.disabled || this.data.loading) return;
+      if (this.data.loading) return;
+      if (this.data.disabled) {
+        this.triggerEvent('disabledTap');
+        return;
+      }
       this.triggerEvent('tap');
     }
   }
