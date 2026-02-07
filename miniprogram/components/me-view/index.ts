@@ -1230,10 +1230,7 @@ Component({
                     title: uiStrings.paySuccessTitle,
                     content: uiStrings.paySuccessContent,
                     confirmText: uiStrings.confirm,
-                    showCancel: false,
-                    success: () => {
-                        this.openProfileSheet();
-                    }
+                    showCancel: false
                 });
                 return true;
             } catch (err: any) {
