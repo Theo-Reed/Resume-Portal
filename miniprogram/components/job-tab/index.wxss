@@ -28,6 +28,7 @@
   border-radius: 18rpx;
   padding: 0 18rpx;
   background-color: var(--bg-page);
+  border: 1rpx solid var(--border);
 }
 
 .search-placeholder {

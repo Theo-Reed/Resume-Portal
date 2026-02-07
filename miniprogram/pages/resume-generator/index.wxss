@@ -49,6 +49,7 @@
   border-radius: 12rpx;
   padding: 0 24rpx;
   font-size: 28rpx;
+  border: 1rpx solid var(--divider, #e5e5e5);
 }
 
 .textarea {
@@ -59,6 +60,7 @@
   padding: 24rpx;
   font-size: 28rpx;
   line-height: 1.6;
+  border: 1rpx solid var(--divider, #e5e5e5);
 }
 
 .placeholder {

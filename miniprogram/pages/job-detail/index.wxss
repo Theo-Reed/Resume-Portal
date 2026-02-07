@@ -216,9 +216,16 @@
   opacity: 0.95;
 }
 
-.apply-icon {
-  width: 32rpx;
-  height: 32rpx;
+.apply-icon-animate {
+  width: 36rpx; /* 稍微调大一点点 */
+  height: 36rpx;
+  animation: shake-plane 7s infinite ease-in-out;
+}
+
+@keyframes shake-plane {
+  0%, 95.72%, 100% { transform: translate(0, 0) rotate(0); }
+  97.14% { transform: translate(1rpx, -2rpx) rotate(6deg); }
+  98.57% { transform: translate(-1rpx, 1rpx) rotate(-4deg); }
 }
 
 .apply-text {

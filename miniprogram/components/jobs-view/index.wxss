@@ -304,6 +304,7 @@
   padding: 0 18rpx;
   background-color: var(--bg-main);
   color: var(--text-main);
+  border: 1rpx solid var(--border);
 }
 
 .search-placeholder {

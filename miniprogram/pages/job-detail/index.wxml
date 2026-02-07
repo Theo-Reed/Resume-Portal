@@ -51,7 +51,7 @@
     <view class="apply-overlay-mask"></view>
     <view class="apply-dock-content">
       <view class="apply-button" bindtap="onOneClickApply" hover-class="apply-button-active">
-        <image class="apply-icon" src="/assets/icons/telegram.png" mode="aspectFit"></image>
+        <image class="apply-icon-animate" src="/assets/icons/paper-plane.svg" mode="aspectFit"></image>
         <text class="apply-text">{{oneClickApplyText}}</text>
       </view>
     </view>

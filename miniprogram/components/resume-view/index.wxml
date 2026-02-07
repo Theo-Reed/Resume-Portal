@@ -21,7 +21,7 @@
 
       <!-- 2. 文字生成简历 -->
       <view class="tool-card" bindtap="onTextResumeTap">
-        <view class="icon-box purple">
+        <view class="icon-box blue">
           <text class="tool-emoji">✨</text>
         </view>
         <view class="tool-info">
@@ -33,7 +33,7 @@
 
       <!-- 3. 不用改 -->
       <view class="tool-card" bindtap="onRefineOldResume">
-        <view class="icon-box green">
+        <view class="icon-box blue">
           <text class="tool-emoji">📄</text>
         </view>
         <view class="tool-info">
