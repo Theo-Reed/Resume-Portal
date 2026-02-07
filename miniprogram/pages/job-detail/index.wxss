@@ -134,7 +134,7 @@
 
 
 .detail-description-wrapper {
-  margin-bottom: 200rpx; /* 为底部控制栏留出足够空间 */
+  margin-bottom: 120rpx; /* 减少35rpx，优化底部留白 */
 }
 
 .detail-description {
@@ -161,80 +161,6 @@
 }
 
 /* 底部操作栏 (Dock) */
-.apply-overlay {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  /* 蒙版高度独立设置 */
-  height: calc(230rpx + env(safe-area-inset-bottom, 0)); 
-  background: linear-gradient(to top, var(--bg-card) 0%, rgba(255, 255, 255, 0) 100%);
-  pointer-events: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  .apply-overlay {
-    background: linear-gradient(to top, var(--bg-card) 0%, rgba(30, 31, 32, 0) 100%);
-  }
-}
-
-.apply-dock-content {
-  position: absolute;
-  left: 0;
-  right: 0;
-  /* 按钮到底部的留白独立设置 */
-  bottom: calc(5rpx + env(safe-area-inset-bottom, 0));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: auto; /* 恢复按钮区域的点击 */
-}
-
-.apply-button {
-  width: 45%; /* 按钮缩小10% (从50%到45%) */
-  height: 83rpx; /* 按钮缩小10% (从92rpx到83rpx) */
-  background: var(--grad-primary);
-  color: #ffffff;
-  border-radius: 42rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12rpx;
-  padding-right: 10rpx; /* 视觉平衡：整体微调向左偏移 */
-  box-shadow: 0 10rpx 25rpx rgba(37, 99, 235, 0.2);
-  transition: all 0.2s ease;
-}
-
-@media (prefers-color-scheme: dark) {
-  .apply-button {
-    box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.4);
-  }
-}
-
-.apply-button-active {
-  transform: scale(0.96);
-  opacity: 0.95;
-}
-
-.apply-icon-animate {
-  width: 36rpx; /* 稍微调大一点点 */
-  height: 36rpx;
-  animation: shake-plane 7s infinite ease-in-out;
-}
-
-@keyframes shake-plane {
-  0%, 95.72%, 100% { transform: translate(0, 0) rotate(0); }
-  97.14% { transform: translate(1rpx, -2rpx) rotate(6deg); }
-  98.57% { transform: translate(-1rpx, 1rpx) rotate(-4deg); }
-}
-
-.apply-text {
-  font-size: 30rpx;
-  font-weight: 600;
-  letter-spacing: 1rpx;
-}
-
 /* 功能抽屉 (Bottom Sheet) 局部调整 */
 .apply-menu-scroll {
   max-height: 70vh;

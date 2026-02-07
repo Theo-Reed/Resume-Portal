@@ -61,16 +61,10 @@
     <view style="height: 200rpx;"></view>
   </scroll-view>
 
-  <view class="apply-overlay">
-    <view class="apply-overlay-mask"></view>
-    <view class="apply-dock-content">
-      <view 
-        class="apply-button {{isReady ? 'active' : 'disabled'}}" 
-        bindtap="handleSubmit" 
-        hover-class="{{isReady ? 'apply-button-active' : ''}}"
-      >
-        <text class="apply-text">生成简历</text>
-      </view>
-    </view>
-  </view>
+  <ui-dock-button 
+    text="生成简历" 
+    width="42.5%"
+    disabled="{{!isReady}}"
+    bind:tap="handleSubmit" 
+  />
 </view>

@@ -47,15 +47,12 @@
     </block>
   </ui-scroll-view>
   <!-- 底部操作栏 (Dock) -->
-  <view class="apply-overlay" wx:if="{{job}}">
-    <view class="apply-overlay-mask"></view>
-    <view class="apply-dock-content">
-      <view class="apply-button" bindtap="onOneClickApply" hover-class="apply-button-active">
-        <image class="apply-icon-animate" src="/assets/icons/paper-plane.svg" mode="aspectFit"></image>
-        <text class="apply-text">{{oneClickApplyText}}</text>
-      </view>
-    </view>
-  </view>
+  <ui-dock-button 
+    wx:if="{{job}}"
+    text="{{oneClickApplyText}}" 
+    icon="/assets/icons/paper-plane.svg"
+    bind:tap="onOneClickApply"
+  />
 
   <!-- 功能抽屉 (Bottom Sheet) Redesigned -->
   <ui-drawer 
