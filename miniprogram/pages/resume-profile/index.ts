@@ -72,6 +72,8 @@ Page({
     }>,
     aiMessage: '',
     showAiMessageSheet: false,
+    isAiMessageFocus: false,
+    aiMessageValid: false,
     aiMessageForm: '',
     editingEduIndex: -1, // -1 表示新增
     editingWorkIndex: -1, // -1 表示新增
@@ -1231,18 +1233,42 @@ Page({
   },
 
   onEditAiMessage() {
+    const val = this.data.aiMessage || '';
+    const isValid = this.checkAiMessageValidity(val);
     this.setData({
       showAiMessageSheet: true,
-      aiMessageForm: this.data.aiMessage
+      aiMessageForm: val,
+      aiMessageValid: isValid
     })
+    setTimeout(() => {
+      this.setData({ isAiMessageFocus: true })
+    }, 400)
+  },
+
+  checkAiMessageValidity(text: string) {
+    if (!text) return false;
+    const chineseCount = (text.match(/[\u4e00-\u9fa5]/g) || []).length;
+    const englishCount = (text.match(/[a-zA-Z]/g) || []).length;
+    const isPureNumbers = /^\d+$/.test(text.trim());
+    const isPureSymbols = /^[^a-zA-Z0-9\u4e00-\u9fa5]+$/.test(text.trim());
+
+    return (chineseCount > 5 || englishCount > 10) && !isPureNumbers && !isPureSymbols;
   },
 
   closeAiMessageSheet() {
-    this.setData({ showAiMessageSheet: false })
+    this.setData({ 
+      showAiMessageSheet: false,
+      isAiMessageFocus: false
+    })
   },
 
   onAiMessageInput(e: any) {
-    this.setData({ aiMessageForm: e.detail.value })
+    const val = e.detail.value;
+    const isValid = this.checkAiMessageValidity(val);
+    this.setData({ 
+      aiMessageForm: val,
+      aiMessageValid: isValid
+    })
   },
 
   onAiMessageConfirm(e: any) {

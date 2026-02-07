@@ -19,7 +19,11 @@
         bindtap="onConfirm"
       >
         <view wx:if="{{loading}}" class="ui-drawer-loading-icon"></view>
-        <text wx:else>{{confirmText}}</text>
+        <block wx:else>
+          <text wx:if="{{confirmActive && activeConfirmText}}">{{activeConfirmText}}</text>
+          <text wx:elif="{{!confirmActive && inactiveConfirmText}}">{{inactiveConfirmText}}</text>
+          <text wx:else>{{confirmText}}</text>
+        </block>
       </view>
     </view>
   </view>

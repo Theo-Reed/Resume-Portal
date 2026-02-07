@@ -6,12 +6,14 @@
   background-color: var(--bg-page); /* Softer background */
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 /* Header Section */
 .header-section {
-  padding: 40rpx 40rpx 20rpx;
+  padding: 20rpx 40rpx 20rpx;
   background-color: var(--bg-card);
+  border-bottom: 1rpx solid var(--border);
 }
 
 .page-title {
@@ -47,6 +49,7 @@
 /* Body and Scroll View */
 .resume-content {
   flex: 1;
+  height: 0;
   min-height: 0;
 }
 
@@ -304,7 +307,8 @@
 }
 
 .bottom-safe-area {
-  height: 0;
+  height: 30rpx;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .ai-message-value {
@@ -329,6 +333,8 @@
   flex: 1;
   padding: 32rpx 40rpx;
   background-color:var(--bg-card);
+  height: calc(66.67vh); /* Forced to 2/3 screen minus header */
+  box-sizing: border-box;
 }
 
 .ai-message-textarea {
@@ -724,7 +730,7 @@
   background: var(--border);
   border-radius: 16rpx;
   padding: 8rpx;
-  margin-top: 24rpx;
+  margin-top: 0rpx;
 }
 
 .sync-row {

@@ -1,5 +1,6 @@
 {
   "navigationBarTitleText": "",
+  "disableScroll": true,
   "usingComponents": {
     "ui-scroll-view": "../../components/ui/scroll-view/index",
     "ui-drawer": "../../components/ui/drawer/index",

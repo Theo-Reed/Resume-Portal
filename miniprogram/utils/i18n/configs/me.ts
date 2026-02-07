@@ -122,6 +122,8 @@ const UI_MAP = {
     inputInviteCodePlaceholder: 'me.inputInviteCodePlaceholder',
     /** 兑换按钮 */
     redeem: 'me.redeem',
+    /** 关闭 */
+    close: 'app.close',
 
     // --- 提示与反馈 ---
     /** 正在保存 */

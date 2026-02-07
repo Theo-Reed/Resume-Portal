@@ -193,7 +193,8 @@
   <ui-drawer 
     show="{{showInviteSheet}}" 
     title="{{ui.inviteFriendPlan}}" 
-    confirmText="{{ui.redeem}}"
+    activeConfirmText="{{ui.redeem}}"
+    inactiveConfirmText="{{ui.close}}"
     confirmActive="{{isInviteCodeValid}}"
     bind:close="closeInviteSheet"
     bind:confirm="onInviteConfirm"
@@ -349,11 +350,10 @@
   <ui-drawer 
     title="{{ui.contactAuthor}}" 
     show="{{showContactSheet}}" 
-    confirmText="{{ui.confirm}}"
+    inactiveConfirmText="{{ui.close}}"
     confirmActive="{{false}}"
     useScroll="{{false}}"
     bind:close="closeContactSheet"
-    bind:confirm="onContactConfirm"
   >
     <view class="author-sheet-body">
       <text class="author-slogan">{{ui.authorWechatSlogan}}</text>

@@ -3,9 +3,9 @@
 <view class="page">
   <ui-feedback id="ui-feedback" />
   <view class="header-section">
-    <view class="title-row">
+    <!-- <view class="title-row">
       <text class="page-title">{{ui.title}}</text>
-    </view>
+    </view> -->
     
     <view class="lang-switcher">
       <view class="lang-tab {{currentLang === 'Chinese' ? 'active' : ''}}" bindtap="onSwitchLang" data-lang="Chinese">
@@ -23,6 +23,7 @@
   <ui-scroll-view     
     class="resume-content" 
     scrollY="{{true}}"
+    bounces="{{false}}"
   >
     <view class="resume-body">
       <!-- 基本信息 -->
@@ -538,7 +539,10 @@
   <ui-drawer 
     show="{{showAiMessageSheet}}" 
     title="{{ui.aiMessageLabel}}" 
-    confirmText="{{ui.save}}"
+    activeConfirmText="{{ui.save}}"
+    inactiveConfirmText="{{ui.close}}"
+    confirmActive="{{aiMessageValid}}"
+    useScroll="{{false}}"
     bind:close="closeAiMessageSheet"
     bind:confirm="onAiMessageConfirm"
   >
@@ -550,7 +554,9 @@
         value="{{aiMessageForm}}" 
         bindinput="onAiMessageInput"
         maxlength="500"
-        focus="{{showAiMessageSheet}}"
+        focus="{{isAiMessageFocus}}"
+        cursor-spacing="140"
+        always-embed="{{true}}"
         disable-default-padding
       />
     </view>

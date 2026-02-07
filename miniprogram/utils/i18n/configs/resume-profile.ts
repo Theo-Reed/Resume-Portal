@@ -129,6 +129,8 @@ const UI_MAP = {
     addWorkExperience: 'resume.addWorkExperience',
     /** 保存 */
     save: 'resume.save',
+    /** 关闭 */
+    close: 'app.close',
     /** 取消 */
     cancel: 'resume.cancel',
     /** 删除 */

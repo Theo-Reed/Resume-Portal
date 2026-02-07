@@ -16,6 +16,14 @@ Component({
       type: null, 
       value: '' 
     },
+    activeConfirmText: {
+      type: String,
+      value: ''
+    },
+    inactiveConfirmText: {
+      type: String,
+      value: ''
+    },
     confirmActive: { type: Boolean, value: true },
     showClose: { type: Boolean, value: false },
     maskClosable: { type: Boolean, value: true },
