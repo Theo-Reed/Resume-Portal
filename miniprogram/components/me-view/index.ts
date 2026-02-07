@@ -1351,13 +1351,6 @@ Component({
             })
         },
 
-        onRefineResumeTap() {
-            // Redirect to Resume tab and tell it to open the refine drawer
-            const app = getApp<any>();
-            app.globalData._openRefineOnShow = true;
-            this.triggerEvent('tabChange', { index: 1 });
-        },
-
         onGeneratedResumesTap() {
             wx.navigateTo({
                 url: '/pages/generated-resumes/index',

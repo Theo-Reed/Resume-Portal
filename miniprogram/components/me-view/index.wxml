@@ -72,19 +72,6 @@
         </view>
       </view>
 
-      <view class="action-row ui-divider" bindtap="onRefineResumeTap" hover-class="row-hover">
-        <view class="row-left">
-          <view class="icon-circle purple-bg">✨</view>
-          <view class="row-text">
-            <text class="row-title">{{ui.refineResumeEntry}}</text>
-            <text class="row-subtitle">{{ui.refineResumeSubtitle}}</text>
-          </view>
-        </view>
-        <view class="row-right">
-          <text class="ui-arrow">❯</text>
-        </view>
-      </view>
-
       <view class="action-row ui-divider" bindtap="onGeneratedResumesTap" hover-class="row-hover">
         <view class="row-left">
           <view class="icon-circle green-bg">✨</view>
