@@ -58,7 +58,6 @@
         ></textarea>
       </view>
     </view>
-    <view style="height: 200rpx;"></view>
   </scroll-view>
 
   <ui-dock-button 
