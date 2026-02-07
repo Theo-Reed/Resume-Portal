@@ -1194,8 +1194,9 @@ Component({
                 ui.showLoading(uiStrings.activatingMember)
 
                 // 3. 轮询检查订单状态 (代替原来的直接更新状态)
+                // 增加轮询次数到 15 次 (15秒)，确保微信支付状态同步
                 let checkCount = 0;
-                const maxChecks = 5;
+                const maxChecks = 15;
                 let isPaid = false;
 
                 while (checkCount < maxChecks && !isPaid) {
