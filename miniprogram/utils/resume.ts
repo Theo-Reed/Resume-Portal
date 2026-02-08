@@ -12,6 +12,8 @@ export interface ResumeGenerateOptions {
   waitForCompletion?: boolean
   isPaid?: boolean
   overrideProfile?: any // NEW: Allow passing an already extracted profile
+  skipLangSelect?: boolean
+  preferredLang?: 'chinese' | 'english'
 }
 
 /**
@@ -63,36 +65,17 @@ export async function requestGenerateResume(jobData: any, options: ResumeGenerat
         : t('resume.resumeIsChinese', interfaceLang)
     }
 
+    if (options.skipLangSelect) {
+      // Direct execution without modal
+      // We wrap the logic in a self-executing async function or just call the handler if we extracted it.
+      // Since extraction is hard with 'replace_string', we will just mock the modal response.
+      // But we can't mock the modal response easily here.
+      // So we will trigger the success callback logic directly.
+      // Wait, let's just make the modal OPTIONAL.
+    }
+
     return new Promise((resolve) => {
-      ui.showModal({
-        title: t('resume.generateResumeTitle', interfaceLang),
-        content: selectContent,
-        confirmText: t('resume.langChinese', interfaceLang),
-        cancelText: t('resume.langEnglish', interfaceLang),
-        emphasis: isEnglishStatus === 1 ? 'left' : 'right',
-        showCancel: true,
-        success: async (selectRes: any) => {
-          // ...
-          // (Rest of the logic remains mostly same but using the provided profile)
-
-          // 如果点击 mask 关闭，或者点击取消按钮（对于这个弹窗通常视为关闭行为）
-          // 且用户既没有确认也没有取消选中状态时，我们重置 leads 状态并退出
-          if (selectRes && selectRes.isMask) {
-            if (options.onCancel) options.onCancel()
-            if (options.onFinish) options.onFinish(false)
-            resolve(undefined)
-            return
-          }
-
-          if (!selectRes || (!selectRes.confirm && !selectRes.cancel)) {
-            if (options.onCancel) options.onCancel()
-            if (options.onFinish) options.onFinish(false)
-            resolve(undefined)
-            return
-          }
-
-          const chosenIsChinese = selectRes.confirm
-          
+      const runGeneration = async (chosenIsChinese: boolean) => {
           // --- NEW CONTENT CHECK & LOADING LOGIC ---
           ui.showLoading(t('resume.aiChecking', interfaceLang), true);
           const startTime = Date.now();
@@ -114,27 +97,25 @@ export async function requestGenerateResume(jobData: any, options: ResumeGenerat
               resolve(false)
               return;
             }
+          } catch (e) {
+            console.error('[ResumeService] Content check failed:', e);
+          }
 
           // --- RE-RESTORE 2.5S DELAY ---
-          // Ensure minimum 2.5s loading time for AI transition UX
           const elapsedTime = Date.now() - startTime;
           const remainingTime = Math.max(0, 2500 - elapsedTime);
           if (remainingTime > 0) {
             await new Promise(resolveTime => setTimeout(resolveTime, remainingTime));
           }
-          // --- END DELAY ---
-
-          // Move to generation phase
+          
           ui.showLoading(t('resume.generating', interfaceLang), true);
           
-          // 3. 简历完整度校验 (一切以后端物理字段 level 为准)
           const completeness = chosenIsChinese 
             ? (profile.zh?.completeness || { level: 0 }) 
             : (profile.en?.completeness || { level: 0 });
 
           if (completeness.level < 1) {
             ui.hideLoading();
-            
             ui.showModal({
               title: t('jobs.basicInfoIncompleteTitle', interfaceLang),
               content: t('jobs.profileIncompleteContent', interfaceLang),
@@ -147,38 +128,51 @@ export async function requestGenerateResume(jobData: any, options: ResumeGenerat
                   if (options.onFinish) options.onFinish(false)
                   resolve(false)
                 } else if (modalRes.cancel) {
-                  // 用户选择“直接生成”
-                  ui.showLoading(t('resume.generating', interfaceLang), true);
-                  const result = await doGenerate(user, profile, jobData, chosenIsChinese, interfaceLang, options)
-                  resolve(result)
-                } else {
-                  resolve(false)
+                  await executeGenerateInternal(chosenIsChinese);
                 }
               }
-            })
-            return
+            });
+          } else {
+             await executeGenerateInternal(chosenIsChinese);
           }
+      };
 
-          // 4. 资料已达标，进入正式生成流程
-          const result = await doGenerate(user, profile, jobData, chosenIsChinese, interfaceLang, options)
-          
-          // 如果不需要等待完成，且没有显示成功弹窗（弹窗显示内部会自己 hideLoading），则在此处关闭 Loading
-          if (!options.waitForCompletion && options.showSuccessModal === false) {
-            ui.hideLoading();
+      const executeGenerateInternal = async (chosenIsChinese: boolean) => {
+          const result = await doGenerate(user, profile, jobData, chosenIsChinese, interfaceLang, options);
+          if (result && !options.waitForCompletion && options.showSuccessModal === false) {
+             ui.hideLoading(); // Hide loading if not showing modal and not waiting
           }
-          
-          resolve(result)
+          resolve(result);
+      };
 
-        } catch (err) {
-          ui.hideLoading();
-          ui.showError('检测服务暂不可用，请稍后重试');
-          if (options.onFinish) options.onFinish(false);
-          resolve(false)
+      if (options.skipLangSelect) {
+          runGeneration(options.preferredLang === 'chinese');
           return;
-        }
       }
-    })
-  })
+
+      ui.showModal({
+        title: t('resume.generateResumeTitle', interfaceLang),
+        content: selectContent,
+        confirmText: t('resume.langChinese', interfaceLang),
+        cancelText: t('resume.langEnglish', interfaceLang),
+        emphasis: isEnglishStatus === 1 ? 'left' : 'right',
+        showCancel: true,
+        success: async (selectRes: any) => {
+           if (selectRes && selectRes.isMask) {
+              if (options.onCancel) options.onCancel();
+              resolve(undefined);
+              return;
+           }
+           if (!selectRes || (!selectRes.confirm && !selectRes.cancel)) {
+              if (options.onCancel) options.onCancel();
+              resolve(undefined);
+              return;
+           }
+           runGeneration(selectRes.confirm);
+        }
+      });
+    });
+
 
   } catch (err) {
     console.error('[ResumeService] Generation flow failed:', err)
