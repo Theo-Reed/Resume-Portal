@@ -753,6 +753,7 @@
 .invite-hero {
     text-align: center;
     margin-bottom: 40rpx;
+    padding: 0 40rpx;
 }
 
 .invite-hero-title {
@@ -768,6 +769,9 @@
     font-size: 24rpx;
     color: var(--text-sub);
     font-weight: 500;
+    text-align: left;
+    display: inline-block;
+    white-space: pre-wrap;
 }
 
 /* Code Display Card */
@@ -1332,10 +1336,14 @@
 .author-sheet-body .author-slogan {
     font-size: 28rpx;
     color: var(--text-sub);
-    margin-bottom: 10rpx;
-    text-align: center;
+    margin-bottom: 40rpx; 
+    text-align: left;
+    display: inline-block;
+    width: auto;
     line-height: 1.6;
-    padding: 0 40rpx; /* Slogan still needs some side padding for readability */
+    padding: 0 40rpx; 
+    box-sizing: border-box;
+    white-space: pre-wrap;
 }
 
 .qr-code-container-sheet {
