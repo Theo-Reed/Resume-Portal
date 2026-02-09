@@ -48,10 +48,16 @@ Component({
   },
   methods: {
     onCancel() {
+      if (typeof (this as any).onCancel === 'function') {
+        (this as any).onCancel();
+      }
       this.triggerEvent('cancel');
       this.setData({ visible: false });
     },
     onConfirm() {
+      if (typeof (this as any).onConfirm === 'function') {
+        (this as any).onConfirm();
+      }
       this.triggerEvent('confirm');
       this.setData({ visible: false });
     },

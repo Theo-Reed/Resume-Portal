@@ -1349,180 +1349,106 @@ Page({
     this.setData({ showOnboardingDrawer: false });
   },
 
-  onSelectFromChat() {
-       wx.chooseMessageFile({
-           count: 1,
-           type: 'file', 
-           extension: ['pdf', 'png', 'jpg', 'jpeg'],
-           success: (res) => {
-               const file = res.tempFiles[0];
-               this.validateAndConfirm(file);
-           },
-           fail: (err) => {
-               if (err.errMsg.indexOf('cancel') === -1) {
-                   ui.showToast('选择文件失败');
-               }
-           }
-       });
-  },
-
-  onSelectFromLocal() {
-        wx.chooseImage({
-            count: 1,
-            sizeType: ['compressed'],
-            sourceType: ['album', 'camera'],
-            success: (res: any) => {
-                const file = res.tempFiles ? res.tempFiles[0] : { path: res.tempFilePaths[0], size: 2 * 1024 * 1024 }; 
-                this.validateAndConfirm({
-                    path: file.path,
-                    size: file.size,
-                    name: 'image.jpg'
-                });
-            },
-           fail: (err) => {
-               if (err.errMsg.indexOf('cancel') === -1) {
-                   ui.showToast('选择图片失败');
-               }
-           }
-        });
-  },
-
-  validateAndConfirm(file: any) {
-        const MAX_SIZE = 10 * 1024 * 1024; 
-        if (file.size > MAX_SIZE) {
-            ui.showToast('文件大小超过10MB');
-            return;
-        }
-
-        const ext = file.name.split('.').pop()?.toLowerCase();
-        this.setData({
-            showOnboardingDrawer: false,
-            showPreviewModal: true,
-            previewPath: file.path,
-            previewName: file.name,
-            previewType: ext === 'pdf' ? 'pdf' : 'image'
-        });
-  },
-
-  onCancelPreview() {
-      this.setData({ showPreviewModal: false });
-  },
-
-  onConfirmPreview() {
-      this.setData({ 
-          showPreviewModal: false,
-          showLangSelectDrawer: true // Next step: Select Language
-      });
+  onOnboardingParseSuccess(e: any) {
+    const { result } = e.detail;
+    if (!result) return;
+    
+    this.setData({ 
+      tempParsedData: { success: true, result: result },
+      showOnboardingDrawer: false,
+      showLangSelectDrawer: true
+    } as any);
   },
 
   closeLangSelectDrawer() {
-      this.setData({ showLangSelectDrawer: false });
+    this.setData({ showLangSelectDrawer: false });
   },
 
-  onLanguageSelect(e: any) {
-      const type = e.currentTarget.dataset.type; // 'chinese_only' or 'combined'
-      this.setData({ showLangSelectDrawer: false });
-      this.processOnboardingUpload(type);
+  onSelectOnboardingType(e: any) {
+    const type = e.currentTarget.dataset.type;
+    this.setData({ showLangSelectDrawer: false });
+    this.applyParsedData((this.data as any).tempParsedData, type);
   },
 
-  openPdfPreview() {
-    if (this.data.previewType === 'pdf' && this.data.previewPath) {
-        wx.openDocument({ filePath: this.data.previewPath })
-    }
-  },
+  async applyParsedData(data: any, type: 'chinese' | 'combined') {
+    if (!data) return;
+    ui.showLoading('AI 生成中...', true);
+    try {
+      // Data passed directly
 
-  async processOnboardingUpload(type: 'chinese_only' | 'combined') {
-        const app = getApp<any>();
-        ui.showLoading('AI 解析中...', true);
-        
-        try {
-            // Step 1: Parse the file
-            const data = await uploadApi<any>({
-                url: '/resume/parse',
-                filePath: this.data.previewPath,
-                name: 'file'
-            });
+      if (!data.success || !data.result) {
+        ui.hideLoading();
+        ui.showToast('解析失败，请重试');
+        return;
+      }
 
-            if (!data.success || !data.result) {
-                ui.hideLoading();
-                ui.showToast('解析失败，请重试');
-                return;
-            }
+      const extracted = data.result.profile;
+      const detectedLang = data.result.language; // 'chinese' or 'english'
 
-            const extracted = data.result.profile;
-            const detectedLang = data.result.language; // 'chinese' or 'english'
+      const overrideProfile: any = {
+        name: extracted.name || "",
+        gender: extracted.gender || "",
+        phone: extracted.mobile || "",
+        email: extracted.email || "",
+        wechat: extracted.wechat || "",
+        location: extracted.city || "",
+        language: detectedLang,
+        is_override: true
+      };
 
-            const overrideProfile: any = {
-                name: extracted.name || "",
-                gender: extracted.gender || "",
-                phone: extracted.mobile || "",
-                email: extracted.email || "",
-                wechat: extracted.wechat || "",
-                location: extracted.city || "",
-                language: detectedLang, 
-                is_override: true 
-            };
-            
-            const mappedEducations = (extracted.education || []).map((e: any) => ({
-                school: e.school || "",
-                degree: e.degree || "",
-                major: e.major || "",
-                startDate: e.startTime || "",
-                endDate: e.endTime || ""
-            }));
+      const mappedEducations = (extracted.education || []).map((e: any) => ({
+        school: e.school || "",
+        degree: e.degree || "",
+        major: e.major || "",
+        startDate: e.startTime || "",
+        endDate: e.endTime || ""
+      }));
 
-            const mappedExperiences = (extracted.experience || []).map((e: any) => ({
-                company: e.company || "",
-                jobTitle: e.role || "",
-                workContent: e.description || "",
-                startDate: e.startTime || "",
-                endDate: e.endTime || ""
-            }));
+      const mappedExperiences = (extracted.experience || []).map((e: any) => ({
+        company: e.company || "",
+        jobTitle: e.role || "",
+        workContent: e.description || "",
+        startDate: e.startTime || "",
+        endDate: e.endTime || ""
+      }));
 
-            if (detectedLang === 'english') {
-                overrideProfile.en = { educations: mappedEducations, workExperiences: mappedExperiences, completeness: { level: 2 } };
-                if (type === 'combined') {
-                    // Force generate Chinese too (pass empty zh or copy?)
-                    // The backend generator usually updates the TARGET language.
-                    // If we want combined, we should ideally run twice or rely on backend to mirror.
-                    // Here we trigger CHINESE generation because the user wants 'Completeness'.
-                    overrideProfile.zh = { educations: [], workExperiences: [], completeness: { level: 0 } };
-                }
-            } else {
-                overrideProfile.zh = { educations: mappedEducations, workExperiences: mappedExperiences, completeness: { level: 2 } };
-                if (type === 'combined') {
-                    overrideProfile.en = { educations: [], workExperiences: [], completeness: { level: 0 } };
-                }
-            }
-            
-            ui.hideLoading();
-
-            const dummyJob = {
-                _id: `ONBOARDING_${Date.now()}`,
-                title: "简历资料完善",
-                description: "通用简历完善",
-                experience: "3 years"
-            };
-
-            await requestGenerateResume(dummyJob, {
-                overrideProfile,
-                skipLangSelect: true,
-                preferredLang: 'chinese', 
-                isPaid: true,
-                showSuccessModal: true,
-                onFinish: (success) => {
-                    if (success) {
-                        this.loadResumeData();
-                    }
-                }
-            });
-
-            // If combined, maybe trigger English too? (Optional, skipping for now to avoid complexity/double-cost)
-
-        } catch (e) {
-            ui.hideLoading();
-            ui.showToast('处理失败');
+      if (detectedLang === 'english') {
+        overrideProfile.en = { educations: mappedEducations, workExperiences: mappedExperiences, completeness: { level: 2 } };
+        if (type === 'combined') {
+          overrideProfile.zh = { educations: [], workExperiences: [], completeness: { level: 0 } };
         }
+      } else {
+        overrideProfile.zh = { educations: mappedEducations, workExperiences: mappedExperiences, completeness: { level: 2 } };
+        if (type === 'combined') {
+          overrideProfile.en = { educations: [], workExperiences: [], completeness: { level: 0 } };
+        }
+      }
+
+      ui.hideLoading();
+
+      const dummyJob = {
+        _id: `ONBOARDING_${Date.now()}`,
+        title: "简历资料完善",
+        description: "通用简历完善",
+        experience: "3 years"
+      };
+
+      await requestGenerateResume(dummyJob, {
+        overrideProfile,
+        skipLangSelect: true,
+        preferredLang: 'chinese',
+        isPaid: true,
+        showSuccessModal: true,
+        onFinish: (success) => {
+          if (success) {
+            this.loadResumeData();
+          }
+        }
+      });
+    } catch (e) {
+      ui.hideLoading();
+      ui.showToast('处理失败');
+    }
   },
 })
 

@@ -128,8 +128,8 @@ Component({
             if (app.globalData._triggerResumeImport) {
                 app.globalData._triggerResumeImport = false;
                 setTimeout(() => {
-                    this.setData({ onboardingMode: true });
-                    this.onSelectFromLocal();
+                    // Just open the drawer, don't auto-pick
+                    this.setData({ showRefineDrawer: true });
                 }, 300);
             }
         }
@@ -198,96 +198,79 @@ Component({
         this.setData({ showRefineDrawer: false });
     },
 
-    onSelectFromChat() {
-       wx.chooseMessageFile({
-           count: 1,
-           type: 'file', 
-           extension: ['pdf', 'png', 'jpg', 'jpeg'],
-           success: (res) => {
-               const file = res.tempFiles[0];
-               this.validateAndConfirm(file);
-           },
-           fail: (err) => {
-               if (err.errMsg.indexOf('cancel') === -1) {
-                   ui.showToast(t('resume.selectFileFailed'));
-               }
-           }
-       });
-    },
+    // Replaces onSelectFromChat, onSelectFromLocal, validateAndConfirm, processUpload
+    async onRefineParseSuccess(e: any) {
+        const { result, originalFile } = e.detail;
+        const app = getApp<any>();
+        const lang = normalizeLanguage(app.globalData.language);
 
-    onSelectFromLocal() {
-        wx.chooseImage({
-            count: 1,
-            sizeType: ['compressed'],
-            sourceType: ['album', 'camera'],
-            success: (res: any) => {
-                // Compatible with array return in newer lib, but tempFiles is standard now
-                const file = res.tempFiles ? res.tempFiles[0] : { path: res.tempFilePaths[0], size: 2 * 1024 * 1024 }; 
-                this.validateAndConfirm({
-                    path: file.path,
-                    size: file.size,
-                    name: 'image.jpg'
-                });
-            },
-           fail: (err) => {
-               if (err.errMsg.indexOf('cancel') === -1) {
-                   ui.showToast(t('resume.selectImageFailed'));
-               }
-           }
+        // Step 1: Extracted Data is already here (from e.detail.result)
+        const extracted = result.profile;
+        const detectedLang = result.language; // 'chinese' or 'english'
+
+        // Step 2: Construct Dummy Job Data for "Polishing" flow
+        const latestJob = (extracted.experience && extracted.experience[0]) || {};
+        const targetTitle = latestJob.role || (extracted.name ? `${extracted.name}的简历` : "求职者");
+
+        const dummyJob = {
+            _id: `POLISH_${Date.now()}`,
+            title: targetTitle,
+            title_chinese: targetTitle,
+            title_english: targetTitle,
+            description: "通用简历润色与增强",
+            experience: "3 years"
+        };
+
+        // Step 3: Map to internal profile structure (aligned with backend expectations)
+        const overrideProfile: any = {
+            name: extracted.name || "",
+            gender: extracted.gender || "",
+            phone: extracted.mobile || "",
+            email: extracted.email || "",
+            wechat: extracted.wechat || "",
+            location: extracted.city || "",
+            language: detectedLang, 
+            is_override: true 
+        };
+
+        const mappedEducations = (extracted.education || []).map((e: any) => ({
+            school: e.school || "",
+            degree: e.degree || "",
+            major: e.major || "",
+            startDate: e.startTime || "",
+            endDate: e.endTime || ""
+        }));
+
+        const mappedExperiences = (extracted.experience || []).map((e: any) => ({
+            company: e.company || "",
+            jobTitle: e.role || "",
+            workContent: e.description || "",
+            startDate: e.startTime || "",
+            endDate: e.endTime || ""
+        }));
+
+        if (detectedLang === 'english') {
+            overrideProfile.en = { educations: mappedEducations, workExperiences: mappedExperiences, completeness: { level: 2 } };
+            overrideProfile.zh = { educations: [], workExperiences: [], completeness: { level: 0 } };
+        } else {
+            overrideProfile.zh = { educations: mappedEducations, workExperiences: mappedExperiences, completeness: { level: 2 } };
+            overrideProfile.en = { educations: [], workExperiences: [], completeness: { level: 0 } };
+        }
+
+        // Step 4: Call Unified Generation Flow
+        // Note: isPaid is true because /parse already cost quota (handled by backend usually? or we assume parse+generate is one flow?)
+        // The previous code said "isPaid: true // Mark as paid because /parse already cost 1pt"
+        const genResult = await requestGenerateResume(dummyJob, {
+            overrideProfile,
+            isPaid: true, 
+            showSuccessModal: true,
+            waitForCompletion: false
         });
-    },
 
-    validateAndConfirm(file: { path: string, size: number, name: string }) {
-        const MAX_SIZE = 10 * 1024 * 1024; // 10MB
-        const MIN_SIZE = 100; // 100 Bytes
-
-        // 1. Size Validation
-        if (file.size > MAX_SIZE) {
-            ui.showModal({
-                title: t('resume.fileTooLarge'),
-                content: t('resume.fileSizeExceededPrefix') + (file.size / 1024 / 1024).toFixed(2) + 'MB',
-                showCancel: false,
-                isAlert: true
-            });
-            return;
+        if (genResult && typeof genResult === 'string') {
+                // Generation task started successfully, task_id returned
+                startBackgroundTaskCheck();
         }
-
-        if (file.size < MIN_SIZE) {
-            ui.showModal({
-                title: t('resume.fileInvalid'),
-                content: t('resume.fileEmptyOrTooSmall'),
-                showCancel: false,
-                isAlert: true
-            });
-            return;
-        }
-        
-        // 2. Format Validation
-        const allowedExts = ['pdf', 'png', 'jpg', 'jpeg'];
-        const ext = file.name.split('.').pop()?.toLowerCase();
-        
-        // If it's a chat file (has a real name), check extension strictly
-        // For local images, we force name="image.jpg" so it passes, but wx.chooseImage ensures it's an image.
-        if (ext && !allowedExts.includes(ext)) { 
-             ui.showModal({
-                title: t('resume.formatNotSupported'),
-                content: t('resume.supportedFormats'),
-                showCancel: false,
-                isAlert: true
-            });
-            return;
-        }
-
-        // Show Custom Preview Modal instead of standard modal
-        this.closeRefineDrawer();
-        this.setData({
-            showPreviewModal: true,
-            previewAction: 'refine',
-            previewPath: file.path,
-            previewName: file.name,
-            previewSize: file.size,
-            previewType: ext === 'pdf' ? 'pdf' : 'image'
-        });
     },
 
     onCancelPreview() {
@@ -296,14 +279,15 @@ Component({
 
     onConfirmPreview() {
         this.setData({ showPreviewModal: false });
-        if (this.data.onboardingMode) {
-            this.processOnboardingUpload(this.data.previewPath, this.data.previewName);
-        } else if (this.data.previewAction === 'refine') {
-            this.processUpload(this.data.previewPath, this.data.previewName);
-        } else {
+        if (this.data.previewAction === 'screenshot') {
             this.processScreenshotUpload();
         }
     },
+
+    // ... handleUploadError can be removed if only used by Refine? 
+    // No, processScreenshotUpload uses it?
+    // Let's check processScreenshotUpload again.
+
 
     async processOnboardingUpload(path: string, _name: string) {
         const app = getApp<any>();
@@ -564,11 +548,20 @@ Component({
                     });
                     return;
                 }
-
-                // Navigate to the full page with parsed data
+                
+                // Navigate to generator with extracted job info
+                // We pass it via globalData or url params (url params limited length)
+                // Use globalData for complex objects
+                app.globalData._prefilledJob = {
+                    title,
+                    experience: years,
+                    description // JD Content
+                };
+                
                 wx.navigateTo({
-                    url: `/pages/resume-generator/index?from=screenshot&title=${encodeURIComponent(title || '')}&years=${years}&content=${encodeURIComponent(description || '')}`
+                    url: '/pages/resume-generator/index?from=screenshot'
                 });
+
             } else {
                 // Handle Logical Errors (200 OK but success=false)
                 if (data.code === StatusCode.INVALID_DOCUMENT_CONTENT || data.code === StatusCode.MISSING_IDENTITY_INFO) {

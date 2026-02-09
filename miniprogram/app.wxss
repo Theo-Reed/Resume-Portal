@@ -313,6 +313,7 @@ page {
 .btn-secondary:active {
   background-color: #e2e8f0;
 }
+/* End of Button Styles */
 
 /* --- Global Professional UI Elements --- */
 @import "/components/ui/common.wxss";

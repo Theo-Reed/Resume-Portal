@@ -6,6 +6,7 @@
     "ui-button": "../ui/button/index",
     "ui-card": "../ui/card/index",
     "ui-drawer": "../ui/drawer/index",
-    "ui-scroll-view": "../ui/scroll-view/index"
+    "ui-scroll-view": "../ui/scroll-view/index",
+    "resume-uploader": "../resume-uploader/index"
   }
 }

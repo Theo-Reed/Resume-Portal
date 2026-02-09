@@ -45,39 +45,18 @@
     </view>
   </ui-scroll-view>
 
-  <!-- Resume Refine Drawer -->
-  <ui-drawer 
-    id="refineDrawer" 
-    show="{{showRefineDrawer}}" 
-    title="{{ui.toolRefineTitle}}" 
-    useScroll="{{false}}"
-    showConfirm="{{false}}"
+  <!-- Resume Refine Drawer (Replaced by Component) -->
+  <resume-uploader
+    show="{{showRefineDrawer}}"
+    config="{{ { title: ui.toolRefineTitle, selectFromChat: ui.selectFromChat, uploadFromLocal: ui.uploadFromLocal, confirmUpload: ui.confirmUpload, previewTip: ui.previewTip, cancel: ui.cancel, quotaWarning: ui.refineRefineReminder } }}"
     bind:close="closeRefineDrawer"
-  >
-    <view class="drawer-body">
-      <view class="upload-options">
-         <view class="upload-btn" bindtap="onSelectFromChat">
-            <view class="icon-box blue">
-              <text class="tool-emoji">💬</text>
-            </view>
-            <text class="btn-text">{{ui.selectFromChat}}</text>
-            <text class="ui-arrow">❯</text>
-         </view>
-         <view class="upload-btn" bindtap="onSelectFromLocal">
-            <view class="icon-box blue">
-              <text class="tool-emoji">📁</text>
-            </view>
-            <text class="btn-text">{{ui.uploadFromLocal}}</text>
-             <text class="ui-arrow">❯</text>
-         </view>
-      </view>
-    </view>
-  </ui-drawer>
+    bind:success="onRefineParseSuccess"
+  />
 
   <!-- Login Wall & Splash Loader -->
   
-  <!-- Custom File Preview Modal -->
-  <view class="preview-mask {{showPreviewModal ? 'visible' : ''}}">
+  <!-- Custom File Preview Modal (Kept only for Screenshot flow) -->
+  <view class="preview-mask {{showPreviewModal ? 'visible' : ''}}" wx:if="{{previewAction === 'screenshot'}}">
     <view class="preview-container">
         <view class="preview-header">
             <text class="preview-title">{{ui.confirmUpload}}</text>
@@ -101,7 +80,7 @@
 
             <view class="quota-warning">
                 <text class="warning-icon">⚠️</text>
-                <text class="warning-text">{{previewAction === 'refine' ? ui.refineRefineReminder : ui.screenshotReminder}}</text>
+                <text class="warning-text">{{ui.screenshotReminder}}</text>
             </view>
         </view>
 

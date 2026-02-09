@@ -1063,3 +1063,34 @@
   margin-top: 12rpx;
 }
 
+/* Onboarding Drawer Styles */
+.onboarding-drawer-content {
+  padding: 40rpx 32rpx 60rpx;
+}
+
+.onboarding-desc {
+  font-size: 28rpx;
+  color: var(--text-sub);
+  line-height: 1.6;
+  margin-bottom: 40rpx;
+  text-align: left;
+}
+
+.upload-options {
+  width: 100%;
+}
+
+.onboarding-footer-note {
+  margin-top: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+}
+
+.note-text {
+  font-size: 24rpx;
+  color: var(--text-sub);
+}
+
+
