@@ -38,7 +38,10 @@ export const me = {
     inviteCodeInvalid: { Chinese: '邀请码格式不正确', English: 'Invalid invite code format' },
     inviteCodeApplied: { Chinese: '邀请码已应用', English: 'Invite code applied successfully' },
     inviteFriendPlan: { Chinese: '邀请好友计划', English: 'Referral Program' },
-    inviteRewardDesc: { Chinese: '- 双方获赠3天会员和5点算力 \n- 非会员送体验会员 \n- 已订阅的会员享受延期', English: 'Both parties receive 3 days of membership and 5 computing power points. \nTrial members receive a trial membership \nSubscribed members enjoy an extension' },
+    inviteRewardDesc: { 
+        Chinese: '1. 分享邀请码：让好友感受 AI 简历的魅力\n2. 达成兑换：好友成功使用您的码完成首次兑换\n3. 共享收益：双方各领 3天会员权限 & 5点算力', 
+        English: '1. Share Code: Let friends experience AI Resume\n2. Redeem: Friend completes their first redemption\n3. Share Rewards: Both get 3d VIP & 5pts power' 
+    },
     iHaveInviteCode: { Chinese: '我有邀请码', English: 'I have an invite code' },
     clickToCopy: { Chinese: '点击复制邀请码', English: 'Click to copy code' },
     redeem: { Chinese: '兑换', English: 'Redeem' },

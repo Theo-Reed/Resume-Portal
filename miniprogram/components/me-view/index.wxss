@@ -772,6 +772,7 @@
     text-align: left;
     display: inline-block;
     white-space: pre-wrap;
+    line-height: 1.6;
 }
 
 /* Code Display Card */
@@ -794,7 +795,82 @@
 
 .code-display-card:active {
     transform: scale(0.98);
-    background: linear-gradient(90deg, var(--bg-card) 0%, var(--bg-main) 100%);
+}
+
+.code-label {
+    font-size: 24rpx;
+    color: var(--text-sub);
+    margin-bottom: 12rpx;
+}
+
+.code-main-row {
+    margin: 10rpx 0;
+}
+
+.code-text {
+    font-size: 60rpx;
+    font-weight: 800;
+    color: var(--text-main);
+    letter-spacing: 4rpx;
+}
+
+.code-hint {
+    font-size: 22rpx;
+    color: var(--text-holder);
+    margin-top: 10rpx;
+}
+
+/* Redemption Input */
+.redeem-container {
+    width: 100%;
+    margin-top: 20rpx;
+}
+
+.redeem-title {
+    font-size: 28rpx;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 20rpx;
+    display: block;
+}
+
+.redeem-input-group {
+    background: #F8FAFC; /* 使用极浅的灰蓝色，比纯白或页面底色更有深度 */
+    border-radius: 20rpx;
+    padding: 20rpx 30rpx;
+    border: 2rpx solid #CBD5E1; /* 加深边框颜色 */
+    box-shadow: inset 0 3rpx 6rpx rgba(0, 0, 0, 0.05); /* 稍微深一点点的内阴影 */
+    transition: all 0.3s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+    .redeem-input-group {
+        background: rgba(255, 255, 255, 0.05); /* 稍微提升亮度 */
+        border-color: rgba(255, 255, 255, 0.15); /* 强化边框线 */
+    }
+    .redeem-input {
+        color: #FFFFFF; /* 确保文字绝对可见 */
+    }
+    .redeem-placeholder {
+        color: var(--text-holder); /* 恢复使用变量适配暗黑模式 */
+    }
+}
+
+.redeem-input-group.has-value {
+    border-color: var(--primary-light);
+}
+
+.redeem-input {
+    font-size: 32rpx;
+    font-weight: 600;
+    color: var(--text-main);
+    width: 100%;
+}
+
+.redeem-placeholder {
+    font-size: 28rpx;
+    color: var(--text-holder); /* 恢复语义化变量 */
+    font-weight: 400;
 }
 
 .code-label {
@@ -869,7 +945,7 @@
 }
 
 .redeem-placeholder {
-    color: var(--border);
+    color: var(--text-holder); 
     font-weight: 400;
 }
 
