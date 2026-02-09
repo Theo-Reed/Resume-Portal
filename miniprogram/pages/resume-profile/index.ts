@@ -11,8 +11,7 @@ const { serverUrl } = require('../../env.js')
 
 Page({
   data: {
-    // Onboarding
-    showOnboardingDrawer: false,
+    // UI State
     showPreviewModal: false,
     showLangSelectDrawer: false,
     previewType: 'image' as 'image' | 'pdf',
