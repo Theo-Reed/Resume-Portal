@@ -13,9 +13,10 @@ Page({
   data: {
     // UI State
     showPreviewModal: false,
-    showLangSelectDrawer: false,
+    showOnboardingDrawer: false,
     previewType: 'image' as 'image' | 'pdf',
     previewPath: '',
+    previewName: '',
     previewName: '',
     // 个人信息 (当前显示的数据)
     name: '',
@@ -1350,26 +1351,36 @@ Page({
 
   onOnboardingParseSuccess(e: any) {
     const { result } = e.detail;
-    if (!result) return;
-    
-    this.setData({ 
-      tempParsedData: { success: true, result: result },
-      showOnboardingDrawer: false,
-      showLangSelectDrawer: true
-    } as any);
+    if (!result) {
+      ui.showToast('处理失败');
+      return;
+    }
+
+    const detectedLang = result.language === 'english' ? 'english' : 'chinese';
+    const langLabel = detectedLang === 'english' ? '仅英文' : '仅中文';
+
+    this.setData({ showOnboardingDrawer: false });
+
+    // 使用系统原生的 showModal，根据解析出的语言动态调整按钮
+    setTimeout(() => {
+      ui.showModal({
+        title: '简历解析成功',
+        content: `已成功提取您的${detectedLang === 'english' ? '英文' : '中文'}个人资料。\n\n选择“同时更新”将同步生成多语言资料，效果最佳。`,
+        confirmText: '同时更新',
+        cancelText: langLabel,
+        showCancel: true,
+        success: (res) => {
+          if (res.confirm) {
+            this.applyParsedData({ success: true, result }, 'combined');
+          } else if (res.cancel) {
+            this.applyParsedData({ success: true, result }, 'single');
+          }
+        }
+      });
+    }, 400);
   },
 
-  closeLangSelectDrawer() {
-    this.setData({ showLangSelectDrawer: false });
-  },
-
-  onSelectOnboardingType(e: any) {
-    const type = e.currentTarget.dataset.type;
-    this.setData({ showLangSelectDrawer: false });
-    this.applyParsedData((this.data as any).tempParsedData, type);
-  },
-
-  async applyParsedData(data: any, type: 'chinese' | 'combined') {
+  async applyParsedData(data: any, type: 'single' | 'combined') {
     if (!data) return;
     ui.showLoading('AI 生成中...', true);
     try {
@@ -1395,7 +1406,7 @@ Page({
         is_override: true
       };
 
-      const mappedEducations = (extracted.education || []).map((e: any) => ({
+      const mapEdu = (eduList: any[]) => (eduList || []).map((e: any) => ({
         school: e.school || "",
         degree: e.degree || "",
         major: e.major || "",
@@ -1403,7 +1414,7 @@ Page({
         endDate: e.endTime || ""
       }));
 
-      const mappedExperiences = (extracted.experience || []).map((e: any) => ({
+      const mapExp = (expList: any[]) => (expList || []).map((e: any) => ({
         company: e.company || "",
         jobTitle: e.role || "",
         workContent: e.description || "",
@@ -1411,15 +1422,47 @@ Page({
         endDate: e.endTime || ""
       }));
 
-      if (detectedLang === 'english') {
-        overrideProfile.en = { educations: mappedEducations, workExperiences: mappedExperiences, completeness: { level: 2 } };
-        if (type === 'combined') {
-          overrideProfile.zh = { educations: [], workExperiences: [], completeness: { level: 0 } };
-        }
+      // 如果后端返回了双语结构，优先使用
+      if (extracted.zh && extracted.en) {
+        overrideProfile.zh = {
+          educations: mapEdu(extracted.zh.education),
+          workExperiences: mapExp(extracted.zh.experience),
+          completeness: { score: 85, level: 2 }
+        };
+        overrideProfile.en = {
+          educations: mapEdu(extracted.en.education),
+          workExperiences: mapExp(extracted.en.experience),
+          completeness: { score: 85, level: 2 }
+        };
+        // 跨语言字段精准映射
+        if (extracted.zh.name) overrideProfile.name = extracted.zh.name;
+        if (extracted.en.city) overrideProfile.location = extracted.en.city;
+        if (extracted.zh.wechat) overrideProfile.wechat = extracted.zh.wechat;
+        if (extracted.en.linkedin) overrideProfile.linkedin = extracted.en.linkedin;
+        if (extracted.en.whatsapp) overrideProfile.whatsapp = extracted.en.whatsapp;
+        if (extracted.en.telegram) overrideProfile.telegram = extracted.en.telegram;
+        if (extracted.website) overrideProfile.website = extracted.website;
       } else {
-        overrideProfile.zh = { educations: mappedEducations, workExperiences: mappedExperiences, completeness: { level: 2 } };
-        if (type === 'combined') {
-          overrideProfile.en = { educations: [], workExperiences: [], completeness: { level: 0 } };
+        const mappedEducations = mapEdu(extracted.education);
+        const mappedExperiences = mapExp(extracted.experience);
+
+        // 分配到对应的语言槽位
+        const targetData = { 
+          educations: mappedEducations, 
+          workExperiences: mappedExperiences, 
+          completeness: { score: 85, level: 2 } 
+        };
+
+        if (detectedLang === 'english') {
+          overrideProfile.en = targetData;
+          if (type === 'combined') {
+            overrideProfile.zh = JSON.parse(JSON.stringify(targetData));
+          }
+        } else {
+          overrideProfile.zh = targetData;
+          if (type === 'combined') {
+            overrideProfile.en = JSON.parse(JSON.stringify(targetData));
+          }
         }
       }
 

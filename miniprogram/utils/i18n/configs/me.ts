@@ -215,6 +215,15 @@ const UI_MAP = {
     mchIdMissing: 'me.mchIdMissing',
     activateMemberFailed: 'me.activateMemberFailed',
     
+    // --- 解析选择 ---
+    /** 解析成功标题 */
+    parsed_choice_title: 'me.parsed_choice_title',
+    /** 解析成功描述 */
+    parsed_choice_desc: 'me.parsed_choice_desc',
+    /** 更新双语按钮 */
+    update_all: 'me.update_all',
+    /** 更新单语言按钮 */
+    update_detected: 'me.update_detected',
 } as const
 
 /**

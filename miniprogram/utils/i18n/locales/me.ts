@@ -184,4 +184,8 @@ export const me = {
     payFailed: { Chinese: '支付失败', English: 'Payment Failed' },
     mchIdMissing: { Chinese: '商户号配置缺失', English: 'Merchant ID missing' },
     activateMemberFailed: { Chinese: '权益激活失败，请联系客服', English: 'Activation failed, please contact support' },
+    parsed_choice_title: { Chinese: '解析成功', English: 'Parse Success' },
+    parsed_choice_desc: { Chinese: 'AI 已为您准备好中英双语资料，建议同步更新以获取最佳体验。', English: 'AI has prepared bilingual profiles for you. Recommended updating both for the best experience.' },
+    update_all: { Chinese: '同步更新双语', English: 'Update Both (Sync)' },
+    update_detected: { Chinese: '仅更新当前语言', English: 'Update Current Only' },
 } as const

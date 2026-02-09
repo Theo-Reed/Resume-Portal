@@ -221,7 +221,7 @@ Component({
             experience: "3 years"
         };
 
-        // Step 3: Map to internal profile structure (aligned with backend expectations)
+        // Step 3: Map to internal profile structure
         const overrideProfile: any = {
             name: extracted.name || "",
             gender: extracted.gender || "",
@@ -233,7 +233,7 @@ Component({
             is_override: true 
         };
 
-        const mappedEducations = (extracted.education || []).map((e: any) => ({
+        const mapEdu = (eduList: any[]) => (eduList || []).map((e: any) => ({
             school: e.school || "",
             degree: e.degree || "",
             major: e.major || "",
@@ -241,7 +241,7 @@ Component({
             endDate: e.endTime || ""
         }));
 
-        const mappedExperiences = (extracted.experience || []).map((e: any) => ({
+        const mapExp = (expList: any[]) => (expList || []).map((e: any) => ({
             company: e.company || "",
             jobTitle: e.role || "",
             workContent: e.description || "",
@@ -249,12 +249,38 @@ Component({
             endDate: e.endTime || ""
         }));
 
-        if (detectedLang === 'english') {
-            overrideProfile.en = { educations: mappedEducations, workExperiences: mappedExperiences, completeness: { level: 2 } };
-            overrideProfile.zh = { educations: [], workExperiences: [], completeness: { level: 0 } };
+        // 如果后端返回了双语结构，优先使用
+        if (extracted.zh && extracted.en) {
+            overrideProfile.zh = {
+                educations: mapEdu(extracted.zh.education),
+                workExperiences: mapExp(extracted.zh.experience),
+                completeness: { level: 2 }
+            };
+            overrideProfile.en = {
+                educations: mapEdu(extracted.en.education),
+                workExperiences: mapExp(extracted.en.experience),
+                completeness: { level: 2 }
+            };
+            // 姓名、位置及社交平台精准映射
+            if (extracted.zh.name) overrideProfile.name = extracted.zh.name;
+            if (extracted.en.city) overrideProfile.location = extracted.en.city;
+            if (extracted.zh.wechat) overrideProfile.wechat = extracted.zh.wechat;
+            if (extracted.en.linkedin) overrideProfile.linkedin = extracted.en.linkedin;
+            if (extracted.en.whatsapp) overrideProfile.whatsapp = extracted.en.whatsapp;
+            if (extracted.en.telegram) overrideProfile.telegram = extracted.en.telegram;
+            if (extracted.website) overrideProfile.website = extracted.website;
         } else {
-            overrideProfile.zh = { educations: mappedEducations, workExperiences: mappedExperiences, completeness: { level: 2 } };
-            overrideProfile.en = { educations: [], workExperiences: [], completeness: { level: 0 } };
+            const mappedEducations = mapEdu(extracted.education);
+            const mappedExperiences = mapExp(extracted.experience);
+
+            if (detectedLang === 'english') {
+                overrideProfile.en = { educations: mappedEducations, workExperiences: mappedExperiences, completeness: { level: 2 } };
+                // 润色模式下，即使是单语言，也同步一份过去，保证资料库不为空
+                overrideProfile.zh = JSON.parse(JSON.stringify(overrideProfile.en));
+            } else {
+                overrideProfile.zh = { educations: mappedEducations, workExperiences: mappedExperiences, completeness: { level: 2 } };
+                overrideProfile.en = JSON.parse(JSON.stringify(overrideProfile.zh));
+            }
         }
 
         // Step 4: Call Unified Generation Flow

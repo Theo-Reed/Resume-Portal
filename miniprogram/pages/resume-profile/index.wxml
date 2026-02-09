@@ -691,30 +691,6 @@
     bind:success="onOnboardingParseSuccess"
   />
 
-  <!-- Dual Language Selection -->
-  <ui-drawer
-    show="{{showLangSelectDrawer}}"
-    title="选择生成语言"
-    bind:close="closeLangSelectDrawer"
-  >
-    <view class="lang-select-content" style="padding: 20rpx 32rpx 60rpx;">
-      <view class="mode-card" bindtap="onSelectOnboardingType" data-type="chinese">
-        <view class="mode-card-main">
-          <text class="mode-name">仅中文版</text>
-          <text class="mode-desc">快速同步当前的个人信息</text>
-        </view>
-        <view class="ui-arrow">❯</view>
-      </view>
-      <view class="mode-card" bindtap="onSelectOnboardingType" data-type="combined">
-        <view class="mode-card-main">
-          <text class="mode-name">中英双语版 (推荐)</text>
-          <text class="mode-desc">同时生成专业的中英文简历资料</text>
-        </view>
-        <view class="ui-arrow">❯</view>
-      </view>
-    </view>
-  </ui-drawer>
-
   <ui-feedback id="ui-feedback" />
 </view>
 
