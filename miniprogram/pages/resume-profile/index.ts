@@ -1417,15 +1417,6 @@ Page({
       const profile = data.result.profile;
       const detectedLang = data.result.language; // 'chinese' or 'english'
       const isCombined = type === 'combined';
-      const overrideProfile: any = {
-        name: profile.name || "", 
-        gender: profile.gender || "",
-        phone: profile.mobile || "",
-        email: profile.email || "",
-        website: profile.website || "",
-        language: detectedLang,
-        is_override: true
-      };
 
       const mapEdu = (eduList: any[]) => (eduList || []).map((e: any) => ({
         school: e.school || "",
@@ -1444,32 +1435,40 @@ Page({
       }));
 
       // 如果后端返回了双语结构，优先使用
+      const updates: any = {};
+      
       if (profile.zh && profile.en) {
         const targetSingleLang = detectedLang === 'english' ? 'English' : 'Chinese';
 
         // Handle EN block
         if (isCombined || targetSingleLang === 'English') {
-          overrideProfile.en = {
+          updates.en = {
             educations: mapEdu(profile.en.education),
             workExperiences: mapExp(profile.en.experience),
-            completeness: { score: 85, level: 2 }
+            // completeness: { score: 85, level: 2 }, // Backend Calculates
+            name: profile.en.name || undefined,
+            location: profile.en.city || undefined,
+            linkedin: profile.en.linkedin || undefined,
+            whatsapp: profile.en.whatsapp || undefined,
+            telegram: profile.en.telegram || undefined,
+            email: profile.en.email || undefined,
+            phone: profile.en.mobile || undefined,
           };
-          if (profile.en.name) overrideProfile.name_en = profile.en.name;
-          if (profile.en.city) overrideProfile.location = profile.en.city;
-          if (profile.en.linkedin) overrideProfile.linkedin = profile.en.linkedin;
-          if (profile.en.whatsapp) overrideProfile.whatsapp = profile.en.whatsapp;
-          if (profile.en.telegram) overrideProfile.telegram = profile.en.telegram;
         }
 
         // Handle ZH block
         if (isCombined || targetSingleLang === 'Chinese') {
-          overrideProfile.zh = {
+          updates.zh = {
             educations: mapEdu(profile.zh.education),
             workExperiences: mapExp(profile.zh.experience),
-            completeness: { score: 85, level: 2 }
+            // completeness: { score: 85, level: 2 }, // Backend Calculates
+            name: profile.zh.name || undefined,
+            wechat: profile.zh.wechat || undefined,
+            email: profile.zh.email || undefined,
+            phone: profile.zh.mobile || undefined,
+            gender: profile.zh.gender || undefined,
+            birthday: profile.zh.birthday || undefined,
           };
-          if (profile.zh.name) overrideProfile.name = profile.zh.name;
-          if (profile.zh.wechat) overrideProfile.wechat = profile.zh.wechat;
         }
       } else {
         const extracted = profile;
@@ -1480,48 +1479,55 @@ Page({
         const targetData = { 
           educations: mappedEducations, 
           workExperiences: mappedExperiences, 
-          completeness: { score: 85, level: 2 } 
+          // completeness: { score: 85, level: 2 }, // Backend Calculates
+          name: extracted.name || undefined,
+          email: extracted.email || undefined,
+          phone: extracted.mobile || undefined,
+          gender: extracted.gender || undefined,
+          birthday: extracted.birthday || undefined,
         };
 
         if (detectedLang === 'english') {
-          overrideProfile.en = targetData;
-          overrideProfile.location = extracted.city || "";
+          updates.en = {
+            ...targetData,
+            location: extracted.city || undefined,
+            linkedin: extracted.linkedin || undefined,
+          };
+          
           if (isCombined) {
-            overrideProfile.zh = JSON.parse(JSON.stringify(targetData));
+            updates.zh = JSON.parse(JSON.stringify(targetData));
+            // Ensure language-specific fields don't bleed over inappropriately unless generic
           }
         } else {
-          overrideProfile.zh = targetData;
-          overrideProfile.wechat = extracted.wechat || "";
+          updates.zh = {
+             ...targetData,
+             wechat: extracted.wechat || undefined,
+          };
+
           if (isCombined) {
-            overrideProfile.en = JSON.parse(JSON.stringify(targetData));
+            updates.en = JSON.parse(JSON.stringify(targetData));
           }
         }
       }
 
+      // 执行更新
+      const res: any = await callApi('updateUserProfile', { 
+        resume_profile: updates
+      });
+
       ui.hideLoading();
 
-      const dummyJob = {
-        _id: `ONBOARDING_${Date.now()}`,
-        title: "简历资料完善",
-        description: "通用简历完善",
-        experience: "3 years"
-      };
+      if (res?.success) {
+        ui.showSuccess('资料已更新');
+        this.loadResumeData();
+      } else {
+        ui.showToast('更新失败');
+      }
 
-      await requestGenerateResume(dummyJob, {
-        overrideProfile,
-        skipLangSelect: true,
-        preferredLang: 'chinese',
-        isPaid: true,
-        showSuccessModal: true,
-        onFinish: (success) => {
-          if (success) {
-            this.loadResumeData();
-          }
-        }
-      });
     } catch (e) {
       ui.hideLoading();
       ui.showToast('处理失败');
+      console.error(e);
     }
   },
 })
