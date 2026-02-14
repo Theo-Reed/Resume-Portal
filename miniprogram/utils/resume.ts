@@ -210,6 +210,13 @@ async function doGenerate(user: any, profile: any, job: any, isChineseEnv: boole
       en: profile.en
     }
 
+    // 规则：
+    // 1) 文字生成简历（_is_custom）优先使用页面输入框的 ai_message；
+    // 2) 岗位列表生成保持使用数据库中的 resume_profile.aiMessage。
+    if (job && job._is_custom && typeof job.ai_message === 'string' && job.ai_message.trim()) {
+      aiProfile.aiMessage = job.ai_message.trim();
+    }
+
     const res = await callApi<any>('generate', {
       jobId: job._id,
       openid: user.openid,
