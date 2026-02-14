@@ -15,9 +15,9 @@
       <view class="ui-error-line ui-error-line-2"></view>
     </view>
 
-    <view wx:if="{{type === 'alert'}}" class="ui-icon-warn">
+    <!-- <view wx:if="{{type === 'alert'}}" class="ui-icon-warn">
       <view class="ui-warn-exclamation"></view>
-    </view>
+    </view> -->
 
     <!-- Modal Content -->
     <block wx:if="{{type === 'modal' || type === 'alert'}}">

@@ -46,7 +46,7 @@ export const me = {
     clickToCopy: { Chinese: '点击复制邀请码', English: 'Click to copy code' },
     redeem: { Chinese: '兑换', English: 'Redeem' },
     memberBadge: { Chinese: '丈月尺会员', English: 'Subscribed' },
-    memberTrial: { Chinese: '体验成员', English: 'Trial Member' },
+    memberTrial: { Chinese: '体验会员', English: 'Trial Member' },
     uploadAvatar: { Chinese: '上传头像', English: 'Upload Avatar' },
     editNickname: { Chinese: '用户名', English: 'Username' },
     memberExpiredDate: { Chinese: '会员到期日期', English: 'Expiration Date' },
