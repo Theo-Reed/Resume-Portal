@@ -328,7 +328,7 @@ Component({
         };
         
         wx.navigateTo({
-            url: '/pages/resume-generator/index?from=screenshot'
+            url: '/pages/resume-generator/index?from=upload'
         });
         
         // Close drawer? Usually navigation does this automatically or keeps it open?
@@ -731,7 +731,7 @@ Component({
                 };
                 
                 wx.navigateTo({
-                    url: '/pages/resume-generator/index?from=screenshot'
+                    url: '/pages/resume-generator/index?from=upload'
                 });
 
             } else {

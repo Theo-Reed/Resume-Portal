@@ -35,6 +35,7 @@ App<IAppOption>({
       memberSchemes: null,
       timestamp: 0,
     },
+    _prefilledJob: null as any,
   },
 
   onLaunch() {

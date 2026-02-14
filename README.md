@@ -27,6 +27,17 @@ A transparent initialization orchestrator implemented in the `onLaunch` phase:
 ### 4. Enterprise-Grade i18n Core
 - **Kernel-Driven Localization**: Supports Standard Chinese/English and AI Chinese/English modes. It doesn't just translate UI text; it drives the AI engine to switch semantic output, ensuring a consistent global application experience.
 
+### 5. Reactive Event Bus (Observer Pattern)
+- **Granular Reactivity**: Implements a lightweight Pub/Sub architecture for Theme and Language contexts, enabling instant hot-swapping without full page reloads.
+- **State Decoupling**: Ensures critical updates propagate instantly across the component tree without prop drilling.
+
+### 6. Optimistic Hydration Strategy ("Flash-load")
+- **Instant-On Session**: Hydrates user session immediately from encrypted local storage (`user_cache`) for perceived zero-latency startup.
+- **Stale-While-Revalidate**: Network validation happens asynchronously in the background, updating constraints without blocking user interaction.
+
+### 7. Adaptive Environment Networking
+- **Resiliency Layer**: Built-in automatic retry capabilities and "Offline Mode" detection allow graceful degradation into read-only states when connectivity is compromised.
+
 ## 🚀 Features
 
 - ✂️ **One-Click AI Rewriting**: Precisely extracts and optimizes project experience keywords based on the target role.

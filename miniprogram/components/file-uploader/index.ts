@@ -138,19 +138,25 @@ Component({
       const app = getApp<any>();
       const lang: AppLanguage = normalizeLanguage(app.globalData.language);
       
+      console.log('[FileUploader] Starting upload. Mode:', this.data.mode); // Debug Log
+
       ui.showLoading(t('resume.aiChecking', lang)); // "AI 校验中"
 
       try {
         const url = this.data.mode === 'job' ? '/parse-job-screenshot' : '/resume/parse';
+        console.log('[FileUploader] Target URL:', url, 'FilePath:', this.data.previewPath); // Debug Log
+        
         const data = await uploadApi<any>({
           url: url,
           filePath: this.data.previewPath,
           name: 'file'
         });
 
+        console.log('[FileUploader] Upload success, response:', data); // Debug Log
         ui.hideLoading();
 
         if (!data.success || !data.result) {
+          console.warn('[FileUploader] Logical failure:', data); // Debug Log
           this.handleUploadError({ data: data }, lang);
           return;
         }
@@ -164,7 +170,8 @@ Component({
             }
         });
 
-      } catch (err) {
+      } catch (err: any) {
+        console.error('[FileUploader] Upload failed:', err); // Debug Log
         ui.hideLoading();
         this.handleUploadError(err, lang);
         this.triggerEvent('fail', err);

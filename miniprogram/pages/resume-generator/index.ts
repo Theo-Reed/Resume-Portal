@@ -65,8 +65,32 @@ Page({
     })
 
     // Check for draft or passed data
-    if (options && (options.title || options.from === 'screenshot' || options.content)) {
-        this.initializeWithData(options);
+    console.log('[ResumeGenerator] onLoad Options:', options); // Debug
+    if (options && (options.title || options.from === 'upload' || options.from === 'screenshot' || options.content)) {
+        let data = options;
+        
+        // If from upload or legacy screenshot, try to retrieve full data from globalData (to avoid URL length limits)
+        if (options.from === 'upload' || options.from === 'screenshot') {
+            const app = getApp<any>();
+            console.log('[ResumeGenerator] Global Data Prefilled:', app.globalData._prefilledJob); // Debug
+            
+            if (app.globalData._prefilledJob) {
+                const job = app.globalData._prefilledJob;
+                data = {
+                    ...options,
+                    title: job.title,
+                    content: job.description, 
+                    years: job.experience
+                };
+                console.log('[ResumeGenerator] Merged Data:', data); // Debug
+                // Clear it after retrieving to avoid stale data later
+                app.globalData._prefilledJob = null;
+            } else {
+                console.warn('[ResumeGenerator] Failed to find prefilled job data in globalData'); // Debug
+            }
+        }
+
+        this.initializeWithData(data);
     } else if (Object.keys(options).length === 0) {
       // Try EventChannel (usually from components)
       const eventChannel = this.getOpenerEventChannel();
@@ -110,8 +134,8 @@ Page({
         'targetJob.title': safeDecode(options.title),
         'targetJob.content': safeDecode(options.content),
         'targetJob.experience': experience,
-        isPaid: options.from === 'screenshot',
-        parsedData: options.from === 'screenshot' ? { from: 'screenshot' } : null
+        isPaid: options.from === 'upload' || options.from === 'screenshot',
+        parsedData: (options.from === 'upload' || options.from === 'screenshot') ? { from: 'upload' } : null
       }, () => {
         // 如果有传入经验，尝试匹配 picker index
         if (this.data.targetJob.experience) {
