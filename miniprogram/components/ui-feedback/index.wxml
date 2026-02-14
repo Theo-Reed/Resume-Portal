@@ -1,4 +1,4 @@
-<view class="ui-feedback {{displayVisible ? 'ui-visible' : ''}} {{mask ? 'ui-mask' : ''}}" wx:if="{{innerVisible}}" bindtap="onMaskTap">
+<view class="ui-feedback {{displayVisible ? 'ui-visible' : ''}} {{mask ? 'ui-mask' : ''}}" style="z-index: {{zIndex}};" wx:if="{{innerVisible}}" bindtap="onMaskTap">
   <view class="ui-content {{type}}" catchtap="onContentTap">
     <!-- Loading Spinner -->
     <view wx:if="{{type === 'loading'}}" class="ui-loading-spinner">

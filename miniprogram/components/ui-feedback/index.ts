@@ -12,6 +12,7 @@ Component({
     mask: { type: Boolean, value: false },
     maskClosable: { type: Boolean, value: true },
     emphasis: { type: String, value: 'right' },
+    zIndex: { type: Number, value: 20000 },
     visible: { 
       type: Boolean, 
       value: false,

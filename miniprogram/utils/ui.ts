@@ -56,6 +56,7 @@ export const ui = {
       content: customContent || t('jobs.generateRequestSubmittedContent', lang),
       confirmText: t('jobs.generateRequestSubmittedConfirm', lang),
       cancelText: t('jobs.generateRequestSubmittedCancel', lang),
+      zIndex: 5000,
       success: (res) => {
         if (res.confirm) {
           wx.navigateTo({ url: '/pages/generated-resumes/index' });
@@ -130,6 +131,7 @@ export const ui = {
     maskClosable?: boolean;
     emphasis?: 'left' | 'right';
     isAlert?: boolean;
+    zIndex?: number;
     success?: (res: { confirm: boolean; cancel: boolean }) => void;
   }) {
     const pages = getCurrentPages();
@@ -149,7 +151,8 @@ export const ui = {
         emphasis: options.emphasis || 'right',
         type: options.isAlert ? 'alert' : 'modal',
         mask: true,
-        visible: true
+        visible: true,
+        zIndex: options.zIndex || 20000
       });
 
       // 绑定回调
