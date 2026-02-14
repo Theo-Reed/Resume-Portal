@@ -18,7 +18,7 @@ export const ui = {
       feedback.setData({ title: finalTitle, type: 'loading', mask, maskClosable, visible: true });
     } else {
       // 降级使用原生
-      wx.showLoading({ title: finalTitle, mask });
+      // wx.showLoading({ title: finalTitle, mask });
     }
   },
 

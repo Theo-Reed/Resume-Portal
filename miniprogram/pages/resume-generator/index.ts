@@ -363,7 +363,7 @@ Page({
 
     if (level <= 0 && points <= 0) {
         ui.showModal({
-            title: t('membership.quotaExceededTitle') || '额度不足',
+        title: t('membership.quotaExceededTitle') || '额度不足',
             content: t('membership.quotaExceededContent'),
             confirmText: t('membership.viewDetails'),
             success: (res) => {
