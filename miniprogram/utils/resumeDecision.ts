@@ -1,4 +1,5 @@
 import { ui } from './ui';
+import { normalizeLanguage } from './i18n/index';
 
 export type DecisionScenario = 'GENERATE_SCAN' | 'GENERATE_TEXT' | 'REFINE' | 'PROFILE_UPDATE';
 
@@ -40,9 +41,10 @@ export const ResumeDecision = {
    * Get Modal Configuration based on scenario and detected language
    */
   getDecisionConfig(scenario: DecisionScenario, detectedLang: 'chinese' | 'english'): DecisionConfig {
-    const isCn = detectedLang === 'chinese';
-    const langName = isCn ? '中文' : '英文'; // English
-    const otherName = isCn ? '英文' : '中文'; // Chinese
+    const app = getApp<any>();
+    const uiLang = normalizeLanguage(app && app.globalData ? app.globalData.language : 'Chinese');
+    const isUIChinese = (uiLang === 'Chinese' || uiLang === 'AIChinese');
+    const isContentChinese = detectedLang === 'chinese';
 
     let config: DecisionConfig = {
       title: '',
@@ -55,50 +57,80 @@ export const ResumeDecision = {
     switch (scenario) {
       case 'GENERATE_SCAN': // 1. 截图生成
       case 'GENERATE_TEXT': // 2. 文字生成
-        config.title = isCn ? '生成确认' : 'Generation Confirm';
+        config.title = isUIChinese ? '生成确认' : 'Generation Confirm';
         
-        // Content: "Detected [Lang] content. Generate [Lang] resume?"
+        // Content
         if (scenario === 'GENERATE_TEXT') {
-            config.content = isCn 
-              ? '检测到您的职位要求主要是中文。建议生成中文简历以获得最佳匹配。'
-              : 'Detected English content. We recommend generating an English resume.';
+            if (isUIChinese) {
+                config.content = isContentChinese 
+                  ? '检测到您的职位要求主要是中文。建议生成中文简历以获得最佳匹配。'
+                  : '检测到您的职位要求主要是英文。建议生成英文简历以获得最佳匹配。';
+            } else {
+                config.content = isContentChinese
+                  ? 'Detected Chinese content. We recommend generating a Chinese resume.'
+                  : 'Detected English content. We recommend generating an English resume.';
+            }
         } else {
-             config.content = isCn 
-              ? '识别到中文简历内容。建议生成中文简历。'
-              : 'Detected English resume content. We recommend generating an English resume.';
+             if (isUIChinese) {
+                config.content = isContentChinese 
+                  ? '识别到中文简历内容。建议生成中文简历。'
+                  : '识别到英文简历内容。建议生成英文简历。';
+             } else {
+                config.content = isContentChinese
+                  ? 'Detected Chinese resume content. We recommend generating a Chinese resume.'
+                  : 'Detected English resume content. We recommend generating an English resume.';
+             }
         }
 
-        // Right (Confirm): Same Lang
-        config.confirmText = isCn ? '生成中文版' : 'Gen English';
-        // Left (Cancel): Cross Lang
-        config.cancelText = isCn ? '生成英文版' : 'Gen Chinese';
+        // Buttons
+        if (isUIChinese) {
+            // Confirm: Recommended (Same as Content); Cancel: Alternative (Cross)
+            config.confirmText = isContentChinese ? '生成中文版' : '生成英文版';
+            config.cancelText = isContentChinese ? '生成英文版' : '生成中文版';
+        } else {
+            config.confirmText = isContentChinese ? 'Gen Chinese' : 'Gen English';
+            config.cancelText = isContentChinese ? 'Gen English' : 'Gen Chinese';
+        }
         break;
 
       case 'REFINE': // 3. 简历润色
-        config.title = isCn ? '润色模式' : 'Refine Mode';
-        config.content = isCn
-          ? '检测到中文简历。建议进行中文润色与增强。'
-          : 'Detected English resume. We recommend English refinement.';
+        config.title = isUIChinese ? '润色模式' : 'Refine Mode';
         
-        // Right (Confirm): Same Lang
-        config.confirmText = isCn ? '中文润色' : 'Enhance (EN)';
-        // Left (Cancel): Cross Lang
-        config.cancelText = isCn ? '英文润色' : 'Enhance (CN)';
+        if (isUIChinese) {
+            config.content = isContentChinese
+              ? '检测到中文简历。建议进行中文润色与增强。'
+              : '检测到英文简历。建议进行英文润色与增强。';
+            
+            config.confirmText = isContentChinese ? '中文润色' : '英文润色';
+            config.cancelText = isContentChinese ? '英文润色' : '中文润色';
+        } else {
+            config.content = isContentChinese
+              ? 'Detected Chinese resume. We recommend Chinese refinement.'
+              : 'Detected English resume. We recommend English refinement.';
+            
+            config.confirmText = isContentChinese ? 'Enhance (CN)' : 'Enhance (EN)';
+            config.cancelText = isContentChinese ? 'Enhance (EN)' : 'Enhance (CN)';
+        }
         break;
 
       case 'PROFILE_UPDATE': // 4. 更新资料
-        config.title = isCn ? '解析成功' : 'Parse Success';
-        config.content = isCn
-          ? '已提取中文资料。推荐同步更新生成双语档案，以便投递不同外企职位。'
-          : 'English profile extracted. Recommend updating both versions for international opportunities.';
+        config.title = isUIChinese ? '解析成功' : 'Parse Success';
         
-        // Right (Confirm): Combined
-        config.confirmText = isCn ? '更新中英双语' : 'Update Both';
-        // Left (Cancel): Single ("仅更新当前语言" - as per user request, mapping strictly to detected isn't exactly "current", but usually aligns or is treated as 'force single')
-        // Correction: User said "Left: Only update current language". 
-        // But here we rely on detected. If detected is CN, we say "Update CN Only". 
-        // Logic: if detected is CN, single update means update CN.
-        config.cancelText = isCn ? '仅更新中文' : 'Update EN Only';    
+        if (isUIChinese) {
+            config.content = isContentChinese
+              ? '已提取中文资料。推荐同步更新生成双语档案，以便投递不同外企职位。'
+              : '已提取英文资料。推荐同步更新生成双语档案，以便投递不同外企职位。';
+            
+            config.confirmText = '更新中英双语';
+            config.cancelText = isContentChinese ? '仅更新中文' : '仅更新英文';
+        } else {
+            config.content = isContentChinese
+              ? 'Chinese profile extracted. Recommend updating both versions for international opportunities.'
+              : 'English profile extracted. Recommend updating both versions for international opportunities.';
+            
+             config.confirmText = 'Update Both';
+             config.cancelText = isContentChinese ? 'Update CN Only' : 'Update EN Only';
+        }
         break;
     }
 
