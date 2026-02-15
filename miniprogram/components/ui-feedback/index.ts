@@ -64,6 +64,9 @@ Component({
     },
     onMaskTap() {
       if (this.data.mask && this.data.maskClosable) {
+        if (typeof (this as any).onCancel === 'function') {
+          (this as any).onCancel({ detail: { isMask: true } });
+        }
         this.triggerEvent('cancel', { isMask: true });
         this.setData({ visible: false });
       }

@@ -159,6 +159,10 @@ export const ResumeDecision = {
               resolve(detectedLang);
             }
           } else if (res.cancel) {
+            if ((res as any).isMask) {
+              resolve(null);
+              return;
+            }
             // Left Button: Always "Alternative/Single/CrossLang"
             if (scenario === 'PROFILE_UPDATE') {
               resolve('single');
